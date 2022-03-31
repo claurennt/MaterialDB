@@ -1,5 +1,6 @@
 import DBClient from "../../../utils/DBClient.js";
 import { Topic } from "../../../models/Models.js";
+import { loadComponents } from "next/dist/server/load-components";
 
 export default async function handler(req, res) {
   const {
@@ -12,31 +13,22 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET" /* Get a model by its ID */:
       try {
-        const DBlinks = await Topic.findById(_id)
-          .populate("links")
-          .exec(function (err, story) {
-            if (err) return err;
+        const { links } = await Topic.findById(_id).lean();
 
-            return story;
-            // prints "The author is Ian Fleming"
-          });
-
-        if (!DBlinks) {
+        if (!links) {
           return res
-            .status(400)
+            .status(404)
             .send("The selected topic does not have any associated links yet.");
         }
-        return res.status(200).json({ success: true, data: DBlinks });
+        return res.status(200).send(links);
       } catch (error) {
         console.log(error);
-        return res.status(400).json({ success: false });
+        return res.status(400).send(error);
       }
 
     case "PUT" /* Edit a model by its ID */:
       try {
-        const links = await Topic.findById(_id)
-          .populate("links")
-          .then((record) => console.log(record));
+        const links = await Topic.findById(_id).populate("links");
 
         if (!links) {
           return res.status(400).json({ success: false });
