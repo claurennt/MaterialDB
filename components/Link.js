@@ -3,17 +3,17 @@ import Tag from "./Tag";
 import { nanoid } from "nanoid";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
-const Link = ({ title, link, tags }) => {
+const Link = ({ title, url, tags }) => {
   return (
     <>
-      <a href={link} target="_blank">
+      <a href={url} target="_blank">
         {title}
       </a>
-      <CopyToClipboard text={link}>
+      <CopyToClipboard text={url}>
         <button>copy</button>
       </CopyToClipboard>
 
-      {tags.map((tag) => (
+      {tags?.map((tag) => (
         <Tag key={nanoid()} tag={tag} />
       ))}
     </>

@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-
+import axios from "axios";
 import DBClient from "../utils/DBClient.js";
 import { Topic } from "../models/Models.js";
 
@@ -29,25 +29,25 @@ export default function Home({ topics }) {
         </p>
 
         <div className={grid}>
-          {topics.map(({ name, _id, description, subtopics, links }) => (
-            <Link
-              href={{
-                pathname: "topic/[_id]",
-                query: {
-                  _id: _id,
-                  subtopics: subtopics,
-                  links: links,
-                  name: name,
-                },
-              }}
-              key={_id}
-            >
-              <a className={card}>
-                <h3>{name}</h3>
-                <p>{description}</p>
-              </a>
-            </Link>
-          ))}
+          {topics.map(({ name, _id, description, subtopics, links }) => {
+            return (
+              <Link
+                href={{
+                  pathname: "topic/[_id]",
+                  query: {
+                    _id: _id,
+                    name: name,
+                  },
+                }}
+                key={_id}
+              >
+                <a className={card}>
+                  <h3>{name}</h3>
+                  <p>{description}</p>
+                </a>
+              </Link>
+            );
+          })}
         </div>
       </main>
 
@@ -56,12 +56,13 @@ export default function Home({ topics }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   await DBClient();
+  console.log("here");
   /* find all the data in our database */
-  const topics = await Topic.find({});
-  const serializedTopics = JSON.parse(JSON.stringify(topics));
+  const { data: topics } = await axios.get(
+    `${process.env.NEXT_PUBLIC_DEV_URL || process.env.PORT}/api/topics`
+  );
 
-  //serialize data to pass down as props
-  return { props: { topics: serializedTopics } };
+  return { props: { topics: topics } };
 }
