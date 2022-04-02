@@ -61,7 +61,7 @@ export async function getServerSideProps() {
   /* find all the data in our database */
   const topics = await Topic.find({});
   const serializedTopics = JSON.parse(JSON.stringify(topics));
-  console.log(serializedTopics);
+
   //serialize data to pass down as props
   return { props: { topics: serializedTopics } };
 }

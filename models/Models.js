@@ -1,20 +1,17 @@
 import mongoose from "mongoose";
 
-import DBClient from "../utils/DBClient.js";
-
 const Schema = mongoose.Schema;
+const linkSchema = new Schema({
+  title: { type: String, required: true },
+  tags: { type: Array, required: true },
+  link: { type: String, required: true },
+});
 
 const topicSchema = new Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   subtopics: { type: Array, required: true },
   links: [{ type: Schema.Types.ObjectId, ref: "Link" }],
-});
-
-const linkSchema = new Schema({
-  title: { type: String, required: true },
-  tags: { type: Array, required: true },
-  link: { type: String, required: true },
 });
 
 const Topic =
