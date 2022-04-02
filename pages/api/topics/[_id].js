@@ -1,7 +1,8 @@
 import DBClient from "../../../utils/DBClient.js";
 import { Topic, Link } from "../../../models/Models.js";
-
-import scrapeArticleTitle from "../../../..utils/helpers/scrapeArticleTitle.js";
+import { loadComponents } from "next/dist/server/load-components";
+import puppeteer from "puppeteer";
+import scrapeArticleTitle from "../../../utils/helpers/scrapeArticleTitle.js";
 export default async function handler(req, res) {
   const {
     query: { _id },
@@ -11,20 +12,20 @@ export default async function handler(req, res) {
   await DBClient();
 
   switch (method) {
-    case "GET" /* Get a link by its ID */:
+    case "GET" /* Get a model by its ID */:
       try {
-        const individualLink = await Link.findById(_id);
+        const individualTopic = await Topic.findById(_id).populate("links");
 
-        if (!individualLink) {
-          return res.status(404).send("No link was found with the id");
+        if (!individualTopic) {
+          return res.status(404).send("No topic was found with the id");
         }
-        return res.status(200).send(individualLink);
+        return res.status(200).send(individualTopic);
       } catch (error) {
         console.log(error);
         return res.status(400).send(error);
       }
 
-    case "PUT" /* Edit a link by its ID */:
+    case "PUT" /* Edit a model by its ID */:
       try {
         const { link } = req.body;
 
@@ -39,30 +40,34 @@ export default async function handler(req, res) {
           ...link,
         });
 
-        const updatedLink = await Link.findByIdAndUpdate(_id, {
+        const updatedTopic = await Topic.findByIdAndUpdate(_id, {
           $push: {
             links: { ...newLink },
           },
         });
 
-        return res.status(200).send(updatedLink);
+        return res.status(200).send(updatedTopic);
       } catch (error) {
         console.log(error.stack);
         res.status(400).send(error);
       }
       break;
 
-    case "DELETE" /* Delete a link by its ID */:
+    case "DELETE" /* Delete a model by its ID */:
       try {
         const deletedLink = await Link.deleteOne({ _id });
         if (!deletedLink) {
           return res.status(400).send("Something went wrong");
         }
 
-        return res.status(200).send("Suucessfully deleted link");
+        return res.status(200).json({ success: true, data: {} });
       } catch (error) {
         console.log(error.message);
         return res.status(400).json({ success: false });
       }
+
+    default:
+      res.status(400).json({ success: false });
+      break;
   }
 }
