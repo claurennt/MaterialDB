@@ -33,7 +33,7 @@ export default function Home({ topics }) {
             return (
               <Link
                 href={{
-                  pathname: "topic/[_id]",
+                  pathname: "topics/[_id]",
                   query: {
                     _id: _id,
                     name: name,
@@ -58,7 +58,7 @@ export default function Home({ topics }) {
 
 export async function getStaticProps() {
   await DBClient();
-  console.log("here");
+
   /* find all the data in our database */
   const { data: topics } = await axios.get(
     `${process.env.NEXT_PUBLIC_DEV_URL || process.env.PORT}/api/topics`
