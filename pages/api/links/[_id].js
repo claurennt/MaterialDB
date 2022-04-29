@@ -1,7 +1,9 @@
-import DBClient from "../../../utils/DBClient.js";
-import { Topic, Link } from "../../../models/Models.js";
+import DBClient from "../../../utils/server/DBClient.js";
+import Topic from "../../../models/Topic.js";
+import Link from "../../../models/Link.js";
 
-import scrapeArticleTitle from "../../../utils/helpers/scrapeArticleTitle.js";
+import scrapeArticleTitle from "../../../utils/server/scrapeArticleTitle.js";
+
 export default async function handler(req, res) {
   const {
     query: { _id },
@@ -27,7 +29,7 @@ export default async function handler(req, res) {
     case "PUT" /* Edit a link by its ID */:
       try {
         const { link } = req.body;
-        console.log("body", req.body);
+
         if (!link.url)
           return res.status(404).send("Bad request: url property missing");
 
@@ -35,15 +37,7 @@ export default async function handler(req, res) {
           we will scrape the page and get it from the title s metadata in the head*/
         if (!link.title) link.title = await scrapeArticleTitle(link.url);
 
-        const newLink = await Link.create({
-          ...link,
-        });
-
-        const updatedLink = await Link.findByIdAndUpdate(_id, {
-          $push: {
-            links: { ...newLink },
-          },
-        });
+        const updatedLink = await Link.findByIdAndUpdate(_id, ...link);
 
         return res.status(200).send(updatedLink);
       } catch (error) {
@@ -55,7 +49,7 @@ export default async function handler(req, res) {
     case "DELETE" /* Delete a link by its ID */:
       try {
         const x = await Link.deleteOne({ _id });
-        console.log("res fáfter", x);
+
         return res.status(200).send(`Suucessfully deleted link`);
       } catch (error) {
         console.log("error", error.message);

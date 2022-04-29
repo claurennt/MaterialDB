@@ -1,12 +1,14 @@
-import DBClient from "../../../utils/DBClient.js";
-import { Topic, Link } from "../../../models/Models.js";
+import DBClient from "../../../utils/server/DBClient.js";
+import Topic from "../../../models/Topic.js";
+import Link from "../../../models/Link.js";
+import Admin from "../../../models/Admin.js";
 
-import scrapeArticleTitle from "../../../utils/helpers/scrapeArticleTitle.js";
-
+import scrapeArticleTitle from "../../../utils/server/scrapeArticleTitle.js";
 export default async function handler(req, res) {
   const {
     query: { _id },
     method,
+    body,
   } = req;
 
   await DBClient();
@@ -19,6 +21,7 @@ export default async function handler(req, res) {
         if (!individualTopic) {
           return res.status(404).send("No topic was found with the id");
         }
+
         return res.status(200).send(individualTopic);
       } catch (error) {
         console.log(error);
@@ -27,7 +30,7 @@ export default async function handler(req, res) {
 
     case "PUT" /* Edit a model by its ID */:
       try {
-        let { url, tags, title, category } = req.body;
+        let { url, tags, title, category } = body;
 
         if (!url)
           return res.status(404).send("Bad request: url property missing");
@@ -68,7 +71,7 @@ export default async function handler(req, res) {
         if (!deletedTopic) {
           return res.status(400).send("Something went wrong");
         }
-        console.log(deletedTopic);
+
         return res.status(200).send("Successfully deleted topic");
       } catch (error) {
         console.log(error.message);

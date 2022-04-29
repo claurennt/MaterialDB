@@ -1,17 +1,22 @@
-import DBClient from "../../../utils/DBClient.js";
-import { Topic } from "../../../models/Models.js";
-import { loadComponents } from "next/dist/server/load-components";
+import DBClient from "../../../utils/server/DBClient.js";
+import Topic from "../../../models/Topic.js";
+import Link from "../../../models/Link.js";
+import Admin from "../../../models/Admin.js";
 
 export default async function handler(req, res) {
-  const { body, method } = req;
+  const {
+    body,
+    method,
+    query: { currentUser },
+  } = req;
 
   await DBClient();
 
   switch (method) {
     case "GET" /* Get a model by its ID */:
       try {
-        const topics = await Topic.find({});
-
+        const topics = await Topic.find({ _creator: currentUser.id });
+        console.log(topics);
         if (!topics) {
           return res.status(404).send("No topics found");
         }
@@ -23,12 +28,28 @@ export default async function handler(req, res) {
 
     case "POST" /* Edit a model by its ID */:
       try {
-        const topic = await Topic.create({ ...body });
-        console.log("topic", topic);
-        if (!topic) {
+        const newTopic = await Topic.create({
+          ...body.newTopic,
+          links: [],
+          subtopics: [],
+          _creator: body._id,
+        });
+
+        if (!newTopic) {
           return res.status(400).send("Something went wrong");
         }
-        return res.status(201).send(topic);
+
+        await Admin.findByIdAndUpdate(
+          body._id,
+          {
+            $push: {
+              topics: newTopic,
+            },
+          },
+          { new: true }
+        );
+
+        return res.status(201).send("Everything went well");
       } catch (error) {
         console.log(error);
         res.status(400).send(error);

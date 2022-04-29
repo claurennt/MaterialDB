@@ -1,7 +1,8 @@
-import DBClient from "../../../utils/DBClient.js";
-import { Topic, Link } from "../../../models/Models.js";
+import DBClient from "../../../utils/server/DBClient.js";
+import Topic from "../../../models/Topic.js";
+import Link from "../../../models/Link.js";
+import scrapeArticleTitle from "../../../utils/server/scrapeArticleTitle.js";
 
-import scrapeArticleTitle from "../../../utils/helpers/scrapeArticleTitle.js";
 export default async function handler(req, res) {
   const { method } = req;
 

@@ -4,23 +4,15 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FormInput, FormSelect } from "./elements/FormElements";
 // import { ExclamationIcon } from "@heroicons/react/outline";
 
-const NewLinkForm = ({ handleChange, addNewLink, setOpen, open, name }) => {
-  const inputs = [
-    { name: "url", placeholder: "paste website url here" },
-    { name: "tags", placeholder: "add your tags here" },
-  ];
-
-  const categories = [
-    "article",
-    "website",
-    "repository",
-    "tutorial",
-    "video",
-    "resource",
-    "package",
-    "library",
-  ];
-
+const NewLinkForm = ({
+  handleChange,
+  addNew,
+  setOpen,
+  open,
+  name,
+  inputs,
+  categories,
+}) => {
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -66,7 +58,11 @@ const NewLinkForm = ({ handleChange, addNewLink, setOpen, open, name }) => {
                       as="h3"
                       className="text-lg leading-6 font-medium text-gray-900"
                     >
-                      Add new article/resource about {name}
+                      {name ? (
+                        <p>Add new article/resource about {name} </p>
+                      ) : (
+                        <p>Insert a new topic </p>
+                      )}
                     </Dialog.Title>
                     <div className="col-span-3 sm:col-span-2">
                       {inputs.map(({ name, placeholder }) => (
@@ -77,7 +73,7 @@ const NewLinkForm = ({ handleChange, addNewLink, setOpen, open, name }) => {
                         />
                       ))}
                     </div>
-                    {categories.map((category) => (
+                    {categories?.map((category) => (
                       <FormSelect name={category} handleChange={handleChange} />
                     ))}
                   </div>
@@ -87,7 +83,7 @@ const NewLinkForm = ({ handleChange, addNewLink, setOpen, open, name }) => {
                 <button
                   type="button"
                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={(e) => addNewLink(e)}
+                  onClick={(e) => addNew(e)}
                 >
                   +
                 </button>
