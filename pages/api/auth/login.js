@@ -35,7 +35,10 @@ export default withSession(async (req, res) => {
 
         if (!isPasswordSame) return res.status(401).send("Invalid credentials");
 
-        req.session.set("admin", { id: admin._id, username: admin.username });
+        req.session.set("MaterialDB", {
+          id: admin._id,
+          username: admin.username,
+        });
 
         await req.session.save();
 

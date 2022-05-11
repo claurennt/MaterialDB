@@ -15,8 +15,10 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET" /* Get a model by its ID */:
       try {
-        const topics = await Topic.find({ _creator: currentUser.id });
-        console.log(topics);
+        const topics = await Topic.find(
+          currentUser ? { _creator: currentUser } : {}
+        );
+
         if (!topics) {
           return res.status(404).send("No topics found");
         }
@@ -28,28 +30,34 @@ export default async function handler(req, res) {
 
     case "POST" /* Edit a model by its ID */:
       try {
+        const {
+          newTopic: { name, description },
+          creatorId,
+        } = body;
+
         const newTopic = await Topic.create({
-          ...body.newTopic,
+          name,
+          description,
           links: [],
           subtopics: [],
-          _creator: body._id,
+          _creator: creatorId,
         });
 
         if (!newTopic) {
           return res.status(400).send("Something went wrong");
         }
 
-        await Admin.findByIdAndUpdate(
-          body._id,
+        const updatedAdmin = await Admin.findByIdAndUpdate(
+          creatorId,
           {
             $push: {
               topics: newTopic,
             },
           },
           { new: true }
-        );
+        ).populate("topics");
 
-        return res.status(201).send("Everything went well");
+        return res.status(201).send(updatedAdmin);
       } catch (error) {
         console.log(error);
         res.status(400).send(error);

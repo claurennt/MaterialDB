@@ -34,7 +34,7 @@ const TopicPage = ({ individualTopic }) => {
   //get router info with props passed with Link component
   const router = useRouter();
 
-  const { name, currentUser } = router.query;
+  const { name, currentUser } = router;
 
   const handleChange = (e) =>
     setNewLink((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -43,7 +43,7 @@ const TopicPage = ({ individualTopic }) => {
     e.preventDefault();
 
     await axios.put(
-      `${process.env.NEXT_PUBLIC_DEV_URL}/api/topics/${individualTopic._id}`,
+      `${process.env.NEXTAUTH_URL}/api/topics/${individualTopic._id}`,
       newLink
     );
     // close the modal and refresh the page to get updated server side props and display new added link
@@ -96,7 +96,7 @@ export async function getServerSideProps({ params: { _id } }) {
   try {
     /* find topic by id in our database */
     const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_DEV_URL}/api/topics/${_id}`
+      `${process.env.NEXTAUTH_URL}/api/topics/${_id}`
     );
 
     return { props: { individualTopic: data } };

@@ -9,14 +9,16 @@ import LoginForm from "../components/LoginForm.jsx";
 import styles from "./index.module.css";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
+import getLoggedinAdmin from "../utils/client/getLoggedinAdmin.js";
+import withSession from "../utils/server/withSession.js";
 
-export default function Home({ topics }) {
+export default function Home() {
   const { title, container, description, grid, card } = styles;
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const [open, setOpen] = useState(false);
   const [openPanel, setOpenPanel] = useState(false);
   const [currentUser, setCurrentUser] = useState();
-
+  const [retrievedTopics, setRetrievedTopics] = useState();
   const [newTopic, setNewTopic] = useState({
     name: "",
     description: "",
@@ -27,25 +29,35 @@ export default function Home({ topics }) {
   ];
 
   //get router info with props passed with Link component
-  const router = useRouter();
-  //GET request to the protected endpoint in the backend to get information about the current user
-  const getCurrentUserContext = useCallback(async () => {
-    try {
-      const { data } = await axios.get("/api/auth/me");
+  const { query } = useRouter();
 
-      setCurrentUser(data);
-      localStorage.setItem("currentUser", JSON.stringify(data));
+  //GET request to the protected endpoint in the backend to get information about the current user
+  const getCurrentUserContext = async () => {
+    const { initialAdmin } = getLoggedinAdmin();
+    try {
+      if (!initialAdmin && !query) {
+        const { data } = await axios.get("/api/auth/me");
+
+        setCurrentUser(data);
+        localStorage.setItem("currentUser", JSON.stringify(data));
+      } else setCurrentUser(initialAdmin);
     } catch (err) {
       console.log("No user is authenticated at the moment", err.message);
     }
+  };
+
+  useEffect(() => {
+    const getTopicsByUrlParams = async () => {
+      const { data } = await axios.get(`/api?userId=${query.userId}`);
+
+      setRetrievedTopics(data);
+    };
+    if (query.userId) getTopicsByUrlParams();
   }, []);
 
   useEffect(() => {
-    //if there is a token we get the current user context from the backend
-    const currentUserData = localStorage.getItem("currentUser");
-
     getCurrentUserContext();
-  }, [getCurrentUserContext]);
+  }, []);
 
   const handleChange = (e) =>
     setNewTopic((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -53,24 +65,25 @@ export default function Home({ topics }) {
   const addNewTopic = async (e) => {
     e.preventDefault();
 
-    await axios.post("/api/topics", {
+    const { data: updatedAdmin } = await axios.post("/api/topics", {
       newTopic,
-      _id: currentUser._id,
+      creatorId: currentUser._id,
     });
-    // close the modal and refresh the page to get updated server side props and display new added link
-    setTimeout(() => {
-      setOpen(false);
-      router.reload(window.location.pathname);
-    }, 500);
+
+    setOpen(false);
+    setListOfTopics(updatedAdmin.topics);
   };
 
   const handleClick = async (e) => {
     if (e.target.name === "logout") {
       await axios.post("/api/auth/logout");
     }
+    localStorage.removeItem("currentUser");
     setOpenPanel(!openPanel);
+    setCurrentUser();
   };
-  const topicsArray = topics ?? currentUser.topics;
+  const topicsArray = currentUser?.topics ?? retrievedTopics;
+
   return (
     <div className={container}>
       <Head>
@@ -82,14 +95,14 @@ export default function Home({ topics }) {
         <LoginForm
           open={openPanel}
           setOpen={setOpenPanel}
-          setIsAuthenticated={setIsAuthenticated}
+          //   setIsAdminAuthenticated={setIsAdminAuthenticated}
         />
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-0 top-0 m-4"
-          name={!isAuthenticated ? "login" : "logout"}
+          name={!currentUser ? "login" : "logout"}
           onClick={handleClick}
         >
-          {!isAuthenticated ? "Log In" : "Log Out"}
+          {!currentUser ? "login" : "logout"}
         </button>
         <h1 className={title}>
           Welcome to <span>MaterialDB!</span>
@@ -103,7 +116,7 @@ export default function Home({ topics }) {
         </p>
 
         <div className={grid}>
-          {topicsArray.map(({ name, _id, description, subtopics }) => {
+          {topicsArray?.map(({ name, _id, description, subtopics }) => {
             return (
               <Link
                 href={{
@@ -125,7 +138,7 @@ export default function Home({ topics }) {
           })}
         </div>
       </main>
-      {isAuthenticated && (
+      {currentUser && (
         <button
           className="bg-blue-600 absolute bottom-0 right-0 p-1 text-lg "
           onClick={() => setOpen(true)}
@@ -140,7 +153,7 @@ export default function Home({ topics }) {
           setOpen={setOpen}
           handleChange={handleChange}
           addNew={addNewTopic}
-          setIsAuthenticated={setIsAuthenticated}
+          //      setIsAdminAuthenticated={setIsAdminAuthenticated}
         />
       )}
       <footer>made with love by claurennt</footer>
@@ -148,13 +161,15 @@ export default function Home({ topics }) {
   );
 }
 
-export async function getServerSideProps({ query }) {
-  await DBClient();
-  console.log(query);
-  /* find all the data in our database */
-  const { data: topics } = await axios.get(
-    `${process.env.NEXT_PUBLIC_DEV_URL}/api/topics?currentUser=${query.currentUser}`
-  );
-  console.log(topics);
-  return { props: { topics: topics } };
-}
+// export const getServerSideProps = withSession(async ({ req, res }) => {
+//   const myCookie = req.cookies.MaterialDB;
+//   /* find all the data in our database */
+//   const { data } = await axios.get(
+//     `${process.env.NEXTAUTH_URL}/api/auth/me`,
+//     { headers: { Authorization: myCookie } }
+//   );
+//   console.log("dddddd", data);
+//   // const r = await axios.get(`${process.env.NEXTAUTH_URL}/api/auth/me`);
+//   // console.log("r", r);
+//   return { props: { currentAdmin: data || [] } };
+// });

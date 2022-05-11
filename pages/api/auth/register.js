@@ -31,12 +31,13 @@ export default withSession(async (req, res) => {
 
       await newAdmin.save();
 
-      req.session.set("admin", {
+      req.session.set("MaterialDB", {
         id: newAdmin._id,
         username: newAdmin.username,
       });
 
       await req.session.save();
+
       return res.status(201).send("Admin created");
     }
   } catch (error) {

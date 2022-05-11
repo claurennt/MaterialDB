@@ -3,8 +3,10 @@ import DBClient from "../../../utils/server/DBClient.js";
 import Admin from "../../../models/Admin.js";
 import { loadComponents } from "next/dist/server/load-components";
 import withSession from "../../../utils/server/withSession.js";
+import cookies from "next-cookies";
+import { cookieParser } from "cookie-parser";
 export default withSession(async (req, res) => {
-  const { body: username, password, method } = req;
+  const { body: username, password, method, session } = req;
 
   await DBClient();
 
@@ -12,12 +14,9 @@ export default withSession(async (req, res) => {
     case "GET":
       /*handle current admin context request*/
       try {
-        const me = req.session.get("admin");
+        // const me = session.get("MaterialDB");
 
-        if (!me)
-          return res
-            .status(401)
-            .send("No admin  is authenticated at the moment");
+        const me = req.session.get("MaterialDB");
 
         const currentAdmin = await Admin.findById(me.id).populate("topics");
 

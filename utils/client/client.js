@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getAuthToken } from "./authentication";
-const authBaseURL = process.env.NEXT_PUBLIC_DEV_URL;
+const authBaseURL = process.env.NEXTAUTH_URL;
 //creates a new instance of axios to use with the interceptors
 const client = axios.create({ authBaseURL });
 

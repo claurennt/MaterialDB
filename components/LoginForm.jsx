@@ -15,7 +15,7 @@ import { useRouter } from "next/router";
 export default function LoginForm({
   open,
   setOpen,
-  setIsAuthenticated,
+  setIsAdminAuthenticated,
   setCurrentUser,
   currentUser,
 }) {
@@ -35,7 +35,7 @@ export default function LoginForm({
     const isAuthSuccessfull = await loginAdmin(loginData);
 
     if (isAuthSuccessfull) {
-      setIsAuthenticated(true);
+      // setIsAdminAuthenticated(true);
       setOpen(false);
       router.reload(window.location.pathname);
     } else {
