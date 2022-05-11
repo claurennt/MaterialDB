@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import DBClient from "../../utils/DBClient.js";
+import DBClient from "../../utils/server/DBClient.js";
 import axios from "axios";
 import { nanoid } from "nanoid";
 import Link from "../../components/Link";
@@ -15,31 +15,37 @@ const TopicPage = ({ individualTopic }) => {
     tags: [],
   });
 
+  const inputs = [
+    { name: "url", placeholder: "paste website url here" },
+    { name: "tags", placeholder: "add your tags here" },
+  ];
+
+  const categories = [
+    "article",
+    "website",
+    "repository",
+    "tutorial",
+    "video",
+    "resource",
+    "package",
+    "library",
+  ];
+
   //get router info with props passed with Link component
   const router = useRouter();
 
-  const { name } = router.query;
+  const { name, currentUser } = router;
 
-  const handleChange = (e) => {
-    const tags = [];
+  const handleChange = (e) =>
+    setNewLink((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-    setNewLink({
-      ...newLink,
-      [e.target.name]: e.target.value,
-    });
-  };
-  console.log(newLink);
   const addNewLink = async (e) => {
     e.preventDefault();
-    console.log("new", newLink);
-    const res = await axios.put(
-      `${process.env.NEXT_PUBLIC_DEV_URL}/api/topics/${individualTopic._id}`,
-      {
-        ...newLink,
-      }
-    );
 
-    console.log(res);
+    await axios.put(
+      `${process.env.NEXTAUTH_URL}/api/topics/${individualTopic._id}`,
+      newLink
+    );
     // close the modal and refresh the page to get updated server side props and display new added link
     setTimeout(() => {
       setOpen(false);
@@ -64,10 +70,12 @@ const TopicPage = ({ individualTopic }) => {
       {open && (
         <NewLinkForm
           name={name}
-          addNewLink={addNewLink}
+          addNew={addNewLink}
           handleChange={handleChange}
           setOpen={setOpen}
           open={open}
+          categories={categories}
+          inputs={inputs}
         />
       )}
 
@@ -88,7 +96,7 @@ export async function getServerSideProps({ params: { _id } }) {
   try {
     /* find topic by id in our database */
     const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_DEV_URL}/api/topics/${_id}`
+      `${process.env.NEXTAUTH_URL}/api/topics/${_id}`
     );
 
     return { props: { individualTopic: data } };

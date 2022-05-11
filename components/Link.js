@@ -10,7 +10,7 @@ const Link = ({ title, url, tags, _id }) => {
 
   const deleteLink = async () => {
     const res = await axios.delete(`/api/links/${_id}`);
-    console.log(res);
+
     // refresh the page to get updated server side props
     router.replace(router.asPath);
   };
