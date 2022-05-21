@@ -37,7 +37,7 @@ export default withSession(async (req, res) => {
       });
 
       await req.session.save();
-
+      console.log("newAdmin", newAdmin);
       return res.status(201).send("Admin created");
     }
   } catch (error) {

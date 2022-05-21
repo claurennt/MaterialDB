@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   const {
     body,
     method,
-    query: { currentUser },
+    query: { userId },
   } = req;
 
   await DBClient();
@@ -15,9 +15,7 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET" /* Get a model by its ID */:
       try {
-        const topics = await Topic.find(
-          currentUser ? { _creator: currentUser } : {}
-        );
+        const topics = await Topic.find(userId ? { _creator: userId } : {});
 
         if (!topics) {
           return res.status(404).send("No topics found");

@@ -1,24 +1,11 @@
-import { Fragment, useEffect, useState, useCallback } from "react";
+import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-// import Authentication from "./components/Authentication";
-// import ProtectedRoute from "./components/ProtectedRoute";
 
-import {
-  loginAdmin,
-  getAuthToken,
-  removeAuthToken,
-} from "../utils/client/authentication";
-import client from "../utils/client/client";
+import loginAdmin from "../utils/client/loginAdmin";
+
 import { useRouter } from "next/router";
-// import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
-export default function LoginForm({
-  open,
-  setOpen,
-  setIsAdminAuthenticated,
-  setCurrentUser,
-  currentUser,
-}) {
+export default function LoginForm({ openPanel, setOpenPanel }) {
   const [loginData, setLoginData] = useState();
 
   const router = useRouter();
@@ -35,20 +22,19 @@ export default function LoginForm({
     const isAuthSuccessfull = await loginAdmin(loginData);
 
     if (isAuthSuccessfull) {
-      // setIsAdminAuthenticated(true);
-      setOpen(false);
-      router.reload(window.location.pathname);
+      setOpenPanel(false);
+      router.reload();
     } else {
       alert("Login Failed");
     }
   };
 
   return (
-    <Transition.Root show={open} as={Fragment}>
+    <Transition.Root show={openPanel} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 overflow-hidden"
-        onClose={setOpen}
+        onClose={setOpenPanel}
       >
         <div className="absolute inset-0 overflow-hidden">
           <Transition.Child
@@ -86,7 +72,7 @@ export default function LoginForm({
                     <button
                       type="button"
                       className="rounded-md text-red-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-black"
-                      onClick={() => setOpen(false)}
+                      onClick={() => setOpenPanel(false)}
                     >
                       <span className="sr-only">Close panel</span>
                     </button>

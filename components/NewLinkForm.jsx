@@ -1,18 +1,31 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { FormInput, FormSelect } from "./elements/FormElements";
+import FormInputs from "./FormInputs";
+import FormSelect from "./FormSelect";
 // import { ExclamationIcon } from "@heroicons/react/outline";
 
-const NewLinkForm = ({
-  handleChange,
-  addNew,
-  setOpen,
-  open,
-  name,
-  inputs,
-  categories,
-}) => {
+const NewLinkForm = ({ setOpen, open, currentAdmin, setCurrentAdmin }) => {
+  const [newTopic, setNewTopic] = useState({
+    name: "",
+    description: "",
+  });
+
+  const handleChange = (e) =>
+    setNewTopic((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const addNewTopic = async (e) => {
+    e.preventDefault();
+
+    const { data } = await axios.post("/api/topics", {
+      newTopic,
+      creatorId: currentAdmin._id,
+    });
+
+    setOpen(false);
+    setCurrentAdmin(data);
+  };
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -65,13 +78,7 @@ const NewLinkForm = ({
                       )}
                     </Dialog.Title>
                     <div className="col-span-3 sm:col-span-2">
-                      {inputs.map(({ name, placeholder }) => (
-                        <FormInput
-                          name={name}
-                          placeholder={placeholder}
-                          handleChange={handleChange}
-                        />
-                      ))}
+                      <FormInputs handleChange={handleChange} />
                     </div>
                     {categories?.map((category) => (
                       <FormSelect name={category} handleChange={handleChange} />
@@ -83,7 +90,7 @@ const NewLinkForm = ({
                 <button
                   type="button"
                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={(e) => addNew(e)}
+                  onClick={(e) => addNewTopic(e)}
                 >
                   +
                 </button>
