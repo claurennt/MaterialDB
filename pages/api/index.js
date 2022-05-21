@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       try {
         const { userId } = query;
         const topics = await Topic.find(query ? { _creator: userId } : {});
-        console.log("topc", topics);
+
         if (!topics) {
           return res.status(404).send("No topics found");
         }

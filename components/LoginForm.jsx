@@ -23,7 +23,8 @@ export default function LoginForm({ openPanel, setOpenPanel }) {
 
     if (isAuthSuccessfull) {
       setOpenPanel(false);
-      router.reload();
+
+      router.reload(window.location.pathname);
     } else {
       alert("Login Failed");
     }
