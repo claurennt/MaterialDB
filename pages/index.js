@@ -1,18 +1,19 @@
 import Head from "next/head";
-import { useState, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
 import Link from "next/link";
 import axios from "axios";
-
+import Error from "next/error";
 import NewLinkForm from "../components/NewLinkForm.jsx";
 import LoginForm from "../components/LoginForm.jsx";
 import styles from "./index.module.css";
+import { getSession } from "next-auth/react";
 
-export default function Home({ currentAdminSession, currentTopics }) {
+export default function Home({ session, currentTopics }) {
   const { title, container, description, grid, card } = styles;
 
   const [open, setOpen] = useState(false);
   const [openPanel, setOpenPanel] = useState(false);
-  const [currentAdmin, setCurrentAdmin] = useState(currentAdminSession);
+  const [currentAdmin, setCurrentAdmin] = useState(session);
   const [retrievedTopics, _] = useState(currentTopics);
 
   const handleClick = async (e) => {
@@ -28,6 +29,7 @@ export default function Home({ currentAdminSession, currentTopics }) {
 
   return (
     <div className={container}>
+      {/* <Error statusCode={errorCode} /> */}
       <Head>
         <title>MaterialDB</title>
         <link rel="icon" href="/favicon.ico" />
@@ -42,12 +44,12 @@ export default function Home({ currentAdminSession, currentTopics }) {
         />
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-0 top-0 m-4"
-          name={!currentAdmin ? "login" : "logout"}
+          name={!currentAdmin?.username ? "login" : "logout"}
           onClick={handleClick}
         >
-          {!currentAdmin ? "login" : "logout"}
+          {!currentAdmin?.username ? "login" : "logout"}
         </button>
-        {currentAdmin ? (
+        {currentAdmin?.username ? (
           <h1 className={title}>
             Welcome back to your <span>MaterialDB</span> {currentAdmin.username}
             !
@@ -110,30 +112,22 @@ export default function Home({ currentAdminSession, currentTopics }) {
 }
 
 //pre-render page with server side props
-export async function getServerSideProps({
-  query: { userId },
-  req: {
-    headers: { cookie },
-  },
-}) {
-  console.log("here");
-  // if the url has a userId parameter send a request to api/topics?userId=${userId}
-  if (userId) {
-    const { data } = await axios.get(
-      `${process.env.NEXTAUTH_URL}/api/topics?userId=${userId}`
-    );
-    return { props: { currentTopics: data } };
-  } else {
-    /* retrieve current logged in user */
-    const { data } = await axios.get(
-      `${process.env.NEXTAUTH_URL}/api/auth/session`,
-      {
-        headers: {
-          Cookie: cookie,
-        },
-      },
-      { withCredentials: true }
-    );
-    return { props: { currentAdminSession: data || [] } };
+export async function getServerSideProps({ req, query: { userId } }) {
+  try {
+    // if the url has a userId parameter send a request to api/topics?userId=${userId}
+    if (userId) {
+      const { data } = await axios.get(
+        `${process.env.NEXTAUTH_URL}/api/topics?userId=${userId}`
+      );
+      return { props: { currentTopics: data } };
+    }
+    //else get the the current session
+    const session = await getSession({ req });
+    //if there is a session,i.e. cookies are stored send it as prop else send []
+    return { props: { session: session || null } };
+  } catch (err) {
+    console.log(err);
+    //if no admin is authenticated and no query is present in the url send null
+    return { props: { session: null } };
   }
 }

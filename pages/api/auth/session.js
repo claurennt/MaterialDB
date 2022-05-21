@@ -14,13 +14,14 @@ export default withSession(async (req, res) => {
       try {
         const me = await req.session.get("MaterialDB");
 
-        if (!me) return res.status(404).send("No admin session found");
+        if (!me) return res.send(404);
 
         const currentAdmin = await Admin.findById(me.id).populate("topics");
 
         return res.status(200).send(currentAdmin);
       } catch (e) {
         console.log(e);
+        return res.send(500).status("Session problem");
       }
   }
 });
