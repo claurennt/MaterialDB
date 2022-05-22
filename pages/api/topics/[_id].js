@@ -67,10 +67,7 @@ export default async function handler(req, res) {
 
     case "DELETE" /* Delete a model by its ID */:
       try {
-        const deletedTopic = await Topic.deleteOne({ _id });
-        if (!deletedTopic) {
-          return res.status(400).send("Something went wrong");
-        }
+        await Topic.deleteOne({ _id });
 
         return res.status(200).send("Successfully deleted topic");
       } catch (error) {
