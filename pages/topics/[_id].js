@@ -43,7 +43,7 @@ const TopicPage = ({ individualTopic }) => {
     e.preventDefault();
 
     await axios.put(
-      `${process.env.NEXTAUTH_URL}/api/topics/${individualTopic._id}`,
+      `${process.env.NEXT_PUBLIC_AUTH_URL}/api/topics/${individualTopic._id}`,
       newLink
     );
     // close the modal and refresh the page to get updated server side props and display new added link
@@ -96,7 +96,7 @@ export async function getServerSideProps({ params: { _id } }) {
   try {
     /* find topic by id in our database */
     const { data } = await axios.get(
-      `${process.env.NEXTAUTH_URL}/api/topics/${_id}`
+      `${process.env.NEXT_PUBLIC_AUTH_URL}/api/topics/${_id}`
     );
 
     return { props: { individualTopic: data } };

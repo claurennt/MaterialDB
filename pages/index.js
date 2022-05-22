@@ -9,6 +9,7 @@ import styles from "./index.module.css";
 import { getSession } from "next-auth/react";
 
 export default function Home({ session, currentTopics }) {
+  console.log(process.env.local);
   const { title, container, description, grid, card } = styles;
 
   const [open, setOpen] = useState(false);
@@ -117,12 +118,13 @@ export async function getServerSideProps({ req, query: { userId } }) {
     // if the url has a userId parameter send a request to api/topics?userId=${userId}
     if (userId) {
       const { data } = await axios.get(
-        `${process.env.NEXTAUTH_URL}/api/topics?userId=${userId}`
+        `${process.env.NEXT_PUBLIC_AUTH_URL}/api/topics?userId=${userId}`
       );
       return { props: { currentTopics: data } };
     }
     //else get the the current session
     const session = await getSession({ req });
+    console.log(session);
     //if there is a session,i.e. cookies are stored send it as prop else send []
     return { props: { session: session || null } };
   } catch (err) {
