@@ -3,28 +3,20 @@ import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import FormInputs from "./FormInputs";
 import FormSelect from "./FormSelect";
-// import { ExclamationIcon } from "@heroicons/react/outline";
+import axios from "axios";
 
-const NewLinkForm = ({ setOpen, open, currentAdmin, setCurrentAdmin }) => {
-  const [newTopic, setNewTopic] = useState({
-    name: "",
-    description: "",
-  });
-
-  const handleChange = (e) =>
-    setNewTopic((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-
-  const addNewTopic = async (e) => {
-    e.preventDefault();
-
-    const { data } = await axios.post("/api/topics", {
-      newTopic,
-      creatorId: currentAdmin._id,
-    });
-
-    setOpen(false);
-    setCurrentAdmin(data);
-  };
+const NewLinkForm = ({
+  handleChange,
+  setOpen,
+  addNew,
+  name,
+  open,
+  newData,
+  currentAdmin,
+  categories,
+  inputs,
+}) => {
+  console.log("new link f", currentAdmin);
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -78,22 +70,32 @@ const NewLinkForm = ({ setOpen, open, currentAdmin, setCurrentAdmin }) => {
                       )}
                     </Dialog.Title>
                     <div className="col-span-3 sm:col-span-2">
-                      <FormInputs handleChange={handleChange} />
+                      <FormInputs
+                        handleChange={handleChange}
+                        inputs={inputs}
+                        newData={newData}
+                      />
                     </div>
-                    {categories?.map((category) => (
-                      <FormSelect name={category} handleChange={handleChange} />
+                    {categories?.map((category, index) => (
+                      <FormSelect
+                        name={category}
+                        handleChange={handleChange}
+                        key={index}
+                      />
                     ))}
                   </div>
                 </div>
               </div>
               <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button
-                  type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={(e) => addNewTopic(e)}
-                >
-                  +
-                </button>
+                {currentAdmin && (
+                  <button
+                    type="button"
+                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    onClick={(e) => addNew(e)}
+                  >
+                    +
+                  </button>
+                )}
               </div>
             </div>
           </Transition.Child>

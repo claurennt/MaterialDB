@@ -1,5 +1,6 @@
 import DBClient from "../../../utils/server/DBClient.js";
 import Topic from "../../../models/Topic.js";
+import Admin from "../../../models/Admin.js";
 import Link from "../../../models/Link.js";
 import scrapeArticleTitle from "../../../utils/server/scrapeArticleTitle.js";
 
@@ -39,6 +40,15 @@ export default async function handler(req, res) {
           tags: tags,
         });
 
+        const updatedAdmin = await Admin.findByIdAndUpdate(
+          creatorId,
+          {
+            $push: {
+              topics: newTopic,
+            },
+          },
+          { new: true }
+        ).populate("topics");
         return res.status(200).send("Successfully added link");
       } catch (error) {
         console.log(error.stack);

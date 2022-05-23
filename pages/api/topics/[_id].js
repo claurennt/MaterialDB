@@ -30,7 +30,10 @@ export default async function handler(req, res) {
 
     case "PUT" /* Edit a model by its ID */:
       try {
-        let { url, tags, title, category } = body;
+        let {
+          newLink: { url, tags, title, category },
+          currentAdmin,
+        } = body;
 
         if (!url)
           return res.status(404).send("Bad request: url property missing");
@@ -53,6 +56,16 @@ export default async function handler(req, res) {
           {
             $push: {
               links: newLink,
+            },
+          },
+          { new: true }
+        );
+
+        await Admin.findByIdAndUpdate(
+          currentAdmin,
+          {
+            $push: {
+              topics: updatedTopic,
             },
           },
           { new: true }

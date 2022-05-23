@@ -5,24 +5,26 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import axios from "axios";
 import { useRouter } from "next/router";
 
-const Link = ({ title, url, tags, _id }) => {
+const Link = ({ link: { title, url, tags, _id }, currentAdmin }) => {
   const router = useRouter();
 
   const deleteLink = async () => {
-    const res = await axios.delete(`/api/links/${_id}`);
+    await axios.delete(`/api/links/${_id}`);
 
     // refresh the page to get updated server side props
     router.replace(router.asPath);
   };
+
   return (
     <div>
-      <button
-        className="text-blue-600 text-4xl mx-3 "
-        onClick={() => deleteLink()}
-      >
-        -
-      </button>
-
+      {currentAdmin && (
+        <button
+          className="text-blue-600 text-4xl mx-3 "
+          onClick={() => deleteLink()}
+        >
+          -
+        </button>
+      )}
       <a href={url} target="_blank">
         {title}
       </a>

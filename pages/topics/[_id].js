@@ -34,7 +34,9 @@ const TopicPage = ({ individualTopic }) => {
   //get router info with props passed with Link component
   const router = useRouter();
 
-  const { name, currentUser } = router;
+  const {
+    query: { name, currentAdmin },
+  } = router;
 
   const handleChange = (e) =>
     setNewLink((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -44,7 +46,7 @@ const TopicPage = ({ individualTopic }) => {
 
     await axios.put(
       `${process.env.NEXT_PUBLIC_AUTH_URL}/api/topics/${individualTopic._id}`,
-      newLink
+      { newLink, currentAdmin }
     );
     // close the modal and refresh the page to get updated server side props and display new added link
     setTimeout(() => {
@@ -55,12 +57,14 @@ const TopicPage = ({ individualTopic }) => {
 
   return (
     <div className="">
-      <button
-        className="bg-blue-600 absolute bottom-0 right-0 p-1 text-lg "
-        onClick={() => setOpen(true)}
-      >
-        +
-      </button>
+      {currentAdmin && (
+        <button
+          className="bg-blue-600 absolute bottom-0 right-0 p-1 text-lg "
+          onClick={() => setOpen(true)}
+        >
+          +
+        </button>
+      )}
       <button
         className="absolute top-0 right-0 mx-5 px-5 text-base "
         onClick={() => router.replace("/")}
@@ -69,9 +73,11 @@ const TopicPage = ({ individualTopic }) => {
       </button>
       {open && (
         <NewLinkForm
-          name={name}
-          addNew={addNewLink}
+          newData={newLink}
           handleChange={handleChange}
+          name={name}
+          currentAdmin={currentAdmin}
+          addNew={addNewLink}
           setOpen={setOpen}
           open={open}
           categories={categories}
@@ -82,7 +88,7 @@ const TopicPage = ({ individualTopic }) => {
       <h1 className="underline font-bold text-3xl">{name}</h1>
 
       {individualTopic.links.map((link) => (
-        <Link key={nanoid()} {...link} />
+        <Link key={nanoid()} link={link} currentAdmin={currentAdmin} />
       ))}
     </div>
   );
@@ -91,8 +97,6 @@ const TopicPage = ({ individualTopic }) => {
 export default TopicPage;
 
 export async function getServerSideProps({ params: { _id } }) {
-  await DBClient();
-
   try {
     /* find topic by id in our database */
     const { data } = await axios.get(

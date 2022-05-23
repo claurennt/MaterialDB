@@ -1,21 +1,24 @@
 import Head from "next/head";
-import { useState, useEffect, Fragment } from "react";
+import { useState, Fragment } from "react";
 import Link from "next/link";
 import axios from "axios";
-import Error from "next/error";
+
 import NewLinkForm from "../components/NewLinkForm.jsx";
 import LoginForm from "../components/LoginForm.jsx";
 import styles from "./index.module.css";
 import { getSession } from "next-auth/react";
 
 export default function Home({ session, currentTopics }) {
-  console.log(process.env.local);
   const { title, container, description, grid, card } = styles;
 
   const [open, setOpen] = useState(false);
   const [openPanel, setOpenPanel] = useState(false);
   const [currentAdmin, setCurrentAdmin] = useState(session);
   const [retrievedTopics, _] = useState(currentTopics);
+  const [newTopic, setNewTopic] = useState({
+    name: "",
+    description: "",
+  });
 
   const handleClick = async (e) => {
     if (e.target.name === "logout") {
@@ -26,11 +29,30 @@ export default function Home({ session, currentTopics }) {
     setCurrentAdmin();
   };
 
-  const topicsArray = currentAdmin?.topics || retrievedTopics;
+  const inputs = [
+    { name: "name", placeholder: "Name of the topic" },
+    { name: "description", placeholder: "add a short intro to the topic" },
+  ];
 
+  const handleChange = (e) =>
+    setNewTopic((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const addNewTopic = async (e) => {
+    e.preventDefault();
+
+    const { data } = await axios.post("/api/topics", {
+      newTopic,
+      creatorId: currentAdmin._id,
+    });
+
+    setOpen(false);
+    setCurrentAdmin(data);
+  };
+
+  const topicsArray = currentAdmin?.topics || retrievedTopics;
+  console.log(currentAdmin);
   return (
     <div className={container}>
-      {/* <Error statusCode={errorCode} /> */}
       <Head>
         <title>MaterialDB</title>
         <link rel="icon" href="/favicon.ico" />
@@ -76,7 +98,7 @@ export default function Home({ session, currentTopics }) {
                   pathname: "/topics/[_id]",
                   query: {
                     _id: _id,
-                    currentUser: currentAdmin?._id,
+                    currentAdmin: currentAdmin?._id,
                     name: name,
                   },
                 }}
@@ -101,10 +123,14 @@ export default function Home({ session, currentTopics }) {
       )}
       {open && (
         <NewLinkForm
+          handleChange={handleChange}
+          newData={newTopic}
+          addNew={addNewTopic}
           open={open}
           setOpen={setOpen}
           currentAdmin={currentAdmin}
           setCurrentAdmin={setCurrentAdmin}
+          inputs={inputs}
         />
       )}
       <footer>made with love by claurennt</footer>
@@ -124,7 +150,7 @@ export async function getServerSideProps({ req, query: { userId } }) {
     }
     //else get the the current session
     const session = await getSession({ req });
-    console.log(session);
+
     //if there is a session,i.e. cookies are stored send it as prop else send []
     return { props: { session: session || null } };
   } catch (err) {
