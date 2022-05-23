@@ -61,16 +61,6 @@ export default async function handler(req, res) {
           { new: true }
         );
 
-        await Admin.findByIdAndUpdate(
-          currentAdmin,
-          {
-            $push: {
-              topics: updatedTopic,
-            },
-          },
-          { new: true }
-        );
-
         return res.status(200).send(updatedTopic);
       } catch (error) {
         console.log(error.stack);
