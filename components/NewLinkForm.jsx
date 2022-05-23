@@ -16,8 +16,6 @@ const NewLinkForm = ({
   categories,
   inputs,
 }) => {
-  console.log("new link f", currentAdmin);
-
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
