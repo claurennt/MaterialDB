@@ -1,7 +1,6 @@
 import DBClient from "../../../utils/server/DBClient.js";
 import Topic from "../../../models/Topic.js";
 import Link from "../../../models/Link.js";
-import Admin from "../../../models/Admin.js";
 
 import scrapeArticleTitle from "../../../utils/server/scrapeArticleTitle.js";
 export default async function handler(req, res) {
@@ -14,7 +13,7 @@ export default async function handler(req, res) {
   await DBClient();
 
   switch (method) {
-    case "GET" /* Get a model by its ID */:
+    case "GET" /* Get one Topic by its ID */:
       try {
         const individualTopic = await Topic.findById(_id).populate("links");
 
@@ -28,11 +27,10 @@ export default async function handler(req, res) {
         return res.status(400).send(error);
       }
 
-    case "PUT" /* Edit a model by its ID */:
+    case "PUT" /* Edit a Topic by its ID */:
       try {
         let {
           newLink: { url, tags, title, category },
-          currentAdmin,
         } = body;
 
         if (!url)
@@ -44,6 +42,7 @@ export default async function handler(req, res) {
         //separate each tag and filter only the elements that are not empty strings
         tags = tags.split(" " || ",").filter((tag) => tag.length);
 
+        //creates one Link document
         const newLink = await Link.create({
           url,
           tags,
@@ -51,6 +50,7 @@ export default async function handler(req, res) {
           category,
         });
 
+        //find the topic by its ID and add the new Link document to the links array
         const updatedTopic = await Topic.findByIdAndUpdate(
           _id,
           {
@@ -64,9 +64,8 @@ export default async function handler(req, res) {
         return res.status(200).send(updatedTopic);
       } catch (error) {
         console.log(error.stack);
-        res.status(400).send(error);
+        return res.status(400).send(error);
       }
-      break;
 
     case "DELETE" /* Delete a model by its ID */:
       try {

@@ -48,3 +48,7 @@ span {
   color: #0070f3;
   text-decoration: none;
 }
+
+mark {
+  background-color: pink;
+}
