@@ -76,7 +76,7 @@ const NewLinkForm = ({
                     </div>
                     {categories?.map((category, index) => (
                       <FormSelect
-                        name={category}
+                        {...category}
                         handleChange={handleChange}
                         key={index}
                       />

@@ -58,7 +58,7 @@ export default async function handler(req, res) {
         return res.status(201).send(updatedAdmin);
       } catch (error) {
         console.log(error);
-        res.status(400).send(error);
+        return res.status(400).send(error);
       }
 
     case "DELETE" /* Delete a model by its ID */:
@@ -68,9 +68,11 @@ export default async function handler(req, res) {
         if (!deletedCount) {
           return res.status(400).json("No topic deleted");
         }
-        res.status(204).send(`Deleted ${deletedCount} topics from the DB`);
+        return res
+          .status(204)
+          .send(`Deleted ${deletedCount} topics from the DB`);
       } catch (error) {
-        res.status(400).json({ success: false });
+        return res.status(400).send(error);
       }
 
     default:

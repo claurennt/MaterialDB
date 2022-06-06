@@ -1,3 +1,3 @@
-const Tag = ({ tag }) => <span className="tag text-xs px-3">{tag}</span>;
+const Tag = ({ tag }) => <span className="tag text-base px-2">{tag}</span>;
 
 export default Tag;

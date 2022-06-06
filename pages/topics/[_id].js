@@ -5,10 +5,11 @@ import axios from "axios";
 import { nanoid } from "nanoid";
 import Link from "../../components/Link";
 import NewLinkForm from "../../components/NewLinkForm";
+import SearchBar from "../../components/SearchBar";
 
 const TopicPage = ({ individualTopic }) => {
   const [open, setOpen] = useState(false);
-
+  const [search, setSearch] = useState();
   const [newLink, setNewLink] = useState({
     url: "",
     category: "",
@@ -21,14 +22,14 @@ const TopicPage = ({ individualTopic }) => {
   ];
 
   const categories = [
-    "article",
-    "website",
-    "repository",
-    "tutorial",
-    "video",
-    "resource",
-    "package",
-    "library",
+    { type: "article", color: "orange" },
+    { type: "website", color: "violet" },
+    { type: "repository", color: "darkorchid" },
+    { type: "tutorial", color: "red" },
+    { type: "video", color: "violet" },
+    { type: "resource", color: "aquamarine" },
+    { type: "package", color: "teal" },
+    { type: "library", color: "fuchsia" },
   ];
 
   //get router info with props passed with Link component
@@ -53,6 +54,16 @@ const TopicPage = ({ individualTopic }) => {
       setOpen(false);
       router.reload(window.location.pathname);
     }, 500);
+  };
+
+  // handle search submit
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // update query state
+    setSearch(e.target.search.value);
+
+    e.target.search.value = "";
   };
 
   return (
@@ -85,10 +96,20 @@ const TopicPage = ({ individualTopic }) => {
         />
       )}
 
-      <h1 className="underline font-bold text-3xl">{name}</h1>
+      <h1 className="font-medium leading-tight text-5xl mt-0 mb-5 text-blue-600 text-center">
+        {name}
+      </h1>
+
+      <SearchBar handleSubmit={handleSubmit} />
 
       {individualTopic.links.map((link) => (
-        <Link key={nanoid()} link={link} currentAdmin={currentAdmin} />
+        <Link
+          search={search}
+          key={nanoid()}
+          link={link}
+          currentAdmin={currentAdmin}
+          categories={categories}
+        />
       ))}
     </div>
   );
