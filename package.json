@@ -20,7 +20,7 @@
     "mongoose": "^6.2.9",
     "nanoid": "^3.3.2",
     "next": "latest",
-    "next-auth": "^4.3.4",
+    "next-auth": "^4.10.3",
     "next-cookies": "^2.0.3",
     "next-iron-session": "^4.2.0",
     "puppeteer": "^13.5.2",
