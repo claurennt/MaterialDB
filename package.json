@@ -17,7 +17,7 @@
     "cookies-next": "^2.0.4",
     "js-cookies": "^1.0.4",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.2.9",
+    "mongoose": "^6.4.6",
     "nanoid": "^3.3.2",
     "next": "latest",
     "next-auth": "^4.3.4",
