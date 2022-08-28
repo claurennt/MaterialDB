@@ -29,7 +29,6 @@ topicSchema.pre("deleteOne", async function (doc, next) {
     );
   next();
 });
-const Topic =
-  mongoose.models?.Topic || mongoose.model("Topic", topicSchema, "topics");
+const Topic = mongoose.model("Topic", topicSchema, "topics");
 
 export default Topic;

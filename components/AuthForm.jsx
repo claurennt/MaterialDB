@@ -1,41 +1,21 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
-import loginAdmin from "../utils/client/loginAdmin";
-
-import { useRouter } from "next/router";
-
-export default function LoginForm({ openPanel, setOpenPanel }) {
-  const [loginData, setLoginData] = useState();
-
-  const router = useRouter();
-
-  const handleLoginData = (e) => {
-    setLoginData((prevLoginData) => ({
-      ...prevLoginData,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleLoginRequest = async (e) => {
-    e.preventDefault();
-    const isAuthSuccessfull = await loginAdmin(loginData);
-
-    if (isAuthSuccessfull) {
-      setOpenPanel(false);
-
-      router.reload(window.location.pathname);
-    } else {
-      alert("Login Failed");
-    }
-  };
-
+const AuthForm = ({
+  action,
+  handleData,
+  handleRequest,
+  openAuthModal,
+  setOpenAuthModal,
+}) => {
   return (
-    <Transition.Root show={openPanel} as={Fragment}>
+    <Transition.Root show={openAuthModal} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed inset-0 overflow-hidden"
-        onClose={setOpenPanel}
+        className="fixed inset-0 overflow-hidden "
+        onClose={() =>
+          setOpenAuthModal((prev) => ({ ...prev, [action]: false }))
+        }
       >
         <div className="absolute inset-0 overflow-hidden">
           <Transition.Child
@@ -73,19 +53,24 @@ export default function LoginForm({ openPanel, setOpenPanel }) {
                     <button
                       type="button"
                       className="rounded-md text-red-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-black"
-                      onClick={() => setOpenPanel(false)}
+                      onClick={() =>
+                        setOpenAuthModal((prev) => ({
+                          ...prev,
+                          [action]: false,
+                        }))
+                      }
                     >
                       <span className="sr-only">Close panel</span>
                     </button>
                   </div>
                 </Transition.Child>
-                <div className="flex h-60 flex-col overflow-y-scroll bg-white  shadow-xl">
+                <div className="flex h-60 flex-col overflow-y-scroll bg-white  shadow-xl h-80">
                   <div className="px-4 sm:px-6">
                     <Dialog.Title className="text-lg font-medium text-gray-900">
                       {" "}
                       <div>
                         <h2 className="mt-2 text-center text-3l font-extrabold text-gray-900">
-                          Admin Login
+                          {action === "login" ? "Login" : "Register"}
                         </h2>
                       </div>
                     </Dialog.Title>
@@ -93,10 +78,7 @@ export default function LoginForm({ openPanel, setOpenPanel }) {
                   <div className="relative flex-1 px-4 sm:px-6">
                     <div className=" flex items-center justify-center sm:px-6 lg:px-8">
                       <div className="max-w-md w-full space-y-8">
-                        <form
-                          className=" space-y-4"
-                          onSubmit={handleLoginRequest}
-                        >
+                        <form className=" space-y-4" onSubmit={handleRequest}>
                           <input
                             type="hidden"
                             name="remember"
@@ -108,7 +90,7 @@ export default function LoginForm({ openPanel, setOpenPanel }) {
                                 Username
                               </label>
                               <input
-                                onChange={handleLoginData}
+                                onChange={handleData}
                                 id="username"
                                 name="username"
                                 type="username"
@@ -116,13 +98,29 @@ export default function LoginForm({ openPanel, setOpenPanel }) {
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                                 placeholder="username"
                               />
+                              {action === "register" && (
+                                <>
+                                  <label htmlFor="email" className="sr-only">
+                                    email
+                                  </label>
+                                  <input
+                                    onChange={handleData}
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    required
+                                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                    placeholder="email"
+                                  />
+                                </>
+                              )}
                             </div>
                             <div>
                               <label htmlFor="password" className="sr-only">
                                 Password
                               </label>
                               <input
-                                onChange={handleLoginData}
+                                onChange={handleData}
                                 id="password"
                                 name="password"
                                 type="password"
@@ -157,7 +155,7 @@ export default function LoginForm({ openPanel, setOpenPanel }) {
                               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                               <span className="absolute left-0  flex items-center pl-3"></span>
-                              Sign in
+                              {action === "register" ? "Sign Up" : "Sign In"}
                             </button>
                           </div>
                         </form>
@@ -180,4 +178,6 @@ export default function LoginForm({ openPanel, setOpenPanel }) {
       </Dialog>
     </Transition.Root>
   );
-}
+};
+
+export default AuthForm;

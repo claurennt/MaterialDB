@@ -7,6 +7,8 @@ import Link from "../../components/Link";
 import NewLinkForm from "../../components/NewLinkForm";
 import SearchBar from "../../components/SearchBar";
 
+import DOMAIN from "../GLOBALS";
+
 const TopicPage = ({ individualTopic }) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState();
@@ -45,10 +47,10 @@ const TopicPage = ({ individualTopic }) => {
   const addNewLink = async (e) => {
     e.preventDefault();
 
-    await axios.put(
-      `${process.env.NEXT_PUBLIC_AUTH_URL}/api/topics/${individualTopic._id}`,
-      { newLink, currentAdmin }
-    );
+    await axios.put(`${DOMAIN}/api/topics/${individualTopic._id}`, {
+      newLink,
+      currentAdmin,
+    });
     // close the modal and refresh the page to get updated server side props and display new added link
     setTimeout(() => {
       setOpen(false);
@@ -119,10 +121,13 @@ export default TopicPage;
 
 export async function getServerSideProps({ params: { _id } }) {
   try {
+    const DOMAIN =
+      process.env.NODE_ENV === "production"
+        ? process.env.NEXT_PROD_URL
+        : process.env.NEXT_DEV_URL;
+
     /* find topic by id in our database */
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_AUTH_URL}/api/topics/${_id}`
-    );
+    const { data } = await axios.get(`${DOMAIN}/api/topics/${_id}`);
 
     return { props: { individualTopic: data } };
   } catch (e) {

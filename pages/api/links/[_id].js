@@ -1,5 +1,5 @@
 import DBClient from "../../../utils/server/DBClient.js";
-import Topic from "../../../models/Topic.js";
+
 import Link from "../../../models/Link.js";
 
 import scrapeArticleTitle from "../../../utils/server/scrapeArticleTitle.js";

@@ -1,18 +1,34 @@
 import Head from "next/head";
-import { useState, Fragment } from "react";
 import Link from "next/link";
+import { getSession } from "next-auth/react";
+
+import { useState, Fragment } from "react";
 import axios from "axios";
+import useAuthHook from "../utils/client/useAuthHook";
+
+import { ToastContainer } from "react-toastify";
 
 import NewLinkForm from "../components/NewLinkForm.jsx";
-import LoginForm from "../components/LoginForm.jsx";
+import AuthForm from "../components/AuthForm.jsx";
+
+import DOMAIN from "./GLOBALS";
 import styles from "./index.module.css";
-import { getSession } from "next-auth/react";
+import { prev } from "cheerio/lib/api/traversing";
 
 export default function Home({ session, currentTopics }) {
   const { title, container, description, grid, card } = styles;
 
-  const [open, setOpen] = useState(false);
-  const [openPanel, setOpenPanel] = useState(false);
+  const {
+    handleLoginData,
+    handleLoginRequest,
+    handleRegisterRequest,
+    handleRegisterData,
+    openAuthModal,
+    setOpenAuthModal,
+  } = useAuthHook();
+
+  const [open, setOpen] = useState();
+
   const [currentAdmin, setCurrentAdmin] = useState(session);
   const [retrievedTopics, _] = useState(currentTopics);
   const [newTopic, setNewTopic] = useState({
@@ -25,7 +41,7 @@ export default function Home({ session, currentTopics }) {
       await axios.post("/api/auth/logout");
     }
 
-    setOpenPanel(!openPanel);
+    setOpenAuthModal((prev) => ({ ...prev, login: true }));
     setCurrentAdmin();
   };
 
@@ -50,7 +66,7 @@ export default function Home({ session, currentTopics }) {
   };
 
   const topicsArray = currentAdmin?.topics || retrievedTopics;
-  console.log(currentAdmin);
+
   return (
     <div className={container}>
       <Head>
@@ -59,19 +75,55 @@ export default function Home({ session, currentTopics }) {
       </Head>
 
       <main>
-        <LoginForm
-          openPanel={openPanel}
-          setOpenPanel={setOpenPanel}
-          currentAdmin={currentAdmin}
-          setCurrentAdmin={setCurrentAdmin}
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
         />
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-0 top-0 m-4"
-          name={!currentAdmin?.username ? "login" : "logout"}
-          onClick={handleClick}
-        >
-          {!currentAdmin?.username ? "login" : "logout"}
-        </button>
+
+        <AuthForm
+          action="register"
+          openAuthModal={openAuthModal.register}
+          setOpenAuthModal={setOpenAuthModal}
+          handleData={handleRegisterData}
+          handleRequest={handleRegisterRequest}
+          // currentAdmin={currentAdmin}
+          // setCurrentAdmin={setCurrentAdmin}
+        />
+        <AuthForm
+          action="login"
+          openAuthModal={openAuthModal.login}
+          setOpenAuthModal={setOpenAuthModal}
+          handleData={handleLoginData}
+          handleRequest={handleLoginRequest}
+          // currentAdmin={currentAdmin}
+          // setCurrentAdmin={setCurrentAdmin}
+        />
+        <div>
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-10 top-0 m-4"
+            name={!currentAdmin?.username ? "login" : "logout"}
+            onClick={handleClick}
+          >
+            {!currentAdmin?.username ? "login" : "logout"}
+          </button>
+
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-0 top-0 mx-40 m-4"
+            name="register"
+            onClick={() =>
+              setOpenAuthModal((prev) => ({ ...prev, register: true }))
+            }
+          >
+            register
+          </button>
+        </div>
         {currentAdmin?.username ? (
           <h1 className={title}>
             Welcome back to your <span>MaterialDB</span> {currentAdmin.username}
@@ -89,7 +141,6 @@ export default function Home({ session, currentTopics }) {
         <p className={description}>
           If you wanna see a list of resources pick a topic below.
         </p>
-
         <div className={grid}>
           {topicsArray?.map(({ name, _id, description, subtopics }) => (
             <Fragment key={_id}>
@@ -143,15 +194,13 @@ export async function getServerSideProps({ req, query: { userId } }) {
   try {
     // if the url has a userId parameter send a request to api/topics?userId=${userId}
     if (userId) {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_AUTH_URL}/api/topics?userId=${userId}`
-      );
+      const { data } = await axios.get(`${DOMAIN}/api/topics?userId=${userId}`);
       return { props: { currentTopics: data } };
     }
     //else get the the current session
     const session = await getSession({ req });
 
-    //if there is a session,i.e. cookies are stored send it as prop else send []
+    //if there is a session,i.e. cookies are stored send it as prop else send null
     return { props: { session: session || null } };
   } catch (err) {
     console.log(err);

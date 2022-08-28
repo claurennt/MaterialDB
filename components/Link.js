@@ -19,6 +19,7 @@ const Link = ({
     // refresh the page to get updated server side props
     router.replace(router.asPath);
   };
+
   // highlight query using regular expression
   const highlightSearchTerm = (title) => {
     const regexp = new RegExp(search, "gi");
@@ -33,10 +34,7 @@ const Link = ({
   return (
     <div className="mt-5 flex">
       {currentAdmin && (
-        <button
-          className="text-blue-600 text-4xl mx-3 "
-          onClick={() => deleteLink()}
-        >
+        <button className="text-blue-600 text-4xl mx-3 " onClick={deleteLink}>
           -
         </button>
       )}
