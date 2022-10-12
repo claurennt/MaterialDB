@@ -1,12 +1,13 @@
-import Head from "next/head";
-import { useState, Fragment } from "react";
-import Link from "next/link";
-import axios from "axios";
+import Head from 'next/head';
+import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next';
+import { useState, Fragment } from 'react';
+import Link from 'next/link';
+import axios from 'axios';
 
-import NewLinkForm from "../components/NewLinkForm.jsx";
-import LoginForm from "../components/LoginForm.jsx";
-import styles from "./index.module.css";
-import { getSession } from "next-auth/react";
+import NewLinkForm from '../components/NewLinkForm.jsx';
+import LoginForm from '../components/LoginForm.jsx';
+import styles from './index.module.css';
+import { getSession } from 'next-auth/react';
 
 export default function Home({ session, currentTopics }) {
   const { title, container, description, grid, card } = styles;
@@ -16,13 +17,13 @@ export default function Home({ session, currentTopics }) {
   const [currentAdmin, setCurrentAdmin] = useState(session);
   const [retrievedTopics, _] = useState(currentTopics);
   const [newTopic, setNewTopic] = useState({
-    name: "",
-    description: "",
+    name: '',
+    description: '',
   });
 
   const handleClick = async (e) => {
-    if (e.target.name === "logout") {
-      await axios.post("/api/auth/logout");
+    if (e.target.name === 'logout') {
+      await axios.post('/api/auth/logout');
     }
 
     setOpenPanel(!openPanel);
@@ -30,8 +31,8 @@ export default function Home({ session, currentTopics }) {
   };
 
   const inputs = [
-    { name: "name", placeholder: "Name of the topic" },
-    { name: "description", placeholder: "add a short intro to the topic" },
+    { name: 'name', placeholder: 'Name of the topic' },
+    { name: 'description', placeholder: 'add a short intro to the topic' },
   ];
 
   const handleChange = (e) =>
@@ -40,7 +41,7 @@ export default function Home({ session, currentTopics }) {
   const addNewTopic = async (e) => {
     e.preventDefault();
 
-    const { data } = await axios.post("/api/topics", {
+    const { data } = await axios.post('/api/topics', {
       newTopic,
       creatorId: currentAdmin._id,
     });
@@ -55,7 +56,7 @@ export default function Home({ session, currentTopics }) {
     <div className={container}>
       <Head>
         <title>MaterialDB</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel='icon' href='/favicon.ico' />
       </Head>
 
       <main>
@@ -66,11 +67,11 @@ export default function Home({ session, currentTopics }) {
           setCurrentAdmin={setCurrentAdmin}
         />
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-0 top-0 m-4"
-          name={!currentAdmin?.username ? "login" : "logout"}
+          className='bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-0 top-0 m-4'
+          name={!currentAdmin?.username ? 'login' : 'logout'}
           onClick={handleClick}
         >
-          {!currentAdmin?.username ? "login" : "logout"}
+          {!currentAdmin?.username ? 'login' : 'logout'}
         </button>
         {currentAdmin?.username ? (
           <h1 className={title}>
@@ -95,7 +96,7 @@ export default function Home({ session, currentTopics }) {
             <Fragment key={_id}>
               <Link
                 href={{
-                  pathname: "/topics/[_id]",
+                  pathname: '/topics/[_id]',
                   query: {
                     _id: _id,
                     currentAdmin: currentAdmin?._id,
@@ -115,7 +116,7 @@ export default function Home({ session, currentTopics }) {
       </main>
       {currentAdmin && (
         <button
-          className="bg-blue-600 absolute bottom-0 right-0 p-1 text-lg "
+          className='bg-blue-600 absolute bottom-0 right-0 p-1 text-lg '
           onClick={() => setOpen(true)}
         >
           +
@@ -139,7 +140,10 @@ export default function Home({ session, currentTopics }) {
 }
 
 //pre-render page with server side props
-export async function getServerSideProps({ req, query: { userId } }) {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query: { userId },
+}) => {
   try {
     // if the url has a userId parameter send a request to api/topics?userId=${userId}
     if (userId) {
@@ -158,4 +162,4 @@ export async function getServerSideProps({ req, query: { userId } }) {
     //if no admin is authenticated and no query is present in the url send null
     return { props: { session: null } };
   }
-}
+};
