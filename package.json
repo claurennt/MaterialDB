@@ -32,7 +32,9 @@
     "request": "^2.79.0"
   },
   "devDependencies": {
-    "@types/react": "^18.0.21",
+    "@types/node": "18.7.17",
+    "@types/react": "18.0.19",
+    "@types/react-dom": "18.0.6",
     "autoprefixer": "^10.4.4",
     "cross-env": "^7.0.3",
     "nodemon": "^2.0.15",

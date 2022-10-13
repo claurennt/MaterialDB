@@ -1,20 +1,23 @@
-import mongoose from "mongoose";
-import Admin from "./Admin";
+import mongoose from 'mongoose';
+import { ITopic } from '@/types/mongoose';
+
+import Admin from './Admin';
 const Schema = mongoose.Schema;
 
-const topicSchema = new Schema({
+const topicSchema = new Schema<ITopic>({
   name: { type: String, required: true },
   description: { type: String, required: true },
   subtopics: { type: Array, required: true },
-  links: [{ type: Schema.Types.ObjectId, ref: "Link" }],
-  _creator: [{ type: Schema.Types.ObjectId, ref: "Admin" }],
+  links: [{ type: Schema.Types.ObjectId, ref: 'Link' }],
+  _creator: [{ type: Schema.Types.ObjectId, ref: 'Admin' }],
 });
+
 /* before a deleteone request for a link document is sent, delete its own reference inside the Admin document,
 if no reference was found cancel the operation and send an error*/
-topicSchema.pre("deleteOne", async function (doc, next) {
+topicSchema.pre('deleteOne', async function (doc, next) {
   const {
     _conditions: { _id },
-  } = this;
+  } = doc;
 
   const result = await Admin.findOneAndUpdate(
     { topics: { $eq: _id } },
@@ -30,6 +33,7 @@ topicSchema.pre("deleteOne", async function (doc, next) {
   next();
 });
 const Topic =
-  mongoose.models?.Topic || mongoose.model("Topic", topicSchema, "topics");
+  mongoose.models?.Topic ||
+  mongoose.model<ITopic>('Topic', topicSchema, 'topics');
 
 export default Topic;

@@ -1,15 +1,17 @@
+import { useState, Fragment } from 'react';
 import Head from 'next/head';
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next';
-import { useState, Fragment } from 'react';
+import type { HomeProps } from '@/types/components';
+
 import Link from 'next/link';
 import axios from 'axios';
 
-import NewLinkForm from '../components/NewLinkForm.jsx';
-import LoginForm from '../components/LoginForm.jsx';
+import NewLinkForm from '../components/NewLinkForm';
+import LoginForm from '../components/LoginForm';
 import styles from './index.module.css';
 import { getSession } from 'next-auth/react';
 
-export default function Home({ session, currentTopics }) {
+export default function Home({ session, currentTopics }: HomeProps) {
   const { title, container, description, grid, card } = styles;
 
   const [open, setOpen] = useState(false);
@@ -29,11 +31,6 @@ export default function Home({ session, currentTopics }) {
     setOpenPanel(!openPanel);
     setCurrentAdmin();
   };
-
-  const inputs = [
-    { name: 'name', placeholder: 'Name of the topic' },
-    { name: 'description', placeholder: 'add a short intro to the topic' },
-  ];
 
   const handleChange = (e) =>
     setNewTopic((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -131,7 +128,6 @@ export default function Home({ session, currentTopics }) {
           setOpen={setOpen}
           currentAdmin={currentAdmin}
           setCurrentAdmin={setCurrentAdmin}
-          inputs={inputs}
         />
       )}
       <footer>made with love by claurennt</footer>

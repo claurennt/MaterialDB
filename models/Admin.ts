@@ -1,20 +1,20 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-import jwt from "jsonwebtoken";
-
+import { IAdmin } from '@/types/mongoose';
 const Schema = mongoose.Schema;
 
 // the schema is the blueprint of our  model
-const adminSchema = new Schema({
+const adminSchema = new Schema<IAdmin>({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true, select: false },
   role: {
     type: String,
-    default: "admin",
+    default: 'admin',
   },
-  topics: [{ type: Schema.Types.ObjectId, ref: "Topic" }],
+  topics: [{ type: Schema.Types.ObjectId, ref: 'Topic' }],
 });
 
-const Admin = mongoose.models?.Admin || mongoose.model("Admin", adminSchema);
+const Admin =
+  mongoose.models?.Admin || mongoose.model<IAdmin>('Admin', adminSchema);
 
 export default Admin;

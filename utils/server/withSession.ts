@@ -1,7 +1,8 @@
 // this file is a wrapper with defaults to be used in both API routes and `getServerSideProps` functions
-import { withIronSession } from 'next-iron-session';
+import { withIronSession, Session } from 'next-iron-session';
+import type { NextIronHandler } from '../../types/next-auth';
 
-const withSession = (handler) =>
+const withSession = (handler: NextIronHandler) =>
   withIronSession(handler, {
     password: process.env.NEXT_PUBLIC_SECRET_COOKIE_PASSWORD,
     cookieName: process.env.NEXT_PUBLIC_NAMESPACE,
