@@ -11,7 +11,7 @@ const adminSchema = new Schema<IAdmin>({
     type: String,
     default: 'admin',
   },
-  topics: [{ type: Schema.Types.ObjectId, ref: 'Topic' }],
+  topics: [{ type: Schema.Types.ObjectId, ref: 'Topic', default: [] }],
 });
 
 const Admin: Model<IAdmin> =

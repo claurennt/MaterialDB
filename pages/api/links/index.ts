@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import DBClient from '../../../utils/server/DBClient.js';
-import Topic from '../../../models/Topic.js';
-import Admin from '../../../models/Admin.js';
-import Link from '../../../models/Link.js';
-import scrapeArticleTitle from '../../../utils/server/scrapeArticleTitle.js';
-import { ILink } from '@/types/mongoose.js';
+import DBClient from '../../../utils/server/DBClient';
+import Topic from '../../../models/Topic';
+import Admin from '../../../models/Admin';
+import Link from '../../../models/Link';
+import scrapeArticleTitle from '../../../utils/server/scrapeArticleTitle';
+import { ILink } from '@/types/mongoose';
 export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { method } = req;
 
