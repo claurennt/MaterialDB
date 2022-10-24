@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter, NextRouter } from 'next/router';
 import { useState } from 'react';
-import DBClient from '../../utils/server/DBClient.js';
+import DBClient from '../../utils/server/DBClient';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
 import Link from '../../components/Link';

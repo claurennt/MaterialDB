@@ -24,7 +24,7 @@ interface ITopic {
   description: string;
   subtopics: Types.Array;
   links: Types.DocumentArray<ILink>;
-  _creator: Types.DocumentArray<IAdmin>;
+  _creator: Types.ObjectId;
   _conditions?: { _id: string };
 }
 

@@ -1,5 +1,6 @@
 import DBClient from '../../../utils/server/DBClient';
 import Admin from '../../../models/Admin';
+import Topic from '../../../models/Topic';
 import withSession from '../../../utils/server/withSession';
 
 export default withSession(async (req, res) => {
@@ -15,7 +16,10 @@ export default withSession(async (req, res) => {
 
         if (!me) return res.send(404);
 
-        const currentAdmin = await Admin.findById(me.id).populate('topics');
+        const currentAdmin = await Admin.findById(me.id).populate({
+          path: 'topics',
+          model: Topic,
+        });
 
         return res.status(200).send(currentAdmin);
       } catch (e) {

@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import DBClient from '../../utils/server/DBClient.js';
-import Topic from '../../models/Topic.js';
-import Link from '../../models/Link.js';
-import Admin from '../../models/Admin.js';
+import DBClient from '../../utils/server/DBClient';
+import Topic from '../../models/Topic';
+import Link from '../../models/Link';
+import Admin from '../../models/Admin';
 
 export default async function handler(
   req: NextApiRequest,

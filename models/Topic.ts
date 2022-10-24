@@ -9,7 +9,7 @@ const topicSchema = new Schema<ITopic>({
   description: { type: String, required: true },
   subtopics: { type: Array, required: true },
   links: [{ type: Schema.Types.ObjectId, ref: 'Link' }],
-  _creator: [{ type: Schema.Types.ObjectId, ref: 'Admin' }],
+  _creator: { type: Schema.Types.ObjectId, ref: 'Admin' },
 });
 
 /* before a deleteone request for a link document is sent, delete its own reference inside the Admin document,

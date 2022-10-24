@@ -1,7 +1,7 @@
-import DBClient from "../../../utils/server/DBClient.js";
-import Topic from "../../../models/Topic.js";
-import Link from "../../../models/Link.js";
-import Admin from "../../../models/Admin.js";
+import DBClient from '../../../utils/server/DBClient';
+import Topic from '../../../models/Topic';
+import Link from '../../../models/Link';
+import Admin from '../../../models/Admin';
 
 export default async function handler(req, res) {
   const {
@@ -13,20 +13,20 @@ export default async function handler(req, res) {
   await DBClient();
 
   switch (method) {
-    case "GET" /* Get a model by its ID */:
+    case 'GET' /* Get a model by its ID */:
       try {
         const topics = await Topic.find(userId ? { _creator: userId } : {});
 
         if (!topics) {
-          return res.status(404).send("No topics found");
+          return res.status(404).send('No topics found');
         }
         return res.status(200).send(topics);
       } catch (error) {
-        console.log("get", error);
+        console.log('get', error);
         return res.status(400).send(error);
       }
 
-    case "POST" /* Edit a model by its ID */:
+    case 'POST' /* Edit a model by its ID */:
       try {
         const {
           newTopic: { name, description },
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
         });
 
         if (!newTopic) {
-          return res.status(400).send("Something went wrong");
+          return res.status(400).send('Something went wrong');
         }
 
         const updatedAdmin = await Admin.findByIdAndUpdate(
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
             },
           },
           { new: true }
-        ).populate("topics");
+        ).populate('topics');
 
         return res.status(201).send(updatedAdmin);
       } catch (error) {
@@ -61,12 +61,12 @@ export default async function handler(req, res) {
         return res.status(400).send(error);
       }
 
-    case "DELETE" /* Delete a model by its ID */:
+    case 'DELETE' /* Delete a model by its ID */:
       try {
         const { deletedCount } = await Topic.deleteMany();
 
         if (!deletedCount) {
-          return res.status(400).json("No topic deleted");
+          return res.status(400).json('No topic deleted');
         }
         return res
           .status(204)
