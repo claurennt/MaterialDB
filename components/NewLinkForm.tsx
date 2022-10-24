@@ -10,16 +10,13 @@ const NewLinkForm = ({
   handleChange,
   setOpen,
   addNew,
+  inputs,
   name,
   open,
   newData,
   currentAdmin,
   categories,
 }: AppProps) => {
-  const inputs = [
-    { name: 'name', placeholder: 'Name of the topic' },
-    { name: 'description', placeholder: 'add a short intro to the topic' },
-  ];
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog

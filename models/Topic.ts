@@ -7,8 +7,8 @@ const Schema = mongoose.Schema;
 const topicSchema = new Schema<ITopic>({
   name: { type: String, required: true },
   description: { type: String, required: true },
-  subtopics: { type: Array, required: true },
-  links: [{ type: Schema.Types.ObjectId, ref: 'Link' }],
+  subtopics: { type: Array, default: [] },
+  links: [{ type: Schema.Types.ObjectId, ref: 'Link', default: [] }],
   _creator: { type: Schema.Types.ObjectId, ref: 'Admin' },
 });
 

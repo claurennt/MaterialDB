@@ -4,24 +4,21 @@ import { useState } from 'react';
 import DBClient from '../../utils/server/DBClient';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
-import Link from '../../components/Link';
+import TopicLink from '../../components/TopicLink';
 import NewLinkForm from '../../components/NewLinkForm';
 import SearchBar from '../../components/SearchBar';
-import type { AppProps } from '@/types/components';
+import type { AppProps, TopicLink as Link, NewLink } from '@/types/components';
 
 const TopicPage = ({ individualTopic }: AppProps) => {
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState();
-  const [newLink, setNewLink] = useState({
+  const [open, setOpen] = useState<boolean>(false);
+  const [search, setSearch] = useState<undefined | string>();
+  const [newLink, setNewLink] = useState<NewLink>({
     url: '',
     category: '',
     tags: [],
   });
 
-  const inputs = [
-    { name: 'url', placeholder: 'paste website url here' },
-    { name: 'tags', placeholder: 'add your tags here' },
-  ];
+  const [topicLinks, setTopicLinks] = useState<Link[]>(individualTopic.links);
 
   const categories = [
     { type: 'article', color: 'orange' },
@@ -33,6 +30,10 @@ const TopicPage = ({ individualTopic }: AppProps) => {
     { type: 'package', color: 'teal' },
     { type: 'library', color: 'fuchsia' },
   ];
+  const inputs = [
+    { name: 'url', placeholder: 'paste website url here' },
+    { name: 'tags', placeholder: 'add your tags here' },
+  ];
 
   //get router info with props passed with Link component
   const router: NextRouter = useRouter();
@@ -41,32 +42,34 @@ const TopicPage = ({ individualTopic }: AppProps) => {
     query: { name, currentAdminId },
   } = router;
 
-  const handleChange = (e) =>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setNewLink((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const addNewLink = async (e) => {
+  const addNewLink = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    await axios.put(
+    const { data } = await axios.put(
       `${process.env.NEXT_PUBLIC_AUTH_URL}/api/topics/${individualTopic._id}`,
       { newLink, currentAdminId }
     );
 
     // close the modal and refresh the page to get updated server side props and display new added link
-    setTimeout(() => {
-      setOpen(false);
-      router.reload();
-    }, 500);
+    setTimeout(() => setOpen(false), 500);
+    setTopicLinks((prev) => [...prev, data]);
   };
 
   // handle search submit
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const target = e.target as typeof e.target & {
+      search: { value: string };
+    };
+    const searchedValue = target.search.value;
 
     // update query state
-    setSearch(e.target.search.value);
+    setSearch(searchedValue);
 
-    e.target.search.value = '';
+    target.search.value = '';
   };
 
   return (
@@ -105,8 +108,9 @@ const TopicPage = ({ individualTopic }: AppProps) => {
 
       <SearchBar handleSubmit={handleSubmit} />
 
-      {individualTopic.links.map((link) => (
-        <Link
+      {topicLinks.map((link) => (
+        <TopicLink
+          setTopicLinks={setTopicLinks}
           search={search}
           key={nanoid()}
           link={link}

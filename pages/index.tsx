@@ -1,7 +1,7 @@
 import { useState, Fragment } from 'react';
 import Head from 'next/head';
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next';
-import type { AppProps } from '@/types/components';
+import { GetServerSideProps } from 'next';
+import type { AppProps, AddNewFunction } from '@/types/components';
 
 import Link from 'next/link';
 import axios from 'axios';
@@ -18,14 +18,23 @@ export default function Home(props, { currentTopics }: AppProps) {
   const [open, setOpen] = useState(false);
   const [openPanel, setOpenPanel] = useState(false);
   const [currentAdmin, setCurrentAdmin] = useState(props.session);
-  const [retrievedTopics, _] = useState(currentTopics);
+  const [retrievedTopics, setRetrievedTopics] = useState(currentTopics);
   const [newTopic, setNewTopic] = useState({
     name: '',
     description: '',
   });
 
-  const handleClick = async (e) => {
-    if (e.target.name === 'logout') {
+  const inputs = [
+    { name: 'name', placeholder: 'Name of the topic' },
+    { name: 'description', placeholder: 'add a short intro to the topic' },
+  ];
+
+  const handleClick: AddNewFunction = async (e) => {
+    const target = e.target as typeof e.target & {
+      name: { value: string };
+    };
+
+    if (target.name.value === 'logout') {
       await axios.post('/api/auth/logout');
     }
 
@@ -33,10 +42,10 @@ export default function Home(props, { currentTopics }: AppProps) {
     setCurrentAdmin(undefined);
   };
 
-  const handleChange = (e) =>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setNewTopic((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const addNewTopic = async (e) => {
+  const addNewTopic: AddNewFunction = async (e) => {
     e.preventDefault();
 
     const { data } = await axios.post('/api/topics', {
@@ -45,11 +54,11 @@ export default function Home(props, { currentTopics }: AppProps) {
     });
 
     setOpen(false);
-    setCurrentAdmin(data);
+    setRetrievedTopics((prev) => [...prev, data]);
   };
 
   const topicsArray = currentAdmin?.topics || retrievedTopics;
-  console.log(currentAdmin);
+
   return (
     <div className={container}>
       <Head>
@@ -127,6 +136,7 @@ export default function Home(props, { currentTopics }: AppProps) {
           addNew={addNewTopic}
           open={open}
           setOpen={setOpen}
+          inputs={inputs}
           currentAdmin={currentAdmin}
           setCurrentAdmin={setCurrentAdmin}
         />

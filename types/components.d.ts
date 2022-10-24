@@ -1,26 +1,41 @@
 import { IndividualTopic } from '@/types/pages';
 
-type Links = {
+type NewLink = {
+  url: string;
+  category: string;
+  tags: string[];
+};
+
+type TopicLink = {
   _id: string;
   title: string;
   url: string;
-  tags: string;
+  tags: string[];
   category: string;
-}[];
+};
 
 type NewData = {
   name?: string | string[];
   description?: string;
   url?: string;
   category?: string;
-  tags?: any[];
+  tags?: string[];
 };
 type CurrentAdmin = {
   newTopic: NewData;
   creatorId: string;
 };
 
+type HighlightSearchTerm = (value: string) => { __html: string };
+type AddNewFunction = (
+  e:
+    | React.MouseEvent<HTMLButtonElement, MouseEvent>
+    | React.FormEvent<HTMLFormElement>
+) => void;
+
 type AppProps = {
+  link?: TopicLink;
+  search?: string;
   currentTopics?: {}[];
   /** array of objects! (common) */
   categories?: {
@@ -42,11 +57,19 @@ type AppProps = {
   setCurrentAdmin?: React.Dispatch<
     React.SetStateAction<undefined | CurrentAdmin>
   >;
-  setOpen?: (value: boolean) => void;
-  addNew?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  addNew?: AddNewFunction;
+  setTopicLinks?: React.Dispatch<React.SetStateAction<TopicLink[]>>;
   /** function type syntax that takes an event (VERY COMMON) */
 
   handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export type { AppProps, HomeProps };
+export type {
+  AppProps,
+  HomeProps,
+  TopicLink,
+  NewLink,
+  HighlightSearchTerm,
+  AddNewFunction,
+};

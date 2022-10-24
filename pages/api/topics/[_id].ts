@@ -66,7 +66,7 @@ export default async function handler(
           { new: true }
         );
 
-        return res.status(200).send(updatedTopic);
+        return res.status(200).send(newLink);
       } catch (error) {
         console.log(error.stack);
         return res.status(400).send(error);

@@ -17,7 +17,7 @@ export default async function handler(
     case 'GET' /* Get a model by its ID */:
       try {
         const { userId } = query;
-        const topics = await Topic.find(query ? { _creator: userId } : {});
+        const topics = await Topic.find(query && { _creator: userId });
 
         if (!topics) {
           return res.status(404).send('No topics found');

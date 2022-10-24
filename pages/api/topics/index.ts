@@ -36,16 +36,16 @@ export default async function handler(req, res) {
         const newTopic = await Topic.create({
           name,
           description,
-          links: [],
-          subtopics: [],
           _creator: creatorId,
         });
 
         if (!newTopic) {
-          return res.status(400).send('Something went wrong');
+          return res
+            .status(400)
+            .send('Something went wrong, no topic wwas created');
         }
 
-        const updatedAdmin = await Admin.findByIdAndUpdate(
+        await Admin.findByIdAndUpdate(
           creatorId,
           {
             $push: {
@@ -53,9 +53,9 @@ export default async function handler(req, res) {
             },
           },
           { new: true }
-        ).populate('topics');
+        );
 
-        return res.status(201).send(updatedAdmin);
+        return res.status(201).send(newTopic);
       } catch (error) {
         console.log(error);
         return res.status(400).send(error);
