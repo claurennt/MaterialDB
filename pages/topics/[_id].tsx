@@ -1,5 +1,5 @@
 import type { GetServerSideProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
+import { useRouter, NextRouter } from 'next/router';
 import { useState } from 'react';
 import DBClient from '../../utils/server/DBClient.js';
 import axios from 'axios';
@@ -7,7 +7,7 @@ import { nanoid } from 'nanoid';
 import Link from '../../components/Link';
 import NewLinkForm from '../../components/NewLinkForm';
 import SearchBar from '../../components/SearchBar';
-import type { AppProps } from '../../types/components';
+import type { AppProps } from '@/types/components';
 
 const TopicPage = ({ individualTopic }: AppProps) => {
   const [open, setOpen] = useState(false);
@@ -35,10 +35,10 @@ const TopicPage = ({ individualTopic }: AppProps) => {
   ];
 
   //get router info with props passed with Link component
-  const router = useRouter();
+  const router: NextRouter = useRouter();
 
   const {
-    query: { name, currentAdmin },
+    query: { name, currentAdminId },
   } = router;
 
   const handleChange = (e) =>
@@ -49,12 +49,13 @@ const TopicPage = ({ individualTopic }: AppProps) => {
 
     await axios.put(
       `${process.env.NEXT_PUBLIC_AUTH_URL}/api/topics/${individualTopic._id}`,
-      { newLink, currentAdmin }
+      { newLink, currentAdminId }
     );
+
     // close the modal and refresh the page to get updated server side props and display new added link
     setTimeout(() => {
       setOpen(false);
-      router.reload(window.location.pathname);
+      router.reload();
     }, 500);
   };
 
@@ -70,7 +71,7 @@ const TopicPage = ({ individualTopic }: AppProps) => {
 
   return (
     <div className=''>
-      {currentAdmin && (
+      {currentAdminId && (
         <button
           className='bg-blue-600 absolute bottom-0 right-0 p-1 text-lg '
           onClick={() => setOpen(true)}
@@ -88,8 +89,8 @@ const TopicPage = ({ individualTopic }: AppProps) => {
         <NewLinkForm
           newData={newLink}
           handleChange={handleChange}
-          name={name}
-          currentAdmin={currentAdmin}
+          name={name as string}
+          currentAdmin={currentAdminId}
           addNew={addNewLink}
           setOpen={setOpen}
           open={open}
@@ -109,7 +110,7 @@ const TopicPage = ({ individualTopic }: AppProps) => {
           search={search}
           key={nanoid()}
           link={link}
-          currentAdmin={currentAdmin}
+          currentAdmin={currentAdminId}
           categories={categories}
         />
       ))}

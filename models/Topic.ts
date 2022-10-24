@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { ITopic } from '@/types/mongoose';
 
 import Admin from './Admin';
@@ -14,10 +14,10 @@ const topicSchema = new Schema<ITopic>({
 
 /* before a deleteone request for a link document is sent, delete its own reference inside the Admin document,
 if no reference was found cancel the operation and send an error*/
-topicSchema.pre('deleteOne', async function (doc, next) {
+topicSchema.pre('deleteOne', async function (this: ITopic, next) {
   const {
     _conditions: { _id },
-  } = doc;
+  } = this;
 
   const result = await Admin.findOneAndUpdate(
     { topics: { $eq: _id } },
@@ -32,7 +32,7 @@ topicSchema.pre('deleteOne', async function (doc, next) {
     );
   next();
 });
-const Topic =
+const Topic: Model<ITopic> =
   mongoose.models?.Topic ||
   mongoose.model<ITopic>('Topic', topicSchema, 'topics');
 

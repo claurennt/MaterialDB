@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 
 import { IAdmin } from '@/types/mongoose';
 const Schema = mongoose.Schema;
@@ -14,7 +14,7 @@ const adminSchema = new Schema<IAdmin>({
   topics: [{ type: Schema.Types.ObjectId, ref: 'Topic' }],
 });
 
-const Admin =
+const Admin: Model<IAdmin> =
   mongoose.models?.Admin || mongoose.model<IAdmin>('Admin', adminSchema);
 
 export default Admin;

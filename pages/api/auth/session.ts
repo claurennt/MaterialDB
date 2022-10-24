@@ -1,10 +1,9 @@
-import DBClient from '../../../utils/server/DBClient.ts';
-import Admin from '../../../models/Admin.ts';
-import Topic from '../../../models/Topic.js';
-import withSession from '../../../utils/server/withSession.js';
-import { serialize, parse } from 'cookie';
+import DBClient from '../../../utils/server/DBClient';
+import Admin from '../../../models/Admin';
+import withSession from '../../../utils/server/withSession';
+
 export default withSession(async (req, res) => {
-  const { body: username, password, method, session } = req;
+  const { method } = req;
 
   await DBClient();
 
@@ -21,7 +20,7 @@ export default withSession(async (req, res) => {
         return res.status(200).send(currentAdmin);
       } catch (e) {
         console.log(e);
-        return res.send(500).status('Session problem');
+        return res.status(500).send('Session problem');
       }
   }
 });

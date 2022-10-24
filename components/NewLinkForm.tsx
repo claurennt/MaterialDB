@@ -4,6 +4,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import FormInputs from './FormInputs';
 import FormSelect from './FormSelect';
 import axios from 'axios';
+import type { AppProps } from '@/types/components';
 
 const NewLinkForm = ({
   handleChange,
@@ -14,7 +15,7 @@ const NewLinkForm = ({
   newData,
   currentAdmin,
   categories,
-}) => {
+}: AppProps) => {
   const inputs = [
     { name: 'name', placeholder: 'Name of the topic' },
     { name: 'description', placeholder: 'add a short intro to the topic' },

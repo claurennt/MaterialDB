@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import DBClient from '../../../utils/server/DBClient.js';
 import Topic from '../../../models/Topic.js';
 import Link from '../../../models/Link.js';
-
+import { ILink } from '@/types/mongoose.js';
 import scrapeArticleTitle from '../../../utils/server/scrapeArticleTitle.js';
 
 export default async function handler(
@@ -19,7 +19,7 @@ export default async function handler(
   switch (method) {
     case 'GET' /* Get a link by its ID */:
       try {
-        const individualLink = await Link.findById(_id);
+        const individualLink: ILink | null = await Link.findById(_id);
 
         if (!individualLink) {
           return res.status(404).send('No link was found with the id');
@@ -41,7 +41,9 @@ export default async function handler(
           we will scrape the page and get it from the title s metadata in the head*/
         if (!link.title) link.title = await scrapeArticleTitle(link.url);
 
-        const updatedLink = await Link.findByIdAndUpdate(_id, ...link);
+        const updatedLink: ILink = await Link.findByIdAndUpdate(_id, link, {
+          new: true,
+        });
 
         return res.status(200).send(updatedLink);
       } catch (error) {

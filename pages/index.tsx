@@ -1,7 +1,7 @@
 import { useState, Fragment } from 'react';
 import Head from 'next/head';
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next';
-import type { HomeProps } from '@/types/components';
+import type { AppProps } from '@/types/components';
 
 import Link from 'next/link';
 import axios from 'axios';
@@ -10,13 +10,14 @@ import NewLinkForm from '../components/NewLinkForm';
 import LoginForm from '../components/LoginForm';
 import styles from './index.module.css';
 import { getSession } from 'next-auth/react';
+import type { Session } from 'next-auth';
 
-export default function Home({ session, currentTopics }: HomeProps) {
+export default function Home(props, { currentTopics }: AppProps) {
   const { title, container, description, grid, card } = styles;
 
   const [open, setOpen] = useState(false);
   const [openPanel, setOpenPanel] = useState(false);
-  const [currentAdmin, setCurrentAdmin] = useState(session);
+  const [currentAdmin, setCurrentAdmin] = useState(props.session);
   const [retrievedTopics, _] = useState(currentTopics);
   const [newTopic, setNewTopic] = useState({
     name: '',
@@ -29,7 +30,7 @@ export default function Home({ session, currentTopics }: HomeProps) {
     }
 
     setOpenPanel(!openPanel);
-    setCurrentAdmin();
+    setCurrentAdmin(undefined);
   };
 
   const handleChange = (e) =>
@@ -60,8 +61,8 @@ export default function Home({ session, currentTopics }: HomeProps) {
         <LoginForm
           openPanel={openPanel}
           setOpenPanel={setOpenPanel}
-          currentAdmin={currentAdmin}
-          setCurrentAdmin={setCurrentAdmin}
+          // currentAdmin={currentAdmin}
+          // setCurrentAdmin={setCurrentAdmin}
         />
         <button
           className='bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-0 top-0 m-4'
@@ -96,7 +97,7 @@ export default function Home({ session, currentTopics }: HomeProps) {
                   pathname: '/topics/[_id]',
                   query: {
                     _id: _id,
-                    currentAdmin: currentAdmin?._id,
+                    currentAdminId: currentAdmin?._id,
                     name: name,
                   },
                 }}

@@ -32,7 +32,7 @@
     "request": "^2.79.0"
   },
   "devDependencies": {
-    "@types/node": "18.7.17",
+    "@types/node": "^18.7.17",
     "@types/react": "18.0.19",
     "@types/react-dom": "18.0.6",
     "autoprefixer": "^10.4.4",
