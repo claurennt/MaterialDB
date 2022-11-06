@@ -1,21 +1,27 @@
-import Head from "next/head";
-import Link from "next/link";
-import { getSession } from "next-auth/react";
+import useAuthHook from '../utils/client/useAuthHook';
 
-import { useState, Fragment } from "react";
-import axios from "axios";
-import useAuthHook from "../utils/client/useAuthHook";
+import { ToastContainer } from 'react-toastify';
 
-import { ToastContainer } from "react-toastify";
+import AuthForm from '../components/AuthForm';
 
-import NewLinkForm from "../components/NewLinkForm.jsx";
-import AuthForm from "../components/AuthForm.jsx";
+import DOMAIN from './GLOBALS';
 
-import DOMAIN from "./GLOBALS";
-import styles from "./index.module.css";
-import { prev } from "cheerio/lib/api/traversing";
+import { prev } from 'cheerio/lib/api/traversing';
+import { useState, Fragment } from 'react';
+import Head from 'next/head';
+import { GetServerSideProps } from 'next';
+import type { AppProps, AddNewFunction } from '@/types/components';
 
-export default function Home({ session, currentTopics }) {
+import Link from 'next/link';
+import axios from 'axios';
+
+import NewLinkForm from '../components/NewLinkForm';
+import LoginForm from '../components/LoginForm';
+import styles from './index.module.css';
+import { getSession } from 'next-auth/react';
+import type { Session } from 'next-auth';
+
+export default function Home(props, { currentTopics }: AppProps) {
   const { title, container, description, grid, card } = styles;
 
   const {
@@ -27,42 +33,46 @@ export default function Home({ session, currentTopics }) {
     setOpenAuthModal,
   } = useAuthHook();
 
-  const [open, setOpen] = useState();
-
-  const [currentAdmin, setCurrentAdmin] = useState(session);
-  const [retrievedTopics, _] = useState(currentTopics);
+  const [open, setOpen] = useState(false);
+  const [openPanel, setOpenPanel] = useState(false);
+  const [currentAdmin, setCurrentAdmin] = useState(props.session);
+  const [retrievedTopics, setRetrievedTopics] = useState(currentTopics);
   const [newTopic, setNewTopic] = useState({
-    name: "",
-    description: "",
+    name: '',
+    description: '',
   });
 
-  const handleClick = async (e) => {
-    if (e.target.name === "logout") {
-      await axios.post("/api/auth/logout");
-    }
-
-    setOpenAuthModal((prev) => ({ ...prev, login: true }));
-    setCurrentAdmin();
-  };
-
   const inputs = [
-    { name: "name", placeholder: "Name of the topic" },
-    { name: "description", placeholder: "add a short intro to the topic" },
+    { name: 'name', placeholder: 'Name of the topic' },
+    { name: 'description', placeholder: 'add a short intro to the topic' },
   ];
 
-  const handleChange = (e) =>
+  const handleClick: AddNewFunction = async (e) => {
+    const target = e.target as typeof e.target & {
+      name: { value: string };
+    };
+
+    if (target.name.value === 'logout') {
+      await axios.post('/api/auth/logout');
+    }
+
+    setOpenPanel(!openPanel);
+    setCurrentAdmin(undefined);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setNewTopic((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const addNewTopic = async (e) => {
+  const addNewTopic: AddNewFunction = async (e) => {
     e.preventDefault();
 
-    const { data } = await axios.post("/api/topics", {
+    const { data } = await axios.post('/api/topics', {
       newTopic,
       creatorId: currentAdmin._id,
     });
 
     setOpen(false);
-    setCurrentAdmin(data);
+    setRetrievedTopics((prev) => [...prev, data]);
   };
 
   const topicsArray = currentAdmin?.topics || retrievedTopics;
@@ -71,12 +81,12 @@ export default function Home({ session, currentTopics }) {
     <div className={container}>
       <Head>
         <title>MaterialDB</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel='icon' href='/favicon.ico' />
       </Head>
 
       <main>
         <ToastContainer
-          position="top-center"
+          position='top-center'
           autoClose={5000}
           hideProgressBar={false}
           newestOnTop={false}
@@ -88,7 +98,7 @@ export default function Home({ session, currentTopics }) {
         />
 
         <AuthForm
-          action="register"
+          action='register'
           openAuthModal={openAuthModal.register}
           setOpenAuthModal={setOpenAuthModal}
           handleData={handleRegisterData}
@@ -97,7 +107,7 @@ export default function Home({ session, currentTopics }) {
           // setCurrentAdmin={setCurrentAdmin}
         />
         <AuthForm
-          action="login"
+          action='login'
           openAuthModal={openAuthModal.login}
           setOpenAuthModal={setOpenAuthModal}
           handleData={handleLoginData}
@@ -107,16 +117,8 @@ export default function Home({ session, currentTopics }) {
         />
         <div>
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-10 top-0 m-4"
-            name={!currentAdmin?.username ? "login" : "logout"}
-            onClick={handleClick}
-          >
-            {!currentAdmin?.username ? "login" : "logout"}
-          </button>
-
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-0 top-0 mx-40 m-4"
-            name="register"
+            className='bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-0 top-0 mx-40 m-4'
+            name='register'
             onClick={() =>
               setOpenAuthModal((prev) => ({ ...prev, register: true }))
             }
@@ -124,6 +126,19 @@ export default function Home({ session, currentTopics }) {
             register
           </button>
         </div>
+        <LoginForm
+          openPanel={openPanel}
+          setOpenPanel={setOpenPanel}
+          // currentAdmin={currentAdmin}
+          // setCurrentAdmin={setCurrentAdmin}
+        />
+        <button
+          className='bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-0 top-0 m-4'
+          name={!currentAdmin?.username ? 'login' : 'logout'}
+          onClick={handleClick}
+        >
+          {!currentAdmin?.username ? 'login' : 'logout'}
+        </button>
         {currentAdmin?.username ? (
           <h1 className={title}>
             Welcome back to your <span>MaterialDB</span> {currentAdmin.username}
@@ -146,10 +161,10 @@ export default function Home({ session, currentTopics }) {
             <Fragment key={_id}>
               <Link
                 href={{
-                  pathname: "/topics/[_id]",
+                  pathname: '/topics/[_id]',
                   query: {
                     _id: _id,
-                    currentAdmin: currentAdmin?._id,
+                    currentAdminId: currentAdmin?._id,
                     name: name,
                   },
                 }}
@@ -166,7 +181,7 @@ export default function Home({ session, currentTopics }) {
       </main>
       {currentAdmin && (
         <button
-          className="bg-blue-600 absolute bottom-0 right-0 p-1 text-lg "
+          className='bg-blue-600 absolute bottom-0 right-0 p-1 text-lg '
           onClick={() => setOpen(true)}
         >
           +
@@ -179,9 +194,9 @@ export default function Home({ session, currentTopics }) {
           addNew={addNewTopic}
           open={open}
           setOpen={setOpen}
+          inputs={inputs}
           currentAdmin={currentAdmin}
           setCurrentAdmin={setCurrentAdmin}
-          inputs={inputs}
         />
       )}
       <footer>made with love by claurennt</footer>
@@ -190,7 +205,10 @@ export default function Home({ session, currentTopics }) {
 }
 
 //pre-render page with server side props
-export async function getServerSideProps({ req, query: { userId } }) {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query: { userId },
+}) => {
   try {
     // if the url has a userId parameter send a request to api/topics?userId=${userId}
     if (userId) {
@@ -207,4 +225,4 @@ export async function getServerSideProps({ req, query: { userId } }) {
     //if no admin is authenticated and no query is present in the url send null
     return { props: { session: null } };
   }
-}
+};
