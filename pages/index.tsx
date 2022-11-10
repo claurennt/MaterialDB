@@ -1,12 +1,20 @@
-import { useState, Fragment } from 'react';
+import useAuthHook from '../utils/client/useAuthHook';
+
+import { ToastContainer } from 'react-toastify';
+
+import AuthForm from '../components/AuthForm';
+
+import { useState, Fragment, useEffect } from 'react';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import type { AppProps, AddNewFunction } from '@/types/components';
+import { useRouter } from 'next/router';
 
 import Link from 'next/link';
 import axios from 'axios';
 
 import NewLinkForm from '../components/NewLinkForm';
+import MailActivationSuccess from '../components/MailActivationSuccess';
 import LoginForm from '../components/LoginForm';
 import styles from './index.module.css';
 import { getSession } from 'next-auth/react';
@@ -15,8 +23,32 @@ import type { Session } from 'next-auth';
 export default function Home(props, { currentTopics }: AppProps) {
   const { title, container, description, grid, card } = styles;
 
+  const {
+    query: { activated },
+  } = useRouter();
+
+  useEffect(() => {
+    if (activated) {
+      const timerID = setTimeout(() => {
+        setIsMailActivated(false);
+      }, 1200);
+      return () => clearTimeout(timerID);
+    }
+  }, []);
+
+  const {
+    handleLoginData,
+    handleLoginRequest,
+    handleRegisterRequest,
+    handleRegisterData,
+    openAuthModal,
+    setOpenAuthModal,
+  } = useAuthHook();
+
   const [open, setOpen] = useState(false);
   const [openPanel, setOpenPanel] = useState(false);
+  const [isMailActivated, setIsMailActivated] = useState(Boolean(activated));
+
   const [currentAdmin, setCurrentAdmin] = useState(props.session);
   const [retrievedTopics, setRetrievedTopics] = useState(currentTopics);
   const [newTopic, setNewTopic] = useState({
@@ -61,12 +93,53 @@ export default function Home(props, { currentTopics }: AppProps) {
 
   return (
     <div className={container}>
+      {isMailActivated && <MailActivationSuccess />}
       <Head>
         <title>MaterialDB</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-
       <main>
+        <ToastContainer
+          position='top-center'
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+
+        <AuthForm
+          action='register'
+          openAuthModal={openAuthModal.register}
+          setOpenAuthModal={setOpenAuthModal}
+          handleData={handleRegisterData}
+          handleRequest={handleRegisterRequest}
+          // currentAdmin={currentAdmin}
+          // setCurrentAdmin={setCurrentAdmin}
+        />
+        <AuthForm
+          action='login'
+          openAuthModal={openAuthModal.login}
+          setOpenAuthModal={setOpenAuthModal}
+          handleData={handleLoginData}
+          handleRequest={handleLoginRequest}
+          // currentAdmin={currentAdmin}
+          // setCurrentAdmin={setCurrentAdmin}
+        />
+        <div>
+          <button
+            className='bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-0 top-0 mx-40 m-4'
+            name='register'
+            onClick={() =>
+              setOpenAuthModal((prev) => ({ ...prev, register: true }))
+            }
+          >
+            register
+          </button>
+        </div>
         <LoginForm
           openPanel={openPanel}
           setOpenPanel={setOpenPanel}
@@ -97,7 +170,6 @@ export default function Home(props, { currentTopics }: AppProps) {
         <p className={description}>
           If you wanna see a list of resources pick a topic below.
         </p>
-
         <div className={grid}>
           {topicsArray?.map(({ name, _id, description, subtopics }) => (
             <Fragment key={_id}>
@@ -155,14 +227,14 @@ export const getServerSideProps: GetServerSideProps = async ({
     // if the url has a userId parameter send a request to api/topics?userId=${userId}
     if (userId) {
       const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_AUTH_URL}/api/topics?userId=${userId}`
+        `http://localhost:3000/api/topics?userId=${userId}`
       );
       return { props: { currentTopics: data } };
     }
     //else get the the current session
     const session = await getSession({ req });
 
-    //if there is a session,i.e. cookies are stored send it as prop else send []
+    //if there is a session,i.e. cookies are stored send it as prop else send null
     return { props: { session: session || null } };
   } catch (err) {
     console.log(err);

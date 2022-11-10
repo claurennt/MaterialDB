@@ -3,6 +3,7 @@ import { Types, Document } from 'mongoose';
 interface IAdmin {
   username: string;
   password: string;
+  email: string;
   role?: string;
   /** for array of referenced documents: https://mongoosejs.com/docs/typescript/schemas.html#arrays*/
   topics?: Types.DocumentArray<ITopics>;

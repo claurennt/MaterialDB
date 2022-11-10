@@ -1,4 +1,10 @@
 import { IndividualTopic } from '@/types/pages';
+import { HandleUserAuthRequest } from '@/types/components';
+
+type EventTarget = typeof e.target & {
+  name?: string;
+  value?: string;
+};
 
 type NewLink = {
   url: string;
@@ -21,6 +27,7 @@ type NewData = {
   category?: string;
   tags?: string[];
 };
+
 type CurrentAdmin = {
   newTopic: NewData;
   creatorId: string;
@@ -28,6 +35,12 @@ type CurrentAdmin = {
 
 type HighlightSearchTerm = (value: string) => { __html: string };
 type AddNewFunction = (
+  e:
+    | React.MouseEvent<HTMLButtonElement, MouseEvent>
+    | React.FormEvent<HTMLFormElement>
+) => void;
+
+type HandleUserAuth = (
   e:
     | React.MouseEvent<HTMLButtonElement, MouseEvent>
     | React.FormEvent<HTMLFormElement>
@@ -72,4 +85,7 @@ export type {
   NewLink,
   HighlightSearchTerm,
   AddNewFunction,
+  HandleUserAuth,
+  SetAuthState,
+  EventTarget,
 };

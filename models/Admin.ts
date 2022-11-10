@@ -7,6 +7,7 @@ const Schema = mongoose.Schema;
 const adminSchema = new Schema<IAdmin>({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true, select: false },
+  email: { type: String, unique: true, required: true },
   role: {
     type: String,
     default: 'admin',

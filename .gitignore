@@ -28,5 +28,13 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+<<<<<<< HEAD
+
+.vercel
+
+# Local Netlify folder
+.netlify
+=======
 next-env.d.ts
 .vercel
+>>>>>>> main

@@ -3,6 +3,9 @@ import DBClient from '../../../utils/server/DBClient';
 import Admin from '../../../models/Admin';
 
 import withSession from '../../../utils/server/withSession';
+import { sendConfirmationEmail } from '../../../utils/server/mailer';
+
+import { IAdmin } from '@/types/mongoose';
 
 export default withSession(async (req, res) => {
   const { method } = req;
@@ -11,38 +14,42 @@ export default withSession(async (req, res) => {
 
   try {
     if (method === 'POST') {
-      const { username, password } = req.body;
-
+      // console.log(req.body);
+      const { username, password, email } = req.body;
       //block request if fields are missing
-      if (!username || !password)
-        return res
-          .status(400)
-          .send('Bad request, please provide username and password');
+      if (!username || !password || !email)
+        return res.status(400).json({
+          message: 'Bad request, please provide username, mail and password',
+        });
 
-      const adminExists = await Admin.findOne({ username });
+      //when a user tries to register see if the email or username are already taken
+      const adminExists = await Admin.find({
+        username,
+      }).countDocuments();
 
-      //block is admin already exists
       if (adminExists)
         return res
-          .status(400)
-          .send('An Admin with this username already exists.');
+          .status(404)
+          .send('An Admin with this username or email already exists.');
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const newAdmin = new Admin({
+
+      const newAdmin = new Admin<IAdmin>({
+        email,
         username,
         password: hashedPassword,
       });
 
       await newAdmin.save();
 
-      req.session.set('MaterialDB', {
-        id: newAdmin._id,
-        username: newAdmin.username,
-      });
-
-      await req.session.save();
+      sendConfirmationEmail(newAdmin);
 
       return res.status(201).send('Admin created');
+    }
+
+    if (method === 'GET') {
+      const { activated } = req.query;
+      if (activated) res.redirect('/?activated=true');
     }
   } catch (error) {
     console.log(error, error.message);

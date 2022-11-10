@@ -79,7 +79,7 @@ export default async function handler(
         return res.status(200).send('Successfully deleted topic');
       } catch (error) {
         console.log(error.message);
-        return res.status(400).json({ success: false });
+        return res.status(400).json({ success: false, error: error.message });
       }
 
     default:
