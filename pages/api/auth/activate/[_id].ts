@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
-import DBClient from '../../../../utils/server/DBClient.js';
-import Admin from '../../../../models/Admin.js';
+import DBClient from '../../../../utils/server/DBClient';
+import Admin from '../../../../models/Admin';
 
-import withSession from '../../../../utils/server/withSession.js';
+import withSession from '../../../../utils/server/withSession';
 
 export default withSession(async (req, res) => {
   const { method } = req;

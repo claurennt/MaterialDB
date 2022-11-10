@@ -2,9 +2,10 @@
   "name": "MaterialDB",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
+    "dev": "cross-env NODE_OPTIONS='--inspect' next dev ",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "stop": "taskkill /im node.exe /F"
   },
   "dependencies": {
     "@headlessui/react": "^1.5.0",

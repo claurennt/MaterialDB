@@ -26,7 +26,7 @@ export default withSession(async (req, res) => {
       const adminExists = await Admin.find({
         username,
       }).countDocuments();
-      console.log('adminExists', adminExists);
+
       if (adminExists)
         return res
           .status(404)
@@ -49,12 +49,7 @@ export default withSession(async (req, res) => {
 
     if (method === 'GET') {
       const { activated } = req.query;
-      if (activated)
-        return res
-          .status(200)
-          .send(
-            "You have successfully activated your account. <a href='/?activated=true'>Login</a>"
-          );
+      if (activated) res.redirect('/?activated=true');
     }
   } catch (error) {
     console.log(error, error.message);

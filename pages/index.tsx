@@ -4,18 +4,17 @@ import { ToastContainer } from 'react-toastify';
 
 import AuthForm from '../components/AuthForm';
 
-import DOMAIN from './GLOBALS';
-
-import { prev } from 'cheerio/lib/api/traversing';
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useEffect } from 'react';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import type { AppProps, AddNewFunction } from '@/types/components';
+import { useRouter } from 'next/router';
 
 import Link from 'next/link';
 import axios from 'axios';
 
 import NewLinkForm from '../components/NewLinkForm';
+import MailActivationSuccess from '../components/MailActivationSuccess';
 import LoginForm from '../components/LoginForm';
 import styles from './index.module.css';
 import { getSession } from 'next-auth/react';
@@ -23,6 +22,19 @@ import type { Session } from 'next-auth';
 
 export default function Home(props, { currentTopics }: AppProps) {
   const { title, container, description, grid, card } = styles;
+
+  const {
+    query: { activated },
+  } = useRouter();
+
+  useEffect(() => {
+    if (activated) {
+      const timerID = setTimeout(() => {
+        setIsMailActivated(false);
+      }, 1200);
+      return () => clearTimeout(timerID);
+    }
+  }, []);
 
   const {
     handleLoginData,
@@ -35,6 +47,8 @@ export default function Home(props, { currentTopics }: AppProps) {
 
   const [open, setOpen] = useState(false);
   const [openPanel, setOpenPanel] = useState(false);
+  const [isMailActivated, setIsMailActivated] = useState(Boolean(activated));
+
   const [currentAdmin, setCurrentAdmin] = useState(props.session);
   const [retrievedTopics, setRetrievedTopics] = useState(currentTopics);
   const [newTopic, setNewTopic] = useState({
@@ -79,11 +93,11 @@ export default function Home(props, { currentTopics }: AppProps) {
 
   return (
     <div className={container}>
+      {isMailActivated && <MailActivationSuccess />}
       <Head>
         <title>MaterialDB</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-
       <main>
         <ToastContainer
           position='top-center'
@@ -212,7 +226,9 @@ export const getServerSideProps: GetServerSideProps = async ({
   try {
     // if the url has a userId parameter send a request to api/topics?userId=${userId}
     if (userId) {
-      const { data } = await axios.get(`${DOMAIN}/api/topics?userId=${userId}`);
+      const { data } = await axios.get(
+        `http://localhost:3000/api/topics?userId=${userId}`
+      );
       return { props: { currentTopics: data } };
     }
     //else get the the current session
