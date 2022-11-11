@@ -8,9 +8,10 @@
     "stop": "taskkill /im node.exe /F"
   },
   "dependencies": {
+    "@auth/mongodb-adapter": "^2.0.7",
     "@headlessui/react": "^1.5.0",
     "@tailwindcss/forms": "^0.5.0",
-   
+    "@tanstack/react-query": "^5.8.9",
     "axios": "^1.6.2",
     "bcrypt": "^5.1.1",
     "cheerio": "^1.0.0-rc.12",
@@ -19,12 +20,11 @@
     "cookies-next": "^2.0.4",
     "js-cookies": "^1.0.4",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.3.0",
     "mongoose": "^8.0.1",
     "nanoid": "^5.0.3",
     "next": "^14.0.3",
     "next-auth": "^4.24.5",
-    "next-cookies": "^2.0.3",
-    "next-iron-session": "^4.2.0",
     "nodemailer": "^6.9.7",
     "puppeteer": "^13.5.2",
     "react": "^18.2.0",
@@ -32,13 +32,15 @@
     "react-dom": "^18.2.0",
     "react-tag-autocomplete": "^7.1.0",
     "react-toastify": "^9.1.3",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "swr": "^2.2.4"
   },
   "devDependencies": {
-    "@types/yauzl": "^2.10.3",
+    "@tanstack/react-query-devtools": "^5.8.9",
     "@types/node": "^20.10.0",
     "@types/react": "^18.2.39",
     "@types/react-dom": "^18.2.17",
+    "@types/yauzl": "^2.10.3",
     "autoprefixer": "^10.4.16",
     "cross-env": "^7.0.3",
     "kill-port": "^2.0.1",

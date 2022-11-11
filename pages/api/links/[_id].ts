@@ -26,7 +26,6 @@ export default async function handler(
         }
         return res.status(200).send(individualLink);
       } catch (error) {
-        console.log(error);
         return res.status(400).send(error);
       }
 
@@ -47,10 +46,8 @@ export default async function handler(
 
         return res.status(200).send(updatedLink);
       } catch (error) {
-        console.log(error.stack);
-        res.status(400).send(error);
+        return res.status(400).send(error);
       }
-      break;
 
     case 'DELETE' /* Delete a link by its ID */:
       try {
@@ -58,7 +55,6 @@ export default async function handler(
 
         return res.status(200).send(deletedLink);
       } catch (error) {
-        console.log('error', error.message);
         return res.status(400).send(error.message);
       }
   }

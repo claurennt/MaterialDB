@@ -23,12 +23,11 @@ export default withSession(async (req, res) => {
           activated: true,
         });
 
-        res.redirect('/api/auth/register?activated=true');
+        return res.redirect('/api/auth/register?activated=true');
       } catch (error) {
-        console.log(error, error.message);
         return res.status(500).json(error.message);
       }
     default:
-      res.status(400).send('Bad request');
+      return res.status(400).send('Bad request');
   }
 });
