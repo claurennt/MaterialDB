@@ -1,18 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import DBClient from '../../utils/server/DBClient';
-import Topic from '../../models/Topic';
-import Link from '../../models/Link';
-import Admin from '../../models/Admin';
+import Topic from '@/models/Topic';
+import Link from '@/models/Link';
+import Admin from '@/models/Admin';
+import { NextAPIHandler } from '@/types/next-auth';
+import DBClient from '@/utils/server/DBClient';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+const handler: NextAPIHandler = async (req, res) => {
   const { body, method, query } = req;
 
   await DBClient();
-
   switch (method) {
     case 'GET' /* Get a model by its ID */:
       try {
@@ -24,8 +21,9 @@ export default async function handler(
         }
         return res.status(200).send(topics);
       } catch (error) {
-        console.log('get', error);
         return res.status(400).send(error);
       }
   }
-}
+};
+
+export default handler;

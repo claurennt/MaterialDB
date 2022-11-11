@@ -1,104 +1,53 @@
-import useAuthHook from '../utils/client/useAuthHook';
+import { useState } from 'react';
+import axios from 'axios';
+import Head from 'next/head';
+import { GetServerSideProps } from 'next';
 
 import { ToastContainer } from 'react-toastify';
 
-import AuthForm from '../components/AuthForm';
+import Header from '@/components/Header';
+import Topics from '@/components/Topics';
 
-import { useState, Fragment, useEffect } from 'react';
-import Head from 'next/head';
-import { GetServerSideProps } from 'next';
 import type { AppProps, AddNewFunction } from '@/types/components';
-import { useRouter } from 'next/router';
-
-import Link from 'next/link';
-import axios from 'axios';
+import type { IndividualTopic } from '@/types/pages';
 
 import NewLinkForm from '../components/NewLinkForm';
 import MailActivationSuccess from '../components/MailActivationSuccess';
-import LoginForm from '../components/LoginForm';
+
 import styles from './index.module.css';
-import { getSession } from 'next-auth/react';
-import type { Session } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from './api/auth/[...nextauth]';
 
-export default function Home(props, { currentTopics }: AppProps) {
-  const { title, container, description, grid, card } = styles;
+export default function Home(props: AppProps) {
+  const { session } = props;
 
-  const {
-    query: { activated },
-  } = useRouter();
+  const [open, setOpen] = useState<boolean>(false);
+  const [openPanel, setOpenPanel] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (activated) {
-      const timerID = setTimeout(() => {
-        setIsMailActivated(false);
-      }, 1200);
-      return () => clearTimeout(timerID);
-    }
-  }, []);
+  const [retrievedTopics, setRetrievedTopics] = useState<IndividualTopic[]>(
+    session?.topics ?? []
+  );
 
-  const {
-    handleLoginData,
-    handleLoginRequest,
-    handleRegisterRequest,
-    handleRegisterData,
-    openAuthModal,
-    setOpenAuthModal,
-  } = useAuthHook();
-
-  const [open, setOpen] = useState(false);
-  const [openPanel, setOpenPanel] = useState(false);
-  const [isMailActivated, setIsMailActivated] = useState(Boolean(activated));
-
-  const [currentAdmin, setCurrentAdmin] = useState(props.session);
-  const [retrievedTopics, setRetrievedTopics] = useState(currentTopics);
-  const [newTopic, setNewTopic] = useState({
-    name: '',
-    description: '',
-  });
-
-  const inputs = [
-    { name: 'name', placeholder: 'Name of the topic' },
-    { name: 'description', placeholder: 'add a short intro to the topic' },
-  ];
+  const { container } = styles;
 
   const handleClick: AddNewFunction = async (e) => {
-    const target = e.target as typeof e.target & {
-      name: { value: string };
-    };
-
-    if (target.name.value === 'logout') {
-      await axios.post('/api/auth/logout');
-    }
-
     setOpenPanel(!openPanel);
-    setCurrentAdmin(undefined);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setNewTopic((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-
-  const addNewTopic: AddNewFunction = async (e) => {
-    e.preventDefault();
-
-    const { data } = await axios.post('/api/topics', {
-      newTopic,
-      creatorId: currentAdmin._id,
-    });
-
-    setOpen(false);
-    setRetrievedTopics((prev) => [...prev, data]);
-  };
-
-  const topicsArray = currentAdmin?.topics || retrievedTopics;
+  const topicsArray = retrievedTopics;
 
   return (
     <div className={container}>
-      {isMailActivated && <MailActivationSuccess />}
       <Head>
         <title>MaterialDB</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
+
+      <Header />
+
       <main>
+        <MailActivationSuccess />
+
         <ToastContainer
           position='top-center'
           autoClose={5000}
@@ -111,89 +60,9 @@ export default function Home(props, { currentTopics }: AppProps) {
           pauseOnHover
         />
 
-        <AuthForm
-          action='register'
-          openAuthModal={openAuthModal.register}
-          setOpenAuthModal={setOpenAuthModal}
-          handleData={handleRegisterData}
-          handleRequest={handleRegisterRequest}
-          // currentAdmin={currentAdmin}
-          // setCurrentAdmin={setCurrentAdmin}
-        />
-        <AuthForm
-          action='login'
-          openAuthModal={openAuthModal.login}
-          setOpenAuthModal={setOpenAuthModal}
-          handleData={handleLoginData}
-          handleRequest={handleLoginRequest}
-          // currentAdmin={currentAdmin}
-          // setCurrentAdmin={setCurrentAdmin}
-        />
-        <div>
-          <button
-            className='bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-0 top-0 mx-40 m-4'
-            name='register'
-            onClick={() =>
-              setOpenAuthModal((prev) => ({ ...prev, register: true }))
-            }
-          >
-            register
-          </button>
-        </div>
-        <LoginForm
-          openPanel={openPanel}
-          setOpenPanel={setOpenPanel}
-          // currentAdmin={currentAdmin}
-          // setCurrentAdmin={setCurrentAdmin}
-        />
-        <button
-          className='bg-blue-500 hover:bg-blue-700 text-white font-bold  px-4 rounded-full absolute right-0 top-0 m-4'
-          name={!currentAdmin?.username ? 'login' : 'logout'}
-          onClick={handleClick}
-        >
-          {!currentAdmin?.username ? 'login' : 'logout'}
-        </button>
-        {currentAdmin?.username ? (
-          <h1 className={title}>
-            Welcome back to your <span>MaterialDB</span> {currentAdmin.username}
-            !
-          </h1>
-        ) : (
-          <h1 className={title}>
-            Welcome to <span>MaterialDB!</span>
-          </h1>
-        )}
-        <h2>
-          MaterialDB is an app where you can collect useful links and resources
-          that help you become a better <span>developer/instructor</span>.
-        </h2>
-        <p className={description}>
-          If you wanna see a list of resources pick a topic below.
-        </p>
-        <div className={grid}>
-          {topicsArray?.map(({ name, _id, description, subtopics }) => (
-            <Fragment key={_id}>
-              <Link
-                href={{
-                  pathname: '/topics/[_id]',
-                  query: {
-                    _id: _id,
-                    currentAdminId: currentAdmin?._id,
-                    name: name,
-                  },
-                }}
-                key={_id}
-              >
-                <a className={card}>
-                  <h3>{name}</h3>
-                  <p>{description}</p>
-                </a>
-              </Link>
-            </Fragment>
-          ))}
-        </div>
+        <Topics topicsArray={topicsArray} />
       </main>
-      {currentAdmin && (
+      {session && (
         <button
           className='bg-blue-600 absolute bottom-0 right-0 p-1 text-lg '
           onClick={() => setOpen(true)}
@@ -203,14 +72,10 @@ export default function Home(props, { currentTopics }: AppProps) {
       )}
       {open && (
         <NewLinkForm
-          handleChange={handleChange}
-          newData={newTopic}
-          addNew={addNewTopic}
+          type='topic'
+          setRetrievedTopics={setRetrievedTopics}
           open={open}
           setOpen={setOpen}
-          inputs={inputs}
-          currentAdmin={currentAdmin}
-          setCurrentAdmin={setCurrentAdmin}
         />
       )}
       <footer>made with love by claurennt</footer>
@@ -221,23 +86,23 @@ export default function Home(props, { currentTopics }: AppProps) {
 //pre-render page with server side props
 export const getServerSideProps: GetServerSideProps = async ({
   req,
+  res,
   query: { userId },
 }) => {
   try {
     // if the url has a userId parameter send a request to api/topics?userId=${userId}
     if (userId) {
       const { data } = await axios.get(
-        `http://localhost:3000/api/topics?userId=${userId}`
+        `${process.env.REQUESTURL}?userId=${userId}`
       );
-      return { props: { currentTopics: data } };
+      return { props: { currentTopics: data || null } };
     }
-    //else get the the current session
-    const session = await getSession({ req });
+
+    const session = await getServerSession(req, res, authOptions);
 
     //if there is a session,i.e. cookies are stored send it as prop else send null
-    return { props: { session: session || null } };
+    return { props: { session: undefined || null } };
   } catch (err) {
-    console.log(err);
     //if no admin is authenticated and no query is present in the url send null
     return { props: { session: null } };
   }

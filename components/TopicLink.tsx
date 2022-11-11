@@ -6,8 +6,7 @@ import type { AppProps, HighlightSearchTerm } from '@/types/components';
 
 const TopicLink = ({
   link: { title, url, tags, _id, category },
-  currentAdmin,
-  categories,
+  currentAdminId,
   search,
   setTopicLinks,
 }: AppProps) => {
@@ -25,12 +24,23 @@ const TopicLink = ({
     return { __html: highlightedQuery };
   };
 
+  const categories = [
+    { type: 'article', color: 'orange' },
+    { type: 'website', color: 'violet' },
+    { type: 'repository', color: 'darkorchid' },
+    { type: 'tutorial', color: 'red' },
+    { type: 'video', color: 'violet' },
+    { type: 'resource', color: 'aquamarine' },
+    { type: 'package', color: 'teal' },
+    { type: 'library', color: 'fuchsia' },
+  ];
+
   //find matching category and retrieve color for styling
   const color = categories.find((c) => c.type === category).color;
 
   return (
     <div className='mt-5 flex'>
-      {currentAdmin && (
+      {currentAdminId && (
         <button className='text-blue-600 text-4xl mx-3 ' onClick={deleteLink}>
           -
         </button>
