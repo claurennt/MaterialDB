@@ -1,7 +1,4 @@
-import withSession from '../../../utils/server/withSession';
-import session from './session';
-
-export default withSession(async (req, res) => {
+const handler = async (req, res) => {
   const { method } = req;
 
   switch (method) {
@@ -13,4 +10,6 @@ export default withSession(async (req, res) => {
     default:
       return res.status(400).send('Bad request');
   }
-});
+};
+
+export default handler;

@@ -2,7 +2,7 @@
 import { Fragment, useState } from 'react';
 import axios from 'axios';
 import { Dialog, Transition } from '@headlessui/react';
-import { useAuthContext } from '../context/AuthContext';
+
 import FormInputs from './FormInputs';
 import FormSelect from './FormSelect';
 
@@ -12,6 +12,7 @@ import type {
   NewLink,
   NewTopic,
 } from '@/types/components';
+import { useSession } from 'next-auth/react';
 
 const NewLinkForm = ({
   individualTopicId,
@@ -34,7 +35,7 @@ const NewLinkForm = ({
     tags: [],
   });
 
-  const { currentAdmin } = useAuthContext();
+  const { data: session } = useSession();
 
   const handleChangeNewTopic = (e: React.ChangeEvent<HTMLInputElement>) =>
     setNewTopic((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -47,7 +48,7 @@ const NewLinkForm = ({
 
     const { data } = await axios.post('/api/topics', {
       newTopic,
-      creatorId: currentAdmin._id,
+      creatorId: session.user.id,
     });
 
     setOpen(false);
@@ -144,7 +145,7 @@ const NewLinkForm = ({
                 </div>
               </div>
               <div className='bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse'>
-                {currentAdmin && (
+                {session && (
                   <button
                     type='button'
                     className='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm'
