@@ -1,5 +1,5 @@
-import { IndividualTopic } from '@/types/pages';
-import { HandleUserAuthRequest } from '@/types/components';
+import { IndividualTopic, Admin } from '@/types/pages';
+import { Session } from 'next-auth';
 
 type EventTarget = typeof e.target & {
   name?: string;
@@ -12,6 +12,10 @@ type NewLink = {
   tags: string[];
 };
 
+type NewTopic = {
+  name: string;
+  description: string;
+};
 type TopicLink = {
   _id: string;
   title: string;
@@ -29,6 +33,8 @@ type NewData = {
 };
 
 type CurrentAdmin = {
+  _id?: number;
+  username: string;
   newTopic: NewData;
   creatorId: string;
 };
@@ -40,13 +46,13 @@ type AddNewFunction = (
     | React.FormEvent<HTMLFormElement>
 ) => void;
 
-type HandleUserAuth = (
-  e:
-    | React.MouseEvent<HTMLButtonElement, MouseEvent>
-    | React.FormEvent<HTMLFormElement>
-) => void;
-
 type AppProps = {
+  type?: string;
+  currentAdminId?: string | string[];
+  individualTopicId?: string;
+  setRetrievedTopics?: React.Dispatch<React.SetStateAction<IndividualTopic[]>>;
+  children?: React.ReactNode;
+  session?: Admin;
   link?: TopicLink;
   search?: string;
   currentTopics?: {}[];
@@ -61,16 +67,20 @@ type AppProps = {
   }[];
   /** an object with any number of properties (PREFERRED) */
   newData?: NewData;
-
+  session: Admin;
   individualTopic?: IndividualTopic;
-
+  topicsArray?: IndividualTopic[];
+  action?: string;
   name?: string;
   open?: boolean;
-  currentAdmin?: CurrentAdmin | string | string[];
+  openAuthModal?: { login: boolean; register: boolean };
+  currentAdmin?: CurrentAdmin;
   setCurrentAdmin?: React.Dispatch<
     React.SetStateAction<undefined | CurrentAdmin>
   >;
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenAuthModal?: React.Dispatch<React.SetStateAction<{}>>;
+
   addNew?: AddNewFunction;
   setTopicLinks?: React.Dispatch<React.SetStateAction<TopicLink[]>>;
   /** function type syntax that takes an event (VERY COMMON) */
@@ -83,9 +93,8 @@ export type {
   HomeProps,
   TopicLink,
   NewLink,
+  NewTopic,
   HighlightSearchTerm,
   AddNewFunction,
-  HandleUserAuth,
-  SetAuthState,
   EventTarget,
 };

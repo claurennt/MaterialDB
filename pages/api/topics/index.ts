@@ -45,7 +45,7 @@ export default async function handler(req, res) {
             .send('Something went wrong, no topic wwas created');
         }
 
-        await Admin.findByIdAndUpdate(
+        const t = await Admin.findByIdAndUpdate(
           creatorId,
           {
             $push: {

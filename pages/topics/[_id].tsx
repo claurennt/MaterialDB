@@ -1,7 +1,8 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter, NextRouter } from 'next/router';
 import { useState } from 'react';
-import DBClient from '../../utils/server/DBClient';
+import { useAuthContext } from '../../context/AuthContext';
+
 import axios from 'axios';
 import { nanoid } from 'nanoid';
 import TopicLink from '../../components/TopicLink';
@@ -12,28 +13,8 @@ import type { AppProps, TopicLink as Link, NewLink } from '@/types/components';
 const TopicPage = ({ individualTopic }: AppProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<undefined | string>();
-  const [newLink, setNewLink] = useState<NewLink>({
-    url: '',
-    category: '',
-    tags: [],
-  });
 
   const [topicLinks, setTopicLinks] = useState<Link[]>(individualTopic.links);
-
-  const categories = [
-    { type: 'article', color: 'orange' },
-    { type: 'website', color: 'violet' },
-    { type: 'repository', color: 'darkorchid' },
-    { type: 'tutorial', color: 'red' },
-    { type: 'video', color: 'violet' },
-    { type: 'resource', color: 'aquamarine' },
-    { type: 'package', color: 'teal' },
-    { type: 'library', color: 'fuchsia' },
-  ];
-  const inputs = [
-    { name: 'url', placeholder: 'paste website url here' },
-    { name: 'tags', placeholder: 'add your tags here' },
-  ];
 
   //get router info with props passed with Link component
   const router: NextRouter = useRouter();
@@ -41,22 +22,6 @@ const TopicPage = ({ individualTopic }: AppProps) => {
   const {
     query: { name, currentAdminId },
   } = router;
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setNewLink((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-
-  const addNewLink = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const { data } = await axios.put(
-      `${process.env.NEXT_PUBLIC_AUTH_URL}/api/topics/${individualTopic._id}`,
-      { newLink, currentAdminId }
-    );
-
-    // close the modal and refresh the page to get updated server side props and display new added link
-    setTimeout(() => setOpen(false), 500);
-    setTopicLinks((prev) => [...prev, data]);
-  };
 
   // handle search submit
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -82,6 +47,7 @@ const TopicPage = ({ individualTopic }: AppProps) => {
           +
         </button>
       )}
+
       <button
         className='absolute top-0 right-0 mx-5 px-5 text-base '
         onClick={() => router.replace('/')}
@@ -90,15 +56,10 @@ const TopicPage = ({ individualTopic }: AppProps) => {
       </button>
       {open && (
         <NewLinkForm
-          newData={newLink}
-          handleChange={handleChange}
-          name={name as string}
-          currentAdmin={currentAdminId}
-          addNew={addNewLink}
+          individualTopicId={individualTopic._id}
+          setTopicLinks={setTopicLinks}
           setOpen={setOpen}
           open={open}
-          categories={categories}
-          inputs={inputs}
         />
       )}
 
@@ -114,8 +75,7 @@ const TopicPage = ({ individualTopic }: AppProps) => {
           search={search}
           key={nanoid()}
           link={link}
-          currentAdmin={currentAdminId}
-          categories={categories}
+          currentAdminId={currentAdminId}
         />
       ))}
     </div>

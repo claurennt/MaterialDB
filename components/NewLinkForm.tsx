@@ -1,22 +1,72 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useState } from 'react';
+import axios from 'axios';
 import { Dialog, Transition } from '@headlessui/react';
+import { useAuthContext } from '../context/AuthContext';
 import FormInputs from './FormInputs';
 import FormSelect from './FormSelect';
-import axios from 'axios';
-import type { AppProps } from '@/types/components';
+
+import type {
+  AppProps,
+  AddNewFunction,
+  NewLink,
+  NewTopic,
+} from '@/types/components';
 
 const NewLinkForm = ({
-  handleChange,
+  individualTopicId,
   setOpen,
-  addNew,
-  inputs,
+  setRetrievedTopics,
+  setTopicLinks,
+  type,
   name,
   open,
   newData,
-  currentAdmin,
-  categories,
 }: AppProps) => {
+  const [newTopic, setNewTopic] = useState<NewTopic>({
+    name: '',
+    description: '',
+  });
+
+  const [newLink, setNewLink] = useState<NewLink>({
+    url: '',
+    category: '',
+    tags: [],
+  });
+
+  const { currentAdmin } = useAuthContext();
+
+  const handleChangeNewTopic = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setNewTopic((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const handleChangeNewLink = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setNewLink((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const addNewTopic: AddNewFunction = async (e) => {
+    e.preventDefault();
+
+    const { data } = await axios.post('/api/topics', {
+      newTopic,
+      creatorId: currentAdmin._id,
+    });
+
+    setOpen(false);
+    setRetrievedTopics((prev) => [...prev, data]);
+  };
+
+  const addNewLink: AddNewFunction = async (e) => {
+    e.preventDefault();
+
+    const { data } = await axios.put(
+      `${process.env.NEXT_PUBLIC_AUTH_URL}/api/topics/${individualTopicId}`,
+      { newLink }
+    );
+
+    // close the modal and refresh the page to get updated server side props and display new added link
+    setTimeout(() => setOpen(false), 500);
+    setTopicLinks((prev) => [...prev, data]);
+  };
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -62,26 +112,34 @@ const NewLinkForm = ({
                       as='h3'
                       className='text-lg leading-6 font-medium text-gray-900'
                     >
-                      {name ? (
-                        <p>Add new article/resource about {name} </p>
+                      {type === 'topic' ? (
+                        <p>Add new article/resource </p>
                       ) : (
                         <p>Insert a new topic </p>
                       )}
                     </Dialog.Title>
                     <div className='col-span-3 sm:col-span-2'>
                       <FormInputs
-                        handleChange={handleChange}
-                        inputs={inputs}
+                        type={type}
+                        handleChange={
+                          type === 'topic'
+                            ? handleChangeNewTopic
+                            : handleChangeNewLink
+                        }
                         newData={newData}
                       />
                     </div>
-                    {categories?.map((category, index) => (
+                    {/* {categories?.map((category, index) => (
                       <FormSelect
                         {...category}
-                        handleChange={handleChange}
+                        handleChange={
+                          type === 'topic'
+                            ? handleChangeNewTopic
+                            : handleChangeNewLink
+                        }
                         key={index}
                       />
-                    ))}
+                    ))} */}
                   </div>
                 </div>
               </div>
@@ -90,7 +148,9 @@ const NewLinkForm = ({
                   <button
                     type='button'
                     className='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm'
-                    onClick={(e) => addNew(e)}
+                    onClick={(e) =>
+                      type === 'topic' ? addNewTopic(e) : addNewLink(e)
+                    }
                   >
                     +
                   </button>

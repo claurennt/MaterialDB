@@ -21,7 +21,7 @@ linkSchema.pre('deleteOne', async function (this: ILink, next) {
     { links: { $eq: _id } },
     { $pull: { links: _id } }
   );
-  console.log(result);
+
   if (!result)
     return next(
       new Error(

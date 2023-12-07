@@ -1,6 +1,14 @@
 import nodemailer from 'nodemailer';
 
-const { NEXT_PUBLIC_EMAIL, NEXT_PUBLIC_PASSWORD } = process.env;
+const { NEXT_PUBLIC_EMAIL, NEXT_PUBLIC_PASSWORD, NEXT_PUBLIC_URL } =
+  process.env;
+const port = process.env.PORT || 3000;
+const environment = process.env.NODE_ENV;
+
+const AUTHURL =
+  environment === 'development'
+    ? `http://localhost:${port}/api/auth`
+    : `${NEXT_PUBLIC_URL}/api/auth`;
 
 //create transporter object with config
 const transporter = nodemailer.createTransport({
@@ -17,7 +25,6 @@ const sendEmail = (message) => {
   return new Promise((resolve, reject) => {
     transporter.sendMail(message, (err, info) => {
       if (err) {
-        console.log('err from sendMail', err);
         reject(err);
       } else {
         resolve(info);
@@ -35,7 +42,7 @@ const sendConfirmationEmail = ({ username, email, _id }) => {
     html: `
       <h3> Hello ${username} </h3>
       <p>Thank you for registering for Material DB. Much Appreciated! Just one last step is laying ahead of you...</p>
-      <p>To activate your account please follow this link: <a target="_" href="http://localhost:3000/api/auth/activate/${_id}">Activation Link </a></p>
+      <p>To activate your account please follow this link: <a target="_" href=${AUTHURL}/activate/${_id}>Activation Link </a></p>
       <p>Cheers</p>
       <p>Material DB Team</p>
     `,
