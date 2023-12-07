@@ -73,13 +73,8 @@ type AppProps = {
   action?: string;
   name?: string;
   open?: boolean;
-  openAuthModal?: { login: boolean; register: boolean };
-  currentAdmin?: CurrentAdmin;
-  setCurrentAdmin?: React.Dispatch<
-    React.SetStateAction<undefined | CurrentAdmin>
-  >;
+
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  setOpenAuthModal?: React.Dispatch<React.SetStateAction<{}>>;
 
   addNew?: AddNewFunction;
   setTopicLinks?: React.Dispatch<React.SetStateAction<TopicLink[]>>;
