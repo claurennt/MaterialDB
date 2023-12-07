@@ -1,10 +1,8 @@
-import bcrypt from 'bcrypt';
-import DBClient from '../../../../utils/server/DBClient';
-import Admin from '../../../../models/Admin';
+import DBClient from '@/utils/server/DBClient';
+import Admin from '@/models/Admin';
+import { NextAPIHandler } from '@/types/next-auth';
 
-import withSession from '../../../../utils/server/withSession';
-
-export default withSession(async (req, res) => {
+const handler: NextAPIHandler = async (req, res) => {
   const { method } = req;
 
   await DBClient();
@@ -30,4 +28,5 @@ export default withSession(async (req, res) => {
     default:
       return res.status(400).send('Bad request');
   }
-});
+};
+export default handler;

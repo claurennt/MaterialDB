@@ -5,7 +5,7 @@ import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 
-const Register = ({ action, openAuthModal, setOpenAuthModal }) => {
+const Register = () => {
   const emailRef = useRef(null);
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
