@@ -1,10 +1,4 @@
-import { nanoid } from 'nanoid';
-import type {
-  AppProps,
-  AddNewFunction,
-  NewLink,
-  NewTopic,
-} from 'types/components';
+import type { AppProps } from 'types/components';
 
 const FormInputs = ({ type, handleChange, newData }: AppProps) => {
   const topicInputs = [

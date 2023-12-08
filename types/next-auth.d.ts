@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import NextAuth from 'next-auth';
-import { Session } from 'next-iron-session';
+
 import { Admin } from './pages';
 //module augmentation for Session
 declare module 'next-auth' {

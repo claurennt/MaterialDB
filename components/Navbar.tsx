@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import LogoutButton from './LogoutButton';
 
 import { useSession } from 'next-auth/react';
