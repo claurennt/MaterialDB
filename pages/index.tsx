@@ -8,7 +8,7 @@ import { ToastContainer } from 'react-toastify';
 import Header from 'components/Header';
 import Topics from 'components/Topics';
 
-import type { AppProps, AddNewFunction } from 'types/components';
+import type { AppProps } from 'types/components';
 import type { IndividualTopic } from 'types/pages';
 
 import NewLinkForm from 'components/NewLinkForm';
@@ -22,17 +22,12 @@ export default function Home(props: AppProps) {
   const { session } = props;
 
   const [open, setOpen] = useState<boolean>(false);
-  const [openPanel, setOpenPanel] = useState<boolean>(false);
 
   const [retrievedTopics, setRetrievedTopics] = useState<IndividualTopic[]>(
     session?.topics ?? []
   );
 
   const { container } = styles;
-
-  const handleClick: AddNewFunction = async (e) => {
-    setOpenPanel(!openPanel);
-  };
 
   const topicsArray = retrievedTopics;
 

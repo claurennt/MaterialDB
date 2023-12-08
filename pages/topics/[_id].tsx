@@ -1,13 +1,13 @@
-import type { GetServerSideProps, NextPage } from 'next';
+import type { GetServerSideProps } from 'next';
 import { useRouter, NextRouter } from 'next/router';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import axios from 'axios';
 import { nanoid } from 'nanoid';
 import TopicLink from 'components/TopicLink';
 import NewLinkForm from 'components/NewLinkForm';
 import SearchBar from 'components/SearchBar';
-import type { AppProps, TopicLink as Link, NewLink } from 'types/components';
+import type { AppProps, TopicLink as Link } from 'types/components';
 
 const TopicPage = ({ individualTopic }: AppProps) => {
   const [open, setOpen] = useState<boolean>(false);
