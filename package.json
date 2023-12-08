@@ -1,6 +1,11 @@
 {
   "name": "MaterialDB",
   "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.1.0",
+    "yarn": "please-use-npm"
+  },
   "scripts": {
     "dev": "cross-env NODE_OPTIONS='--inspect' next dev ",
     "build": "next build",
