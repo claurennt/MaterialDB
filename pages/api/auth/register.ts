@@ -12,16 +12,16 @@ export const handler: NextAPIHandler = async (req, res) => {
   try {
     if (method === 'POST') {
       // console.log(req.body);
-      const { username, password, email } = req.body;
+      const { name, password, email } = req.body;
       //block request if fields are missing
-      if (!username || !password || !email)
+      if (!name || !password || !email)
         return res.status(400).json({
           message: 'Bad request, please provide username, mail and password',
         });
 
       //when a user tries to register see if the email or username are already taken
       const adminExists = await Admin.find({
-        username,
+        name,
       }).countDocuments();
 
       if (adminExists)
@@ -33,7 +33,7 @@ export const handler: NextAPIHandler = async (req, res) => {
 
       const newAdmin = new Admin<IAdmin>({
         email,
-        username,
+        name,
         password: hashedPassword,
       });
 
