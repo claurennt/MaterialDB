@@ -1,10 +1,10 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import axios from 'axios';
 import { Dialog, Transition } from '@headlessui/react';
 
 import FormInputs from './FormInputs';
-import FormSelect from './FormSelect';
+// import FormSelect from './FormSelect';
 
 import type {
   AppProps,
@@ -20,7 +20,7 @@ const NewLinkForm = ({
   setRetrievedTopics,
   setTopicLinks,
   type,
-  name,
+  // name,
   open,
   newData,
 }: AppProps) => {

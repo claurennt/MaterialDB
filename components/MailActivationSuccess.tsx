@@ -19,7 +19,7 @@ const MailActivationSuccess = () => {
       }, 1200);
       return () => clearTimeout(timerID);
     }
-  }, []);
+  }, [activated]);
 
   //TODO: add toast notiification
   return isMailActivated && <div>Mail successfully activated!</div>;
