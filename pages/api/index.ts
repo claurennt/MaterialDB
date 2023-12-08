@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import Topic from '@/models/Topic';
-import Link from '@/models/Link';
-import Admin from '@/models/Admin';
-import { NextAPIHandler } from '@/types/next-auth';
-import DBClient from '@/utils/server/DBClient';
+import Topic from 'models/Topic';
+import Link from 'models/Link';
+import Admin from 'models/Admin';
+import { NextAPIHandler } from 'types/next-auth';
+import DBClient from 'utils/server/DBClient';
 
 const handler: NextAPIHandler = async (req, res) => {
   const { body, method, query } = req;

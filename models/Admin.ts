@@ -1,6 +1,6 @@
 import mongoose, { Model } from 'mongoose';
 
-import { IAdmin } from '@/types/mongoose';
+import { IAdmin } from 'types/mongoose';
 const Schema = mongoose.Schema;
 
 // the schema is the blueprint of our  model
@@ -8,10 +8,8 @@ const adminSchema = new Schema<IAdmin>({
   name: { type: String, required: true, unique: true },
   password: { type: String, required: true, select: false },
   email: { type: String, unique: true, required: true },
-  role: {
-    type: String,
-    default: 'admin',
-  },
+
+  image: { type: String, default: null },
   topics: [{ type: Schema.Types.ObjectId, ref: 'Topic', default: [] }],
 });
 

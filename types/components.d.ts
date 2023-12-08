@@ -1,4 +1,4 @@
-import { IndividualTopic, Admin } from '@/types/pages';
+import { IndividualTopic, Admin } from 'types/pages';
 import { Session } from 'next-auth';
 
 type EventTarget = typeof e.target & {

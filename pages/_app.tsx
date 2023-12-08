@@ -9,8 +9,8 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 
-import '@/styles/global.css';
-import { Layout } from '@/components/Layout';
+import 'styles/global.css';
+import { Layout } from 'components/Layout';
 
 // Wrap the Component prop with ErrorBoundary component
 export default function App({

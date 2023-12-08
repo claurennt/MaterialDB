@@ -1,6 +1,6 @@
 import { Fragment, useRef, useCallback } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { sendAuthRequest } from '../utils/client/auth';
+import { sendAuthRequest } from 'utils/client/auth';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
@@ -23,7 +23,7 @@ const Register = () => {
     };
 
     await axios.post('/api/auth/register', { ...data });
-    router.push('/login');
+    router.push('/auth/login');
 
     //TODO else senda  toast that notify about failed auth
   };

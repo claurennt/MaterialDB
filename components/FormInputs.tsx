@@ -4,7 +4,7 @@ import type {
   AddNewFunction,
   NewLink,
   NewTopic,
-} from '@/types/components';
+} from 'types/components';
 
 const FormInputs = ({ type, handleChange, newData }: AppProps) => {
   const topicInputs = [

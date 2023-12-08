@@ -1,4 +1,4 @@
-import { sendAuthRequest } from '@/utils/client/auth';
+import { sendAuthRequest } from 'utils/client/auth';
 import axios from 'axios';
 import NextAuth from 'next-auth';
 import type { NextAuthOptions } from 'next-auth';
@@ -6,11 +6,11 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
-import clientPromise from '@/utils/server/clientPromise';
+import clientPromise from 'utils/server/clientPromise';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import Admin from '@/models/Admin';
-import dbConnect from '@/utils/server/DBClient';
-import Topic from '@/models/Topic';
+import Admin from 'models/Admin';
+import dbConnect from 'utils/server/DBClient';
+import Topic from 'models/Topic';
 import { getToken } from 'next-auth/jwt';
 
 export const authOptions: NextAuthOptions = {
@@ -20,6 +20,9 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   adapter: MongoDBAdapter(clientPromise),
   debug: process.env.NODE_ENV === 'development',
+  pages: {
+    signIn: '/auth/login',
+  },
   providers: [
     CredentialsProvider({
       id: 'username-login',
@@ -55,6 +58,7 @@ export const authOptions: NextAuthOptions = {
             id: admin._id.toString(),
             name: admin.name,
             email: admin.email,
+            image: admin.image,
           };
         } catch (error) {
           return null;
@@ -65,9 +69,14 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user, session }) {
+      // if (!session?.user.image) session.user.image = null;
       // user is defined only immediately after signin in
       if (user) {
-        return { ...token, id: user.id, email: user.email };
+        return {
+          ...token,
+          id: user.id,
+          email: user.email,
+        };
       }
       return token;
     },
@@ -75,7 +84,12 @@ export const authOptions: NextAuthOptions = {
       // persist the OAuth access_token and or the user id to the token right after signin
       return {
         ...session,
-        user: { ...session.user, id: token.id, email: token.email },
+        user: {
+          ...session.user,
+          id: token.id,
+          email: token.email,
+          image: session.user.image ?? null,
+        },
       };
     },
   },
