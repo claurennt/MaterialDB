@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
 
           return {
             id: admin._id.toString(),
-            name: admin.username,
+            name: admin.name,
             email: admin.email,
           };
         } catch (error) {
