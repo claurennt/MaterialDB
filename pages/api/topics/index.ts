@@ -1,7 +1,7 @@
-import DBClient from '../../../utils/server/DBClient';
-import Topic from '../../../models/Topic';
-import Link from '../../../models/Link';
-import Admin from '../../../models/Admin';
+import DBClient from 'utils/server/DBClient';
+import Topic from 'models/Topic';
+import Link from 'models/Link';
+import Admin from 'models/Admin';
 
 export default async function handler(req, res) {
   const {

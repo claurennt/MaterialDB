@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import styles from '../pages/index.module.css';
-import { IndividualTopic } from '@/types/pages';
+import styles from 'pages/index.module.css';
+import { IndividualTopic } from 'types/pages';
 
 const TopicCard = ({ name, _id, description }: IndividualTopic) => {
   const { card } = styles;

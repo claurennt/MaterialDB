@@ -4,7 +4,8 @@ interface IAdmin {
   name: string;
   password: string;
   email: string;
-  role?: string;
+
+  image?: string | null;
   refresh_token_expires_in?: number;
   /** for array of referenced documents: https://mongoosejs.com/docs/typescript/schemas.html#arrays*/
   topics?: Types.DocumentArray<ITopics>;
