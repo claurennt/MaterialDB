@@ -16,7 +16,7 @@ type AuthRequestHandler = (
 
 type Admin = {
   _id: string;
-  username: string;
+  name: string;
   email: string;
   password?: string;
   role: string;
