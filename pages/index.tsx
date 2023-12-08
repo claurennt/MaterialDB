@@ -2,21 +2,21 @@ import { useState } from 'react';
 import axios from 'axios';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-
+import { getServerSession } from 'next-auth/next';
 import { ToastContainer } from 'react-toastify';
 
-import Header from 'components/Header';
+import HomePageTitle from 'components/HomePageTitle';
 import Topics from 'components/Topics';
-
 import type { AppProps } from 'types/components';
 import type { IndividualTopic } from 'types/pages';
-
+import AuthLinks from 'components/AuthLinks';
 import NewLinkForm from 'components/NewLinkForm';
 import MailActivationSuccess from 'components/MailActivationSuccess';
-
-import styles from './index.module.css';
-import { getServerSession } from 'next-auth/next';
 import { authOptions } from './api/auth/[...nextauth]';
+
+import { Jost } from '@next/font/google';
+
+const jost = Jost({ subsets: ['latin'], variable: '--font-inter' });
 
 export default function Home(props: AppProps) {
   const { session } = props;
@@ -27,20 +27,16 @@ export default function Home(props: AppProps) {
     session?.topics ?? []
   );
 
-  const { container } = styles;
-
   const topicsArray = retrievedTopics;
 
   return (
-    <div className={container}>
+    <div className={`${jost.variable} font-sans`}>
       <Head>
         <title>MaterialDB</title>
-        <link rel='icon' href='/favicon.ico' />
+        <link rel='icon' href='/logo.ico' />
       </Head>
 
-      <Header />
-
-      <main>
+      <main className='flex flex-col items-center gap-y-10 text-center pt-20'>
         <MailActivationSuccess />
 
         <ToastContainer
@@ -54,8 +50,8 @@ export default function Home(props: AppProps) {
           draggable
           pauseOnHover
         />
-
-        <Topics topicsArray={topicsArray} />
+        <HomePageTitle />
+        {session ? <Topics topicsArray={topicsArray} /> : <AuthLinks />}
       </main>
       {session && (
         <button
@@ -73,7 +69,9 @@ export default function Home(props: AppProps) {
           setOpen={setOpen}
         />
       )}
-      <footer>made with love by claurennt</footer>
+      <footer className='absolute text-center bottom-3 right-0 left-0'>
+        made with love by claurennt
+      </footer>
     </div>
   );
 }

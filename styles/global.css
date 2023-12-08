@@ -1,12 +1,18 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-
-@import "tailwindcss/utilities";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @media (max-width: 600px) {
   .grid {
     width: 100%;
     flex-direction: column;
+  }
+}
+
+@layer base {
+  :root {
+    --primary-color: #735eff;
+    --secondary-color: #fd5244;
   }
 }
 
@@ -21,31 +27,9 @@ body {
 * {
   box-sizing: border-box;
 }
-main {
-  padding: 5rem 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-footer {
-  width: 100%;
-  height: 100px;
-  border-top: 1px solid #eaeaea;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 a {
   color: inherit;
-  text-decoration: none;
-}
-
-span {
-  color: #0070f3;
   text-decoration: none;
 }
 
