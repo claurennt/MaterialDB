@@ -1,5 +1,5 @@
 import mongoose, { Model } from 'mongoose';
-import { ITopic } from '@/types/mongoose';
+import { ITopic } from 'types/mongoose';
 
 import Admin from './Admin';
 const Schema = mongoose.Schema;

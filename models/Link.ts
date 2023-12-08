@@ -1,6 +1,6 @@
 import mongoose, { HydratedDocument, Model } from 'mongoose';
 import Topic from './Topic';
-import { ILink, ITopic } from '@/types/mongoose';
+import { ILink, ITopic } from 'types/mongoose';
 
 const Schema = mongoose.Schema;
 

@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
-import Admin from '@/models/Admin';
-import { IAdmin } from '@/types/mongoose';
-import { NextAPIHandler } from '@/types/next-auth';
-import DBClient from '@/utils/server/DBClient';
+import Admin from 'models/Admin';
+import { IAdmin } from 'types/mongoose';
+import { NextAPIHandler } from 'types/next-auth';
+import DBClient from 'utils/server/DBClient';
 
 export const handler: NextAPIHandler = async (req, res) => {
   const { method } = req;

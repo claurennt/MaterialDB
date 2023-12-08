@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import type { AuthRequestHandler } from '../../types/pages';
+import type { AuthRequestHandler } from 'types/pages';
 
 //util function to send an auth request to the backend
 const sendAuthRequest: AuthRequestHandler = async (path, data = null) => {

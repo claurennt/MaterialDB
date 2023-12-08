@@ -5,14 +5,14 @@ import { GetServerSideProps } from 'next';
 
 import { ToastContainer } from 'react-toastify';
 
-import Header from '@/components/Header';
-import Topics from '@/components/Topics';
+import Header from 'components/Header';
+import Topics from 'components/Topics';
 
-import type { AppProps, AddNewFunction } from '@/types/components';
-import type { IndividualTopic } from '@/types/pages';
+import type { AppProps, AddNewFunction } from 'types/components';
+import type { IndividualTopic } from 'types/pages';
 
-import NewLinkForm from '../components/NewLinkForm';
-import MailActivationSuccess from '../components/MailActivationSuccess';
+import NewLinkForm from 'components/NewLinkForm';
+import MailActivationSuccess from 'components/MailActivationSuccess';
 
 import styles from './index.module.css';
 import { getServerSession } from 'next-auth/next';
@@ -101,7 +101,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     const session = await getServerSession(req, res, authOptions);
 
     //if there is a session,i.e. cookies are stored send it as prop else send null
-    return { props: { session: undefined || null } };
+    return { props: { session: session || null } };
   } catch (err) {
     //if no admin is authenticated and no query is present in the url send null
     return { props: { session: null } };

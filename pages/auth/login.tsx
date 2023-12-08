@@ -1,6 +1,6 @@
 import { Fragment, useRef, useCallback } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { sendAuthRequest } from '../utils/client/auth';
+import { sendAuthRequest } from 'utils/client/auth';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 

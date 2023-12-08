@@ -1,4 +1,4 @@
-import styles from '../pages/index.module.css';
+import styles from 'pages/index.module.css';
 
 const Subtitle = () => {
   const { description } = styles;

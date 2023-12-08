@@ -11,7 +11,7 @@ import type {
   AddNewFunction,
   NewLink,
   NewTopic,
-} from '@/types/components';
+} from 'types/components';
 import { useSession } from 'next-auth/react';
 
 const NewLinkForm = ({

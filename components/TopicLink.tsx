@@ -2,7 +2,7 @@ import Tag from './Tag';
 import { nanoid } from 'nanoid';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import axios from 'axios';
-import type { AppProps, HighlightSearchTerm } from '@/types/components';
+import type { AppProps, HighlightSearchTerm } from 'types/components';
 
 const TopicLink = ({
   link: { title, url, tags, _id, category },

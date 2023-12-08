@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import DBClient from '../../../utils/server/DBClient';
-import Topic from '../../../models/Topic';
-import Link from '../../../models/Link';
-import { ILink } from '@/types/mongoose';
-import scrapeArticleTitle from '../../../utils/server/scrapeArticleTitle';
+import DBClient from 'utils/server/DBClient';
+import Topic from 'models/Topic';
+import Link from 'models/Link';
+import { ILink } from 'types/mongoose';
+import scrapeArticleTitle from 'utils/server/scrapeArticleTitle';
 
 export default async function handler(
   req: NextApiRequest,

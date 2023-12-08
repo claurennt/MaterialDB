@@ -1,6 +1,6 @@
 import TopicCard from './TopicCard';
-import styles from '../pages/index.module.css';
-import { AppProps } from '@/types/components';
+import styles from 'pages/index.module.css';
+import { AppProps } from 'types/components';
 
 const Topics = ({ topicsArray }: AppProps) => {
   const { grid } = styles;

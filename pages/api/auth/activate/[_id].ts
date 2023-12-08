@@ -1,6 +1,6 @@
-import DBClient from '@/utils/server/DBClient';
-import Admin from '@/models/Admin';
-import { NextAPIHandler } from '@/types/next-auth';
+import DBClient from 'utils/server/DBClient';
+import Admin from 'models/Admin';
+import { NextAPIHandler } from 'types/next-auth';
 
 const handler: NextAPIHandler = async (req, res) => {
   const { method } = req;
