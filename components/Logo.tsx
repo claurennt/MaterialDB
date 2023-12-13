@@ -12,14 +12,8 @@ const Icon = () => (
     <title>036 - Book Launch</title>
     <desc>Created with Sketch.</desc>
     <defs />
-    <g
-      id='Page-1'
-      stroke='none'
-      stroke-width='1'
-      fill='none'
-      fill-rule='evenodd'
-    >
-      <g id='036---Book-Launch' fill-rule='nonzero'>
+    <g id='Page-1' stroke='none' strokeWidth='1' fill='none' fillRule='evenodd'>
+      <g id='036---Book-Launch' fillRule='nonzero'>
         <rect
           id='Rectangle-path'
           fill='#0A1046'
