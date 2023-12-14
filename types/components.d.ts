@@ -1,5 +1,6 @@
-import { IndividualTopic, Admin } from 'types/pages';
+import { Admin } from 'types/pages';
 import { Session } from 'next-auth';
+import { ITopic } from './mongoose';
 
 type EventTarget = typeof e.target & {
   name?: string;
@@ -50,7 +51,7 @@ type AppProps = {
   type?: string;
   currentAdminId?: string | string[];
   individualTopicId?: string;
-  setRetrievedTopics?: React.Dispatch<React.SetStateAction<IndividualTopic[]>>;
+  setRetrievedTopics?: React.Dispatch<React.SetStateAction<ITopic[]>>;
   children?: React.ReactNode;
   session?: Admin;
   link?: TopicLink;
@@ -68,8 +69,8 @@ type AppProps = {
   /** an object with any number of properties (PREFERRED) */
   newData?: NewData;
   session: Admin;
-  individualTopic?: IndividualTopic;
-  topicsArray?: IndividualTopic[];
+  individualTopic?: ITopic;
+  topicsArray?: ITopic[] | {}[];
   action?: string;
   name?: string;
   open?: boolean;
