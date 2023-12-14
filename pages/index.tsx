@@ -1,9 +1,9 @@
+'use client';
 import { useState } from 'react';
 import axios from 'axios';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth/next';
-import { ToastContainer } from 'react-toastify';
 
 import HomePageTitle from 'components/HomePageTitle';
 import Topics from 'components/Topics';
@@ -11,11 +11,12 @@ import type { AppProps } from 'types/components';
 import type { IndividualTopic } from 'types/pages';
 import AuthLinks from 'components/AuthLinks';
 import NewLinkForm from 'components/NewLinkForm';
-import MailActivationSuccess from 'components/MailActivationSuccess';
+
 import { authOptions } from './api/auth/[...nextauth]';
 
-import { Jost } from '@next/font/google';
+import { Jost } from 'next/font/google';
 
+//font for the project
 const jost = Jost({ subsets: ['latin'], variable: '--font-inter' });
 
 export default function Home(props: AppProps) {
@@ -27,8 +28,6 @@ export default function Home(props: AppProps) {
     session?.topics ?? []
   );
 
-  const topicsArray = retrievedTopics;
-
   return (
     <div className={`${jost.variable} font-sans`}>
       <Head>
@@ -37,21 +36,8 @@ export default function Home(props: AppProps) {
       </Head>
 
       <main className='flex flex-col items-center gap-y-10 text-center pt-20'>
-        <MailActivationSuccess />
-
-        <ToastContainer
-          position='top-center'
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
         <HomePageTitle />
-        {session ? <Topics topicsArray={topicsArray} /> : <AuthLinks />}
+        {session ? <Topics topicsArray={retrievedTopics} /> : <AuthLinks />}
       </main>
       {session && (
         <button

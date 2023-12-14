@@ -1,6 +1,7 @@
 import DBClient from 'utils/server/DBClient';
 import Admin from 'models/Admin';
 import { NextAPIHandler } from 'types/next-auth';
+import { sendRegistrationConfirmationEmail } from 'utils/server/mailer';
 
 const handler: NextAPIHandler = async (req, res) => {
   const { method } = req;
@@ -17,11 +18,16 @@ const handler: NextAPIHandler = async (req, res) => {
           message: 'Something went wrong. Cannot validate user',
         });
       try {
-        await Admin.findByIdAndUpdate(_id, {
+        const { name, email } = await Admin.findByIdAndUpdate(_id, {
           activated: true,
         });
 
-        return res.redirect('/api/auth/register?activated=true');
+        setTimeout(
+          () => sendRegistrationConfirmationEmail({ name, email }),
+          10000
+        );
+
+        return res.status(200).redirect('/auth/register?activated=true');
       } catch (error) {
         return res.status(500).json(error.message);
       }

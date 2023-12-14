@@ -8,8 +8,8 @@ const adminSchema = new Schema<IAdmin>({
   name: { type: String, required: true, unique: true },
   password: { type: String, required: true, select: false },
   email: { type: String, unique: true, required: true },
-
   image: { type: String, default: null },
+  activated: { type: Boolean, default: false },
   topics: [{ type: Schema.Types.ObjectId, ref: 'Topic', default: [] }],
 });
 
