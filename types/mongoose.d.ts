@@ -4,9 +4,9 @@ interface IAdmin {
   name: string;
   password: string;
   email: string;
-
   image?: string | null;
-  refresh_token_expires_in?: number;
+  activated?: boolean;
+
   /** for array of referenced documents: https://mongoosejs.com/docs/typescript/schemas.html#arrays*/
   topics?: Types.DocumentArray<ITopics>;
   _conditions?: { _id: string };
