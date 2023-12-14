@@ -23,6 +23,7 @@ interface ILink {
 }
 
 interface ITopic {
+  _id: string;
   name: string;
   description: string;
   subtopics: Types.Array;

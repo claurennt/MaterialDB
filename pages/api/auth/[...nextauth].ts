@@ -42,7 +42,9 @@ export const authOptions: NextAuthOptions = {
         if (!email || !password) throw new Error('Missing credentials');
         try {
           await dbConnect();
-          const admin = await Admin.findOne({ email }).select('+password');
+          const admin = await Admin.findOne({ email })
+            .populate('topics')
+            .select('+password');
 
           if (!admin) {
             return null;
@@ -59,6 +61,7 @@ export const authOptions: NextAuthOptions = {
             name: admin.name,
             email: admin.email,
             image: admin.image,
+            topics: admin.topics,
           };
         } catch (error) {
           return null;
@@ -68,12 +71,12 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user, session }) {
-      // if (!session?.user.image) session.user.image = null;
+    async jwt({ token, user }) {
       // user is defined only immediately after signin in
       if (user) {
         return {
           ...token,
+          ...user,
           id: user.id,
           email: user.email,
         };
@@ -89,6 +92,7 @@ export const authOptions: NextAuthOptions = {
           id: token.id,
           email: token.email,
           image: session.user.image ?? null,
+          topics: token.topics,
         },
       };
     },

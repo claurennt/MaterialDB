@@ -8,6 +8,7 @@ interface LayoutProps {
 
 export const Layout: React.FunctionComponent<LayoutProps> = ({ children }) => {
   const { data: session } = useSession();
+
   return (
     <>
       {session && <LogoutButton />}
