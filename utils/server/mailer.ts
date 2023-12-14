@@ -1,3 +1,4 @@
+import axios from 'axios';
 import nodemailer from 'nodemailer';
 
 const { NEXT_PUBLIC_EMAIL, NEXT_PUBLIC_PASSWORD, NEXT_PUBLIC_URL } =
@@ -5,10 +6,10 @@ const { NEXT_PUBLIC_EMAIL, NEXT_PUBLIC_PASSWORD, NEXT_PUBLIC_URL } =
 const port = process.env.PORT || 3000;
 const environment = process.env.NODE_ENV;
 
-const AUTHURL =
+const BASEURL =
   environment === 'development'
-    ? `http://localhost:${port}/api/auth`
-    : `${NEXT_PUBLIC_URL}/api/auth`;
+    ? `http://localhost:${port}`
+    : `${NEXT_PUBLIC_URL}`;
 
 //create transporter object with config
 const transporter = nodemailer.createTransport({
@@ -21,28 +22,26 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendEmail = (message) => {
-  return new Promise((resolve, reject) => {
-    transporter.sendMail(message, (err, info) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(info);
-      }
-    });
-  });
+const sendEmail = async (message) => {
+  try {
+    await transporter.sendMail(message);
+  } catch (err) {
+    throw new Error('Error: something went wrong. Email not sent');
+  }
 };
 
-const sendConfirmationEmail = ({ username, email, _id }) => {
+const sendActivationEmail = ({ name, email, _id }) => {
+  const activationLink = `${BASEURL}/api/auth/activate/${_id}`;
+
   const message = {
     from: NEXT_PUBLIC_EMAIL,
     // to: toUser.email // in production uncomment this
     to: email,
     subject: 'Material DB - Activate Account',
     html: `
-      <h3> Hello ${username} </h3>
+      <h3> Hello ${name} </h3>
       <p>Thank you for registering for Material DB. Much Appreciated! Just one last step is laying ahead of you...</p>
-      <p>To activate your account please follow this link: <a target="_" href=${AUTHURL}/activate/${_id}>Activation Link </a></p>
+      <a href=${activationLink}>Activate profile</a>
       <p>Cheers</p>
       <p>Material DB Team</p>
     `,
@@ -51,20 +50,22 @@ const sendConfirmationEmail = ({ username, email, _id }) => {
   return sendEmail(message);
 };
 
-const sendResetPasswordEmail = ({ user: { username, email }, _id }) => {
-  // const message = {
-  //   from: NEXT_PUBLIC_EMAIL,
-  //   // to: toUser.email // in production uncomment this
-  //   to: email,
-  //   subject: 'Material DB - Reset Password',
-  //   html: `
-  //     <h3>Hello ${username} </h3>
-  //     <p>To reset your password please follow this link: <a target="_" href="${DOMAIN}/api/auth/reset-password/${hash}">Reset Password Link</a></p>
-  //     <p>Cheers,</p>
-  //     <p>Material DB Team</p>
-  //   `,
-  // };
-  // return sendEmail(message);
+const sendRegistrationConfirmationEmail = ({ name, email }) => {
+  const message = {
+    from: NEXT_PUBLIC_EMAIL,
+    // to: toUser.email // in production uncomment this
+    to: email,
+    subject: 'Material DB - Registration successful',
+    html: `
+      <h3> Hi ${name} </h3>
+      <p>Your account has been successfully activated. You can now start using the app - have fun!</p>
+      <a href=${BASEURL}/auth/login target="_">Go to login</a>
+      <p>Cheers</p>
+      <p>Material DB Team</p>
+    `,
+  };
+
+  return sendEmail(message);
 };
 
-export { sendConfirmationEmail, sendResetPasswordEmail };
+export { sendActivationEmail, sendRegistrationConfirmationEmail };

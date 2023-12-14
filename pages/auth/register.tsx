@@ -1,7 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import logo from 'public/logo.png';
 
@@ -9,6 +11,8 @@ const Register = () => {
   const emailRef = useRef(null);
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
+  const toastId = useRef(null);
+  const searchParams = useSearchParams();
   const router = useRouter();
 
   const registerAdmin = async (event: React.SyntheticEvent) => {
@@ -21,15 +25,61 @@ const Register = () => {
       password: passwordRef.current.value,
       name: usernameRef.current.value,
     };
+    try {
+      await axios.post('/api/auth/register', {
+        ...data,
+      });
 
-    await axios.post('/api/auth/register', { ...data });
-    router.push('/auth/login');
-
-    //TODO else senda  toast that notify about failed auth
+      toastId.current = toast.info(
+        'User registration successful! Please check your inbox to activate your account...'
+      );
+      return;
+    } catch (error) {
+      const {
+        response: { data: errorMessage },
+      } = error;
+      toastId.current = toast.error(errorMessage);
+      return;
+    }
   };
+
+  const activated = searchParams.get('activated');
+
+  // show toast and re-directs the user to the login form after successful email activation
+  useEffect(() => {
+    let timerId: number;
+    if (activated) {
+      toastId.current = toast.success(
+        'Your account has been activated! You are now being redirected to the login page...'
+      );
+      timerId = window.setTimeout(() => {
+        router.push('/auth/login');
+      }, 5000);
+    }
+    return () => clearTimeout(timerId);
+  }, [searchParams, router, activated]);
+
   return (
     <>
-      <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
+      <div role='alert'>
+        <span className='sr-only'>
+          Your account has been activated! You are being redirected to the login
+          form...
+        </span>
+      </div>
+      <ToastContainer
+        ref={toastId}
+        position='top-center'
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+      />
+      <div
+        className={`flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 ${
+          activated && 'blur-sm pointer-events-none' //blurs and disables background form after account activation
+        }`}
+      >
         <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
           <Image
             width='40'
@@ -48,7 +98,9 @@ const Register = () => {
             className='space-y-6'
             action='#'
             method='POST'
-            onSubmit={registerAdmin}
+            onSubmit={(e) => {
+              registerAdmin(e);
+            }}
           >
             <div>
               <label

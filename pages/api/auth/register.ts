@@ -3,6 +3,7 @@ import Admin from 'models/Admin';
 import { IAdmin } from 'types/mongoose';
 import { NextAPIHandler } from 'types/next-auth';
 import DBClient from 'utils/server/DBClient';
+import { sendActivationEmail } from 'utils/server/mailer';
 
 export const handler: NextAPIHandler = async (req, res) => {
   const { method } = req;
@@ -16,18 +17,16 @@ export const handler: NextAPIHandler = async (req, res) => {
       //block request if fields are missing
       if (!name || !password || !email)
         return res.status(400).json({
-          message: 'Bad request, please provide username, mail and password',
+          message: 'Bad request, please provide username, email and password',
         });
 
       //when a user tries to register see if the email or username are already taken
       const adminExists = await Admin.find({
-        name,
+        $or: [{ name }, { email }],
       }).countDocuments();
 
       if (adminExists)
-        return res
-          .status(404)
-          .send('An Admin with this username or email already exists.');
+        return res.status(400).send('Email or username already in use');
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -39,18 +38,20 @@ export const handler: NextAPIHandler = async (req, res) => {
 
       await newAdmin.save();
 
-      //   TODO: send confirmation mail for registration
+      const { _id } = newAdmin;
+
+      //send confirmation email to user
+      sendActivationEmail({
+        _id,
+        email,
+        name,
+      });
 
       return res.status(201).send('Admin created');
     }
-
-    if (method === 'GET') {
-      const { activated } = req.query;
-      if (activated) res.redirect('/?activated=true');
-    }
   } catch (error) {
     console.log(error, error.message);
-    return res.status(500).json(error.message);
+    return res.status(500).send(error.message);
   }
 };
 
