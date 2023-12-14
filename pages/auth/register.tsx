@@ -25,22 +25,26 @@ const Register = () => {
       password: passwordRef.current.value,
       name: usernameRef.current.value,
     };
-    try {
-      await axios.post('/api/auth/register', {
-        ...data,
-      });
 
-      toastId.current = toast.info(
-        'User registration successful! Please check your inbox to activate your account...'
-      );
-      return;
-    } catch (error) {
-      const {
-        response: { data: errorMessage },
-      } = error;
-      toastId.current = toast.error(errorMessage);
-      return;
-    }
+    const registrationPromise = axios.post('/api/auth/register', {
+      ...data,
+    });
+
+    // show different toasts while request is being handled
+    toast.promise(registrationPromise, {
+      pending: {
+        render: () => 'Registration request sent...',
+        isLoading: true,
+      },
+      success: {
+        type: toast.TYPE.INFO,
+        render: () =>
+          'User registration successfull. Check your inbox to activate your account...',
+      },
+      error: {
+        render: () => 'Email or username already in use',
+      },
+    });
   };
 
   const activated = searchParams.get('activated');
@@ -95,19 +99,18 @@ const Register = () => {
 
         <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
           <form
-            className='space-y-6'
+            noValidate
+            className='space-y-6 group'
             action='#'
             method='POST'
-            onSubmit={(e) => {
-              registerAdmin(e);
-            }}
+            onSubmit={registerAdmin}
           >
             <div>
               <label
                 htmlFor='email'
                 className='block text-sm font-medium leading-6 text-gray-900'
               >
-                Email address
+                Email address*
               </label>
               <div className='mt-2'>
                 <input
@@ -119,6 +122,9 @@ const Register = () => {
                   required
                   className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
                 />
+                <span className='mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'>
+                  Please enter a valid email address
+                </span>
               </div>
             </div>
             <div>
@@ -126,7 +132,7 @@ const Register = () => {
                 htmlFor='username'
                 className='block text-sm font-medium leading-6 text-gray-900'
               >
-                Username
+                Username*
               </label>
               <div className='mt-2'>
                 <input
@@ -147,7 +153,7 @@ const Register = () => {
                   htmlFor='password'
                   className='block text-sm font-medium leading-6 text-gray-900'
                 >
-                  Password
+                  Password*
                 </label>
                 <div className='text-sm'>
                   <a
@@ -174,7 +180,9 @@ const Register = () => {
             <div>
               <button
                 type='submit'
-                className='flex w-full justify-center rounded-md bg-primary-200 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                className={`flex w-full justify-center rounded-md bg-primary-200${
+                  passwordRef && usernameRef && emailRef ? '' : 'opacity-30' //blurs and deactivates the button if input values are missing
+                } px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 group-invalid:pointer-events-none group-invalid:opacity-30`}
               >
                 Sign in
               </button>
