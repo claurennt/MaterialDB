@@ -1,6 +1,6 @@
 'use client';
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import DBClient from 'utils/server/DBClient';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 
@@ -12,11 +12,12 @@ import NewLinkForm from 'components/NewLinkForm';
 
 import { Jost } from 'next/font/google';
 
-import { AppProps } from 'types/components';
 import { ITopic } from 'types/mongoose';
-import { getServerSession } from 'next-auth';
-import { authOptions } from './api/auth/[...nextauth]';
-import { Session } from 'inspector';
+import { Session } from 'next-auth';
+
+import { useSession } from 'next-auth/react';
+import Subtitle from 'components/Subtitle';
+import Topic from 'models/Topic';
 
 type HomeProps = { currentTopics: ITopic[]; session: Session };
 
@@ -24,11 +25,19 @@ type HomeProps = { currentTopics: ITopic[]; session: Session };
 const jost = Jost({ subsets: ['latin'], variable: '--font-inter' });
 
 const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
+  const { data: session } = useSession();
+
+  const [retrievedTopics, setRetrievedTopics] = useState<ITopic[]>(
+    currentTopics?.length ? currentTopics : []
+  );
   const [open, setOpen] = useState<boolean>(false);
 
-  const [retrievedTopics, setRetrievedTopics] = useState<
-    AppProps['currentTopics']
-  >(currentTopics || []);
+  useEffect(() => {
+    // after login update the topics taken from the logged in user
+    if (session) {
+      setRetrievedTopics(session.user.topics);
+    }
+  }, [session]);
 
   return (
     <div className={`${jost.variable} font-sans`}>
@@ -39,34 +48,23 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
 
       <main className='flex flex-col items-center gap-y-10 text-center pt-20'>
         <HomePageTitle />
-        {currentTopics && (
-          <>
-            <p>
-              Start adding new <span className='text-primary-100'>topics</span>{' '}
-              to your collection!
-            </p>
-            <button
-              aria-label='open modal to app new topic'
-              className='bg-primary-100 p-1 text-lg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full'
-              onClick={() => setOpen(true)}
-            >
-              Add topic
-            </button>
-          </>
-        )}{' '}
-        {currentTopics ? (
+        <Subtitle setOpen={setOpen} />
+
+        {!session && <AuthLinks />}
+
+        {retrievedTopics?.length > 0 ? (
           <Topics topicsArray={retrievedTopics} />
-        ) : (
-          <AuthLinks />
-        )}
-        {open && (
+        ) : null}
+
+        {open && session && (
           <NewLinkForm
             type='topic'
+            retrievedTopics={retrievedTopics}
             setRetrievedTopics={setRetrievedTopics}
             open={open}
             setOpen={setOpen}
           />
-        )}{' '}
+        )}
       </main>
       <footer className='absolute text-center bottom-0 right-0 left-0'>
         made with love by claurennt
@@ -76,35 +74,24 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
 };
 
 //pre-render page with server side props
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  res,
-  query: { userId },
-}) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
-    // if the url has a userId parameter send a request to api/topics?userId=${userId}
-    if (userId) {
-      const { data } = await axios.get(
-        `${process.env.NEXTAUTH_URL}?userId=${userId}`
-      );
-      const currentTopics: ITopic = data;
+    await DBClient();
+    const { query } = ctx;
 
-      return { props: { currentTopics: [currentTopics] } };
+    // if the url has a userId parameter send a request to the database to get the topics of that user
+    if (query.userId) {
+      const topics = await Topic.find(query && { _creator: query.userId });
+
+      if (topics)
+        return { props: { currentTopics: JSON.parse(JSON.stringify(topics)) } };
     }
 
-    const session = await getServerSession(req, res, authOptions);
-    if (session.user.topics) {
-      //if there is a session,i.e. cookies are stored send it as prop else send null
-      return {
-        props: {
-          session: session,
-          currentTopics: session.user.topics,
-        },
-      };
-    } else return { props: {} };
+    return { props: { currentTopics: null } };
   } catch (err) {
+    console.log('err', err);
     //if no admin is authenticated and no query is present in the url send null
-    return { props: { session: null } };
+    return { props: { currentTopics: null } };
   }
 };
 

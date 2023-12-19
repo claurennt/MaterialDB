@@ -12,7 +12,6 @@ export const handler: NextAPIHandler = async (req, res) => {
 
   try {
     if (method === 'POST') {
-      // console.log(req.body);
       const { name, password, email } = req.body;
       //block request if fields are missing
       if (!name || !password || !email)
