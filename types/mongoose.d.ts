@@ -16,18 +16,17 @@ interface ILink {
   category: string;
   title?: string;
   /** for "primitive" arrays: https://mongoosejs.com/docs/typescript/schemas.html#arrays*/
-  tags: Types.Array;
+  tags: string[];
   url: string;
-
-  _conditions?: { _id: string };
+  _id: string;
 }
 
 interface ITopic {
   _id: string;
   name: string;
   description: string;
-  subtopics: Types.Array;
-  links: Types.DocumentArray<ILink>;
+  subtopics: string[];
+  links: ILink[];
   _creator: Types.ObjectId;
   _conditions?: { _id: string };
 }

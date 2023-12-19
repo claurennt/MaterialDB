@@ -1,15 +1,24 @@
+import React from 'react';
 import Tag from './Tag';
 import { nanoid } from 'nanoid';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import axios from 'axios';
-import type { AppProps, HighlightSearchTerm } from 'types/components';
+import type { HighlightSearchTerm } from 'types/components';
+import { ILink } from 'types/mongoose';
+import { useSession } from 'next-auth/react';
 
-const TopicLink = ({
+type TopicLinkProps = {
+  link: ILink;
+  search: string;
+  setTopicLinks: React.Dispatch<React.SetStateAction<ILink[]>>;
+};
+
+const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
   link: { title, url, tags, _id, category },
-  currentAdminId,
   search,
   setTopicLinks,
-}: AppProps) => {
+}) => {
+  const { data: session } = useSession();
   const deleteLink = async () => {
     const { data } = await axios.delete(`/api/links/${_id}`);
 
@@ -40,7 +49,7 @@ const TopicLink = ({
 
   return (
     <div className='mt-5 flex'>
-      {currentAdminId && (
+      {session && (
         <button className='text-blue-600 text-4xl mx-3 ' onClick={deleteLink}>
           -
         </button>

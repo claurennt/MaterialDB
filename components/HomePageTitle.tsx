@@ -1,12 +1,12 @@
-import Subtitle from './Subtitle';
+import React from 'react';
+
 import MainTitle from './MainTitle';
 import Logo from './Logo';
 
-const HomePageTitle = () => (
+const HomePageTitle: React.FunctionComponent = () => (
   <>
     <Logo />
     <MainTitle />
-    <Subtitle />
   </>
 );
 

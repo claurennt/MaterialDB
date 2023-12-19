@@ -57,16 +57,10 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
         ) : null}
 
         {open && session && (
-          <NewLinkForm
-            type='topic'
-            retrievedTopics={retrievedTopics}
-            setRetrievedTopics={setRetrievedTopics}
-            open={open}
-            setOpen={setOpen}
-          />
+          <NewLinkForm type='topic' open={open} setOpen={setOpen} />
         )}
       </main>
-      <footer className='absolute text-center bottom-0 right-0 left-0'>
+      <footer className='text-center  mt-20 mb-5'>
         made with love by claurennt
       </footer>
     </div>

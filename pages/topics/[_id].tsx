@@ -1,25 +1,34 @@
 import type { GetServerSideProps } from 'next';
 import { useRouter, NextRouter } from 'next/router';
 import React, { useState } from 'react';
-
-import axios from 'axios';
 import { nanoid } from 'nanoid';
+
 import TopicLink from 'components/TopicLink';
 import NewLinkForm from 'components/NewLinkForm';
 import SearchBar from 'components/SearchBar';
-import type { AppProps, TopicLink as Link } from 'types/components';
 
-const TopicPage = ({ individualTopic }: AppProps) => {
+import { ILink, ITopic } from 'types/mongoose';
+import Topic from 'models/Topic';
+import { useSession } from 'next-auth/react';
+
+type TopicPageProps = {
+  individualTopic: ITopic;
+};
+
+const TopicPage: React.FunctionComponent<TopicPageProps> = ({
+  individualTopic,
+}) => {
   const [open, setOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<undefined | string>();
 
-  const [topicLinks, setTopicLinks] = useState<Link[]>(individualTopic.links);
+  const [topicLinks, setTopicLinks] = useState<ILink[]>(individualTopic.links);
+
+  const { data: session } = useSession();
 
   //get router info with props passed with Link component
   const router: NextRouter = useRouter();
-
   const {
-    query: { name, currentAdminId },
+    query: { name },
   } = router;
 
   // handle search submit
@@ -38,7 +47,7 @@ const TopicPage = ({ individualTopic }: AppProps) => {
 
   return (
     <div className=''>
-      {currentAdminId && (
+      {session && (
         <button
           className='bg-blue-600 absolute bottom-0 right-0 p-1 text-lg '
           onClick={() => setOpen(true)}
@@ -59,6 +68,7 @@ const TopicPage = ({ individualTopic }: AppProps) => {
           setTopicLinks={setTopicLinks}
           setOpen={setOpen}
           open={open}
+          type='link'
         />
       )}
 
@@ -68,13 +78,12 @@ const TopicPage = ({ individualTopic }: AppProps) => {
 
       <SearchBar handleSubmit={handleSubmit} />
 
-      {topicLinks.map((link) => (
+      {topicLinks?.map((link) => (
         <TopicLink
           setTopicLinks={setTopicLinks}
           search={search}
           key={nanoid()}
           link={link}
-          currentAdminId={currentAdminId}
         />
       ))}
     </div>
@@ -88,12 +97,11 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
   try {
     /* find topic by id in our database */
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_AUTH_URL}/api/topics/${_id}`
-    );
+    const topic = await Topic.findById(_id);
 
-    return { props: { individualTopic: data } };
+    return { props: { individualTopic: JSON.parse(JSON.stringify(topic)) } };
   } catch (e) {
     console.log('fetch error', e);
+    return { props: { individualTopic: [] } };
   }
 };
