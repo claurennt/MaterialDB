@@ -1,6 +1,16 @@
-import type { AppProps } from 'types/components';
+import React from 'react';
+import type { NewTopic } from 'types/components';
 
-const FormInputs = ({ type, handleChange, newData }: AppProps) => {
+type FormInputsProps = {
+  type: string;
+  handleChange: React.ChangeEventHandler<HTMLInputElement>;
+  newData: NewTopic[];
+};
+const FormInputs: React.FunctionComponent<FormInputsProps> = ({
+  type,
+  handleChange,
+  newData,
+}) => {
   const topicInputs = [
     { name: 'name', placeholder: 'Name of the topic' },
     { name: 'description', placeholder: 'add a short intro to the topic' },
@@ -20,7 +30,7 @@ const FormInputs = ({ type, handleChange, newData }: AppProps) => {
           </span>
           <input
             value={newData && newData[name]}
-            onChange={(e) => handleChange(e)}
+            onChange={handleChange}
             type='text'
             name={name}
             id={name}

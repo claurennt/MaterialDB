@@ -1,29 +1,30 @@
 /* This example requires Tailwind CSS v2.0+ */
 import React, { Fragment, useState } from 'react';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
 import { Dialog, Transition } from '@headlessui/react';
 
 import FormInputs from './FormInputs';
-// import FormSelect from './FormSelect';
+import type { AddNewFunction, NewLink, NewTopic } from 'types/components';
+import { ILink, ITopic } from 'types/mongoose';
 
-import type {
-  AppProps,
-  AddNewFunction,
-  NewLink,
-  NewTopic,
-} from 'types/components';
-import { useSession } from 'next-auth/react';
+type NewLinkFormProps = {
+  individualTopicId?: string;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setTopicLinks?: React.Dispatch<React.SetStateAction<ILink[]>>;
+  type: string;
+  open: boolean;
+  newData?: ITopic[];
+};
 
-const NewLinkForm = ({
+const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
   individualTopicId,
   setOpen,
-  setRetrievedTopics,
   setTopicLinks,
   type,
-  // name,
   open,
   newData,
-}: AppProps) => {
+}) => {
   const [newTopic, setNewTopic] = useState<NewTopic>({
     name: '',
     description: '',
@@ -35,7 +36,7 @@ const NewLinkForm = ({
     tags: [],
   });
 
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
 
   const handleChangeNewTopic = (e: React.ChangeEvent<HTMLInputElement>) =>
     setNewTopic((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -46,13 +47,15 @@ const NewLinkForm = ({
   const addNewTopic: AddNewFunction = async (e) => {
     e.preventDefault();
 
-    const { data } = await axios.post('/api/topics', {
+    await axios.post('/api/topics', {
       newTopic,
       creatorId: session.user.id,
     });
 
     setOpen(false);
-    setRetrievedTopics((prev) => [...prev, data]);
+    /* triggers a session update in the nextauth callback,
+     this session change will then trigger a state update in the useEffect in the Home component */
+    update();
   };
 
   const addNewLink: AddNewFunction = async (e) => {

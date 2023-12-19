@@ -1,25 +1,21 @@
+import React from 'react';
 import type { AppProps } from 'next/app';
 import { SessionProvider } from 'next-auth/react';
-import { Session } from 'next-auth';
+
 import { useState } from 'react';
 
-import {
-  DehydratedState,
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import 'styles/global.css';
 import { Layout } from 'components/Layout';
-
-// Wrap the Component prop with ErrorBoundary component
-export default function App({
+import { Session } from 'next-auth';
+interface IAppProps extends AppProps {
+  pageProps: { session: Session };
+}
+const App: React.FunctionComponent<IAppProps> = ({
   Component,
   pageProps: { session, ...pageProps },
-}: AppProps<{
-  session: Session;
-  dehydratedState: DehydratedState;
-}>) {
+}) => {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
@@ -31,4 +27,6 @@ export default function App({
       </Layout>
     </SessionProvider>
   );
-}
+};
+
+export default App;
