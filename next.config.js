@@ -12,4 +12,4 @@ const nextConfig = {
         : `${NEXT_PUBLIC_URL}/api`,
   },
 };
-export default nextConfig;
+module.exports = nextConfig;
