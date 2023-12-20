@@ -17,13 +17,13 @@ const Subtitle: React.FunctionComponent<SubtitleProps> = ({ setOpen }) => {
     <>
       {session ? (
         <>
-          <p>
-            Start adding new <span className='text-primary-200'>topics</span> to
-            your collection!
+          <p className='text-2xl'>
+            Start adding new <span className='text-primary-100 '>topics</span>{' '}
+            to your collection!
           </p>
           <button
             aria-label='open modal to app new topic'
-            className='bg-primary-200 p-1 text-lg hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full'
+            className='bg-primary-100 p-1 text-lg hover:bg-primary-neon focus:bg-primary-neon text-white font-bold py-2 px-4 rounded-full'
             onClick={() => setOpen(true)}
           >
             Add topic
@@ -33,13 +33,13 @@ const Subtitle: React.FunctionComponent<SubtitleProps> = ({ setOpen }) => {
         <h2 className='text-3xl'>
           MaterialDB is an app where you can collect useful links and resources
           that help you become a better{' '}
-          <span className='text-primary-200'>developer/instructor</span>.
+          <span className='text-primary-100'>developer/instructor</span>.
         </h2>
       )}
       {userId && (
         <p className={description}>
           If you wanna see a list of resources pick a{' '}
-          <span className='text-primary-200'>topic</span> below.
+          <span className='text-primary-100'>topic</span> below.
         </p>
       )}
     </>

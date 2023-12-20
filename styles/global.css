@@ -12,7 +12,8 @@
 @layer base {
   :root {
     --primary-color: #735eff;
-    --primary-color-100: #1f51ff;
+    --primary-color-200: #7f6bff;
+    --primary-color-neon: #1f51ff;
     --secondary-color: #fd5244;
     --tertiary-color: #0a1046;
   }

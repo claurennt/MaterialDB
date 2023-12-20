@@ -4,7 +4,6 @@ import DBClient from 'utils/server/DBClient';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 
-import HomePageTitle from 'components/HomePageTitle';
 import Topics from 'components/Topics';
 
 import AuthLinks from 'components/AuthLinks';
@@ -18,6 +17,7 @@ import { Session } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import Subtitle from 'components/Subtitle';
 import Topic from 'models/Topic';
+import MainTitle from 'components/MainTitle';
 
 type HomeProps = { currentTopics: ITopic[]; session: Session };
 
@@ -44,10 +44,14 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
       <Head>
         <title>MaterialDB</title>
         <link rel='icon' href='/logo.ico' />
+        <link
+          rel='stylesheet'
+          href='https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css'
+        ></link>
       </Head>
 
       <main className='flex flex-col items-center gap-y-10 text-center pt-20'>
-        <HomePageTitle />
+        <MainTitle />
         <Subtitle setOpen={setOpen} />
 
         {!session && <AuthLinks />}
