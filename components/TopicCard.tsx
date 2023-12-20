@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from 'pages/index.module.css';
-import { iconsNames } from '../utils/client/iconNames';
+import { iconsNames, getIconName } from '../utils/client/iconNames';
 type TopicCardProps = {
   name: string;
   _id: string;
@@ -17,10 +17,7 @@ const TopicCard: React.FunctionComponent<TopicCardProps> = ({
   const { card } = styles;
 
   const lowerCaseName = name?.toLowerCase();
-  const correctIconName = iconsNames.find(
-    (name) => name.startsWith(lowerCaseName) || name.includes(lowerCaseName)
-  );
-  console.log(name);
+  const correctIconName = getIconName(lowerCaseName);
   const src = correctIconName
     ? `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${correctIconName}/${correctIconName}-original.svg`
     : `https://img.icons8.com/ios-filled/50/fd5244/${

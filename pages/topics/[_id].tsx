@@ -49,10 +49,11 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
     <div className=''>
       {session && (
         <button
-          className='bg-blue-600 absolute bottom-0 right-0 p-1 text-lg '
+          aria-label='open modal to app new topic'
+          className='bg-primary-100 p-1 text-lg hover:bg-primary-neon focus:bg-primary-neon text-white font-bold py-2 px-4 rounded-full'
           onClick={() => setOpen(true)}
         >
-          +
+          Add new link
         </button>
       )}
 

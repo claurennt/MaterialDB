@@ -22,7 +22,7 @@ const Subtitle: React.FunctionComponent<SubtitleProps> = ({ setOpen }) => {
             to your collection!
           </p>
           <button
-            aria-label='open modal to app new topic'
+            aria-label='open form to add new topic'
             className='bg-primary-100 p-1 text-lg hover:bg-primary-neon focus:bg-primary-neon text-white font-bold py-2 px-4 rounded-full'
             onClick={() => setOpen(true)}
           >
