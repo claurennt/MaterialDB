@@ -1,14 +1,29 @@
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from 'pages/index.module.css';
-import { IndividualTopic } from 'types/pages';
 
-const TopicCard = ({ name, _id, description }: IndividualTopic) => {
+type TopicCardProps = {
+  name: string;
+  _id: string;
+  description: string;
+};
+
+const TopicCard: React.FunctionComponent<TopicCardProps> = ({
+  name,
+  _id,
+  description,
+}) => {
   const { card } = styles;
 
-  const lowerCaseName = name.toLowerCase();
+  const lowerCaseName = name?.toLowerCase();
+
   const src = `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${lowerCaseName}/${lowerCaseName}-original.svg`;
 
+  const onImageError = (e) => {
+    e.target.src =
+      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/codepen/codepen-plain.svg';
+  };
   return (
     <Link
       className={card}
@@ -16,7 +31,7 @@ const TopicCard = ({ name, _id, description }: IndividualTopic) => {
         pathname: '/topics/[_id]',
         query: {
           _id: _id,
-          // currentAdminId: currentAdmin?._id,
+
           name: name,
         },
       }}
@@ -24,9 +39,10 @@ const TopicCard = ({ name, _id, description }: IndividualTopic) => {
     >
       <Image
         src={src}
-        height='20'
-        width='20'
+        height='40'
+        width='40'
         alt={`icon for ${lowerCaseName}`}
+        onError={onImageError}
       />
       <h3>{name}</h3>
       <p>{description}</p>

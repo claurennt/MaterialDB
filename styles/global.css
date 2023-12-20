@@ -12,12 +12,16 @@
 @layer base {
   :root {
     --primary-color: #735eff;
+    --primary-color-100: #1f51ff;
     --secondary-color: #fd5244;
+    --tertiary-color: #0a1046;
   }
 }
 
 html,
 body {
+  color: white;
+  background: #010038;
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,

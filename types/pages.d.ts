@@ -1,13 +1,14 @@
 import { Session } from 'next-iron-session';
+import { ITopic } from './mongoose';
 
-type IndividualTopic = {
-  _id?: string;
-  name?: string;
-  description?: string;
-  links?: array<string>;
-  subtopics?: array<string>;
-  creatorId?: string;
-};
+// type IndividualTopic = {
+//   _id?: string;
+//   name?: string;
+//   description?: string;
+//   links?: array<string>;
+//   subtopics?: array<string>;
+//   creatorId?: string;
+// };
 
 type AuthRequestHandler = (
   path?: string | null,
@@ -19,8 +20,7 @@ type Admin = {
   name: string;
   email: string;
   password?: string;
-
-  topics: IndividualTopic[];
+  topics: ITopic[];
 };
 
-export type { IndividualTopic, Admin, AuthRequestHandler };
+export type { Admin, AuthRequestHandler };
