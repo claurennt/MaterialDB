@@ -276,3 +276,33 @@ export const iconsNames = [
   'dropwizard',
   'vuetify',
 ];
+
+export const getIconName = (lowerCaseName) => {
+  let correctIconName;
+
+  for (const name of iconsNames) {
+    if (name.toLowerCase() === lowerCaseName) {
+      correctIconName = name;
+      break;
+    }
+  }
+
+  if (!correctIconName) {
+    for (const name of iconsNames) {
+      if (name.startsWith(lowerCaseName)) {
+        correctIconName = name;
+        break;
+      }
+    }
+  }
+
+  if (!correctIconName) {
+    for (const name of iconsNames) {
+      if (name.includes(lowerCaseName)) {
+        correctIconName = name;
+        break;
+      }
+    }
+  }
+  return correctIconName;
+};
