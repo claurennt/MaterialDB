@@ -6,18 +6,39 @@
 .card {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
   justify-content: center;
+  padding: 0 20px;
   text-align: center;
+  margin: 30px auto;
+  width: 250px;
+  height: 250px;
+  border-radius: 40px;
+  box-shadow: 5px 5px 30px 7px rgba(0, 0, 0, 0.25),
+    -5px -5px 30px 7px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  transition: 0.4s;
+  border: 2px solid var(--primary-color-neon);
+  transition: outline 0.1s linear;
+}
+.card:hover,
+.card:focus-visible {
+  outline: solid 2px var(--secondary-color);
+}
+.card:active,
+.card:focus:not(:focus-visible) {
+  background: var(--primary-color-neon);
+  outline: solid 2px var(--secondary-color);
+}
 
-  border-radius: 2%;
-  width: 22rem;
-  height: 10rem;
-  min-height: fit-content;
-  padding: 20px;
-  box-shadow: var(--primary-color-100) 0px 1px 2px 2px;
+.card h3 {
+  text-align: center;
+  border-radius: 0px 0px 40px 40px;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 .card img {
   border-radius: 50%;
-  margin: auto;
+  margin: 0 auto;
 }
