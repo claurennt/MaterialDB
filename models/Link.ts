@@ -1,4 +1,4 @@
-import mongoose, { HydratedDocument, Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import Topic from './Topic';
 import { ILink, ITopic } from 'types/mongoose';
 
@@ -7,15 +7,13 @@ const Schema = mongoose.Schema;
 const linkSchema = new Schema<ILink>({
   category: { type: String, required: true },
   title: { type: String },
-  tags: { type: Array, required: true },
+  tags: { type: [String], required: true },
   url: { type: String, required: true },
 });
 /* before a deleteone request for a link document is sent, delete its own reference inside the Topic document,
 if no reference was found cancel the operation and send an error*/
 linkSchema.pre('deleteOne', async function (this: ILink, next) {
-  const {
-    _conditions: { _id },
-  } = this;
+  const { _id } = this;
 
   const result: ITopic = await Topic.findOneAndUpdate(
     { links: { $eq: _id } },
