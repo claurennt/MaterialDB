@@ -4,7 +4,6 @@ const port = PORT || 3000;
 
 const nextConfig = {
   env: {
-    NEXTAUTH_URL,
     NEXTAUTH_SECRET,
     NEXT_PUBLIC_URL,
     REQUEST_URL:
@@ -13,4 +12,4 @@ const nextConfig = {
         : `${NEXT_PUBLIC_URL}/api`,
   },
 };
-module.exports = nextConfig;
+export default nextConfig;
