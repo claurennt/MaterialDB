@@ -1,4 +1,3 @@
-import axios from 'axios';
 import nodemailer from 'nodemailer';
 
 const { NEXT_PUBLIC_EMAIL, NEXT_PUBLIC_PASSWORD, NEXT_PUBLIC_URL } =
