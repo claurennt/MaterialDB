@@ -6,6 +6,7 @@ import axios from 'axios';
 import type { HighlightSearchTerm } from 'types/components';
 import { ILink } from 'types/mongoose';
 import { useSession } from 'next-auth/react';
+import { categories } from 'utils/client/data';
 
 type TopicLinkProps = {
   link: ILink;
@@ -33,19 +34,8 @@ const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
     return { __html: highlightedQuery };
   };
 
-  const categories = [
-    { type: 'article', color: 'orange' },
-    { type: 'website', color: 'violet' },
-    { type: 'repository', color: 'darkorchid' },
-    { type: 'tutorial', color: 'red' },
-    { type: 'video', color: 'violet' },
-    { type: 'resource', color: 'aquamarine' },
-    { type: 'package', color: 'teal' },
-    { type: 'library', color: 'fuchsia' },
-  ];
-
   //find matching category and retrieve color for styling
-  const color = categories.find((c) => c.type === category).color;
+  const color = categories?.find((c) => c.type === category)?.color;
 
   return (
     <div className='mt-5 flex'>

@@ -44,10 +44,6 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
       <Head>
         <title>MaterialDB</title>
         <link rel='icon' href='/logo.ico' />
-        <link
-          rel='stylesheet'
-          href='https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css'
-        ></link>
       </Head>
 
       <main className='flex flex-col items-center gap-y-10 text-center pt-20'>

@@ -15,9 +15,7 @@ const topicSchema = new Schema<ITopic>({
 /* before a deleteone request for a link document is sent, delete its own reference inside the Admin document,
 if no reference was found cancel the operation and send an error*/
 topicSchema.pre('deleteOne', async function (this: ITopic, next) {
-  const {
-    _conditions: { _id },
-  } = this;
+  const { _id } = this;
 
   const result = await Admin.findOneAndUpdate(
     { topics: { $eq: _id } },
