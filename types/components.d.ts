@@ -7,23 +7,8 @@ type EventTarget = typeof e.target & {
   value?: string;
 };
 
-type NewLink = {
-  url: string;
-  category: string;
-  tags: string[];
-};
-
-type NewTopic = {
-  name: string;
-  description: string;
-};
-
-// type CurrentAdmin = {
-//   _id?: number;
-//   username: string;
-//   newTopic: NewData;
-//   creatorId: string;
-// };
+type NewTopic = Pick<ITopic, 'name' | 'description'>;
+type NewLink = Pick<ILink, 'url' | 'category' | 'tags'>;
 
 type HighlightSearchTerm = (value: string) => { __html: string };
 type AddNewFunction = (
@@ -69,9 +54,9 @@ type AddNewFunction = (
 // };
 
 export type {
-  NewLink,
-  NewTopic,
   HighlightSearchTerm,
   AddNewFunction,
   EventTarget,
+  NewLink,
+  NewTopic,
 };

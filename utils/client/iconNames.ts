@@ -278,31 +278,18 @@ export const iconsNames = [
 ];
 
 export const getIconName = (lowerCaseName) => {
-  let correctIconName;
+  const startsWith = new RegExp(`^${lowerCaseName}`);
+  const endsWithPattern = new RegExp(`${lowerCaseName}$`);
+  let iconName;
+  iconName = iconsNames.find((name) => name === lowerCaseName);
 
-  for (const name of iconsNames) {
-    if (name.toLowerCase() === lowerCaseName) {
-      correctIconName = name;
-      break;
-    }
-  }
+  if (!iconName)
+    iconName = iconsNames.find(
+      (name) =>
+        startsWith.test(name) ||
+        endsWithPattern.test(name) ||
+        name.includes(lowerCaseName)
+    );
 
-  if (!correctIconName) {
-    for (const name of iconsNames) {
-      if (name.startsWith(lowerCaseName)) {
-        correctIconName = name;
-        break;
-      }
-    }
-  }
-
-  if (!correctIconName) {
-    for (const name of iconsNames) {
-      if (name.includes(lowerCaseName)) {
-        correctIconName = name;
-        break;
-      }
-    }
-  }
-  return correctIconName;
+  return iconName;
 };

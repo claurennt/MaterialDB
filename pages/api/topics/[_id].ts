@@ -35,17 +35,14 @@ export default async function handler(
     case 'PUT' /* Edit a Topic by its ID */:
       try {
         let {
-          newLink: { url, tags, title, category },
+          newLink: { url, tags, category },
         } = body;
 
         if (!url)
           return res.status(404).send('Bad request: url property missing');
 
         /*we scrape the page and get the title from the title s metadata in the head*/
-        if (!title) title = await scrapeArticleTitle(url);
-
-        //separate each tag and filter only the elements that are not empty strings
-        tags = tags.split(' ' || ',').filter((tag) => tag.length);
+        const title = await scrapeArticleTitle(url);
 
         //creates one Link document
         const newLink = await Link.create({
@@ -65,7 +62,7 @@ export default async function handler(
           },
           { new: true }
         );
-
+        console.log(updatedTopic);
         return res.status(200).send(newLink);
       } catch (error) {
         console.log(error.stack);

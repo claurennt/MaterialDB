@@ -1,14 +1,21 @@
-import cheerio from "cheerio";
-import axios from "axios";
+import puppeteer from 'puppeteer';
+import axios from 'axios';
 
-const scrapeArticleTitle = async (link) => {
-  const { data } = await axios.get(link);
+const scrapeArticleTitle = async (link: string) => {
+  // Launch the browser
+  const browser = await puppeteer.launch();
 
-  // Load HTML we fetched in the previous line
-  const $ = cheerio.load(data);
+  // Open a new tab
+  const page = await browser.newPage();
 
-  // scrape title from the title s metadata in the head*/
-  const title = $("head > title").text();
+  // Visit the page and wait until network connections are completed
+  await page.goto(link, { waitUntil: 'networkidle2' });
+
+  // Interact with the DOM to retrieve the titles
+  const title = await page.$eval('head > title', (el) => el.textContent);
+
+  // Don't forget to close the browser instance to clean up the memory
+  await browser.close();
 
   return title;
 };

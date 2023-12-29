@@ -17,6 +17,7 @@ const TopicCard: React.FunctionComponent<TopicCardProps> = ({
   const { card } = styles;
 
   const lowerCaseName = name?.toLowerCase();
+
   const correctIconName = getIconName(lowerCaseName);
   const src = correctIconName
     ? `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${correctIconName}/${correctIconName}-original.svg`
