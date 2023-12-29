@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from 'pages/index.module.css';
-
+import { iconsNames, getIconName } from '../utils/client/iconNames';
 type TopicCardProps = {
   name: string;
   _id: string;
@@ -18,12 +18,13 @@ const TopicCard: React.FunctionComponent<TopicCardProps> = ({
 
   const lowerCaseName = name?.toLowerCase();
 
-  const src = `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${lowerCaseName}/${lowerCaseName}-original.svg`;
+  const correctIconName = getIconName(lowerCaseName);
+  const src = correctIconName
+    ? `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${correctIconName}/${correctIconName}-original.svg`
+    : `https://img.icons8.com/ios-filled/50/fd5244/${
+        name.startsWith('UX') ? 'illustrator--v1' : 'source-code'
+      }.png`;
 
-  const onImageError = (e) => {
-    e.target.src =
-      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/codepen/codepen-plain.svg';
-  };
   return (
     <Link
       className={card}
@@ -31,7 +32,6 @@ const TopicCard: React.FunctionComponent<TopicCardProps> = ({
         pathname: '/topics/[_id]',
         query: {
           _id: _id,
-
           name: name,
         },
       }}
@@ -39,10 +39,9 @@ const TopicCard: React.FunctionComponent<TopicCardProps> = ({
     >
       <Image
         src={src}
-        height='40'
-        width='40'
-        alt={`icon for ${lowerCaseName}`}
-        onError={onImageError}
+        height='50'
+        width='50'
+        alt={`icon for ${correctIconName ?? name}`}
       />
       <h3>{name}</h3>
       <p>{description}</p>

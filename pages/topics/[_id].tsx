@@ -47,15 +47,6 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
 
   return (
     <div className=''>
-      {session && (
-        <button
-          className='bg-blue-600 absolute bottom-0 right-0 p-1 text-lg '
-          onClick={() => setOpen(true)}
-        >
-          +
-        </button>
-      )}
-
       <button
         className='absolute top-0 right-0 mx-5 px-5 text-base '
         onClick={() => router.replace('/')}
@@ -72,10 +63,18 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
         />
       )}
 
-      <h1 className='font-medium leading-tight text-5xl mt-0 mb-5 text-blue-600 text-center'>
+      <h1 className='font-medium leading-tight text-5xl mt-0 mb-5 text-primary-100 text-center'>
         {name}
       </h1>
-
+      {session && (
+        <button
+          aria-label='open modal to app new topic'
+          className='bg-primary-100 p-1 text-lg hover:bg-primary-neon focus:bg-primary-neon text-white font-bold py-2 px-4 rounded-full'
+          onClick={() => setOpen(true)}
+        >
+          Add new link
+        </button>
+      )}
       <SearchBar handleSubmit={handleSubmit} />
 
       {topicLinks?.map((link) => (
@@ -97,7 +96,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
   try {
     /* find topic by id in our database */
-    const topic = await Topic.findById(_id);
+    const topic = await Topic.findById(_id).populate('links');
 
     return { props: { individualTopic: JSON.parse(JSON.stringify(topic)) } };
   } catch (e) {
