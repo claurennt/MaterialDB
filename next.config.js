@@ -16,10 +16,7 @@ const nextConfig = {
   env: {
     NEXTAUTH_SECRET,
     NEXT_PUBLIC_URL,
-    REQUEST_URL:
-      environment === 'development'
-        ? `http://localhost:${port}/api`
-        : `${NEXT_PUBLIC_URL}/api`,
+    NEXTAUTH_URL,
   },
 };
 module.exports = nextConfig;
