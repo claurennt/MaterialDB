@@ -55,7 +55,7 @@ export const authOptions: NextAuthOptions = {
             image: admin.image,
           };
         } catch (error) {
-          console.log(error);
+          console.log('authorize', error);
           return null;
         }
       },
@@ -99,7 +99,7 @@ export const authOptions: NextAuthOptions = {
           },
         };
       } catch (err) {
-        console.log(err);
+        console.log('session', err);
         return null;
       }
     },
