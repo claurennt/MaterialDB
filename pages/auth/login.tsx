@@ -21,8 +21,10 @@ const Login = () => {
     };
 
     // signIn function from NextAuth api that trigggers the authorization-jwt-session flow
-    await signIn('username-login', { ...data, redirect: false });
-    router.push('/');
+    await signIn('credentials', {
+      ...data,
+      callbackUrl: `${new URLSearchParams(window.location.search).get('callbackUrl')}`,
+    });
 
     //TODO else senda  toast that notify about failed auth
   };

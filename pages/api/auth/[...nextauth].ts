@@ -21,10 +21,8 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     CredentialsProvider({
-      id: 'username-login',
       // The name to display on the sign in form (e.g. "Sign in with...")
       name: 'Credentials',
-
       credentials: {
         name: { label: 'name', type: 'text' },
         email: { label: 'email', type: 'text', placeholder: 'test@test.com' },
