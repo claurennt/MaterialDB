@@ -22,14 +22,6 @@ type HomeProps = { currentTopics: ITopic[]; session: Session };
 const jost = Jost({ subsets: ['latin'], variable: '--font-inter' });
 
 const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
-<<<<<<< Updated upstream
-  const { data: session } = useSession();
-
-  const [retrievedTopics, setRetrievedTopics] = useState<ITopic[]>(
-    currentTopics?.length ? currentTopics : []
-  );
-=======
->>>>>>> Stashed changes
   const [open, setOpen] = useState<boolean>(false);
 
   const { data: session } = useSession();
