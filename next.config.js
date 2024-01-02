@@ -1,5 +1,12 @@
-const { environment, PORT, NEXT_PUBLIC_URL, NEXTAUTH_SECRET, NEXTAUTH_URL } =
-  process.env;
+const {
+  PORT,
+  NEXT_PUBLIC_AUTH_SECRET,
+  NEXT_PUBLIC_URL,
+  NEXTAUTH_URL,
+  NEXT_PUBLIC_EMAIL,
+  NEXT_PUBLIC_PASSWORD,
+  NEXT_PUBLIC_MONGODB_URI,
+} = process.env;
 const port = PORT || 3000;
 
 const nextConfig = {
@@ -14,9 +21,12 @@ const nextConfig = {
     ],
   },
   env: {
-    NEXTAUTH_SECRET,
+    NEXT_PUBLIC_AUTH_SECRET,
     NEXT_PUBLIC_URL,
     NEXTAUTH_URL,
+    NEXT_PUBLIC_EMAIL,
+    NEXT_PUBLIC_PASSWORD,
+    NEXT_PUBLIC_MONGODB_URI,
   },
 };
 module.exports = nextConfig;

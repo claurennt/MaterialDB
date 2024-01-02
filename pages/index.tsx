@@ -26,7 +26,7 @@ const jost = Jost({ subsets: ['latin'], variable: '--font-inter' });
 
 const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
   const { data: session } = useSession();
-
+  console.log(session);
   const [retrievedTopics, setRetrievedTopics] = useState<ITopic[]>(
     currentTopics?.length ? currentTopics : []
   );
@@ -79,7 +79,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
       if (topics) return { props: { currentTopics: topics } };
     }
-
+    console.log('here');
     return { props: { currentTopics: null } };
   } catch (err) {
     console.log('err', err);
