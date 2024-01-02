@@ -43,7 +43,7 @@ export const authOptions: NextAuthOptions = {
           const isPasswordSame = await bcrypt.compare(password, admin.password);
 
           if (!isPasswordSame) {
-            throw new Error('The passwords do not match');
+            return null;
           }
 
           return {
@@ -60,6 +60,9 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async redirect() {
+      return '/';
+    },
     async jwt({ token, user }) {
       // user is defined only immediately after signin in
       if (user) {

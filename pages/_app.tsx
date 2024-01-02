@@ -19,7 +19,7 @@ const App: React.FunctionComponent<IAppProps> = ({
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={session} basePath='/api/auth'>
       <Layout>
         <QueryClientProvider client={queryClient}>
           <Component {...pageProps} />
