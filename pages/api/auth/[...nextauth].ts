@@ -79,9 +79,9 @@ export const authOptions: NextAuthOptions = {
       try {
         await dbConnect();
 
-        const admin = await (
-          await Admin.findOne({ email: token.email })
-        ).populate('topics');
+        const admin = await Admin.findOne({ email: token.email }).populate(
+          'topics'
+        );
 
         if (!admin) {
           return null;
