@@ -77,8 +77,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     if (query.userId) {
       const topics = await Topic.find(query && { _creator: query.userId });
 
-      if (topics)
-        return { props: { currentTopics: JSON.parse(JSON.stringify(topics)) } };
+      if (topics) return { props: { currentTopics: topics } };
     }
 
     return { props: { currentTopics: null } };

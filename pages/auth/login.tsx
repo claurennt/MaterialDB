@@ -19,10 +19,12 @@ const Login = () => {
       email: emailRef.current.value,
       password: passwordRef.current.value,
     };
+    console.log({ data });
 
     // signIn function from NextAuth api that trigggers the authorization-jwt-session flow
-    await signIn('username-login', { ...data, redirect: false });
-    router.push('/');
+    const resp = signIn('username-login', { ...data, redirect: false });
+    //router.push('/');
+    console.log({ resp });
 
     //TODO else senda  toast that notify about failed auth
   };
