@@ -26,7 +26,7 @@ const jost = Jost({ subsets: ['latin'], variable: '--font-inter' });
 
 const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
   const { data: session } = useSession();
-  console.log('sesion index.ts', session, currentTopics);
+
   const [retrievedTopics, setRetrievedTopics] = useState<ITopic[]>(
     currentTopics?.length ? currentTopics : []
   );
@@ -85,7 +85,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   } catch (err) {
     console.log('err', err);
     //if no admin is authenticated and no query is present in the url send null
-    return { props: { currentTopics: err } };
+    return { props: { currentTopics: null } };
   }
 };
 
