@@ -20,71 +20,48 @@ export const authOptions: NextAuthOptions = {
     signIn: '/auth/login',
   },
   providers: [
-    process.env.VERCEL_ENV === 'preview'
-      ? CredentialsProvider({
-          name: 'Credentials',
-          credentials: {
-            username: {
-              label: 'Username',
-              type: 'text',
-              placeholder: 'jsmith',
-            },
-            password: { label: 'Password', type: 'password' },
-          },
-          async authorize() {
-            return {
-              id: '100',
-              name: 'J Smith',
-              email: 'jsmith@example.com',
-              image: 'https://i.pravatar.cc/150?u=jsmith@example.com',
-            };
-          },
-        })
-      : CredentialsProvider({
-          // The name to display on the sign in form (e.g. "Sign in with...")
-          name: 'Credentials',
-          credentials: {
-            name: { label: 'name', type: 'text' },
-            email: {
-              label: 'email',
-              type: 'text',
-              placeholder: 'test@test.com',
-            },
-            password: { label: 'Password', type: 'password' },
-          },
-          async authorize(credentials) {
-            const { email, password } = credentials;
-            if (!email || !password) throw new Error('Missing credentials');
+    CredentialsProvider({
+      // The name to display on the sign in form (e.g. "Sign in with...")
+      name: 'Credentials',
+      credentials: {
+        name: { label: 'name', type: 'text' },
+        email: {
+          label: 'email',
+          type: 'text',
+          placeholder: 'test@test.com',
+        },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        const { email, password } = credentials;
+        if (!email || !password) throw new Error('Missing credentials');
 
-            await dbConnect();
-            try {
-              const admin = await Admin.findOne({ email }).select('+password');
+        await dbConnect();
+        try {
+          const admin = await Admin.findOne({ email }).select('+password');
 
-              if (!admin) {
-                return null;
-              }
+          if (!admin) {
+            return null;
+          }
 
-              const isPasswordSame = await bcrypt.compare(
-                password,
-                admin.password
-              );
+          const isPasswordSame = await bcrypt.compare(password, admin.password);
 
-              if (!isPasswordSame) {
-                return null;
-              }
+          if (!isPasswordSame) {
+            return null;
+          }
 
-              return {
-                id: admin._id.toString(),
-                name: admin.name,
-                email: admin.email,
-                image: admin.image,
-              };
-            } catch (error) {
-              console.log(error);
-              return null;
-            }
-          },
-        }),
+          return {
+            id: admin._id.toString(),
+            name: admin.name,
+            email: admin.email,
+            image: admin.image,
+          };
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
+      },
+    }),
   ],
   callbacks: {
     //handles the redirect after successful signin
@@ -96,6 +73,7 @@ export const authOptions: NextAuthOptions = {
       return baseUrl;
     },
     async jwt({ token, user }) {
+      // console.log({ token, user });
       // user is defined only immediately after signin in
       if (user) {
         return {
@@ -108,22 +86,16 @@ export const authOptions: NextAuthOptions = {
 
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token, ...rest }) {
       await dbConnect();
 
-      const admin = await Admin.findOne({ email: token.email }).populate(
-        'topics'
-      );
-
-      // if (!admin) {
-      //   return null;
-      // }
+      const admin = await Admin.findOne({ email: session.user.email });
 
       // persist the OAuth access_token and or the user id to the token right after signin
       return {
         ...session,
+        admin,
         user: {
-          admin: admin,
           ...session.user,
           id: token.id,
           email: token.email,
