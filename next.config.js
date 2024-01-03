@@ -1,6 +1,3 @@
-const { environment, PORT, NEXT_PUBLIC_URL, NEXTAUTH_SECRET } = process.env;
-const port = PORT || 3000;
-
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -11,10 +8,6 @@ const nextConfig = {
         pathname: '/ios-filled/50/fd5244/**',
       },
     ],
-  },
-  env: {
-    NEXTAUTH_SECRET,
-    NEXT_PUBLIC_URL,
   },
 };
 module.exports = nextConfig;
