@@ -1,14 +1,11 @@
 import nodemailer from 'nodemailer';
 
-const { NEXT_PUBLIC_EMAIL, NEXT_PUBLIC_PASSWORD, NEXT_PUBLIC_URL } =
-  process.env;
+const { NODEMAILER_EMAIL, NODEMAILER_PASSWORD, PROJECT_URL } = process.env;
 const port = process.env.PORT || 3000;
 const environment = process.env.NODE_ENV;
 
 const BASEURL =
-  environment === 'development'
-    ? `http://localhost:${port}`
-    : `${NEXT_PUBLIC_URL}`;
+  environment === 'development' ? `http://localhost:${port}` : `${PROJECT_URL}`;
 
 //create transporter object with config
 const transporter = nodemailer.createTransport({
@@ -16,8 +13,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: NEXT_PUBLIC_EMAIL,
-    pass: NEXT_PUBLIC_PASSWORD,
+    user: NODEMAILER_EMAIL,
+    pass: NODEMAILER_PASSWORD,
   },
 });
 
@@ -33,7 +30,7 @@ const sendActivationEmail = ({ name, email, _id }) => {
   const activationLink = `${BASEURL}/api/auth/activate/${_id}`;
 
   const message = {
-    from: NEXT_PUBLIC_EMAIL,
+    from: NODEMAILER_EMAIL,
     // to: toUser.email // in production uncomment this
     to: email,
     subject: 'Material DB - Activate Account',
@@ -51,7 +48,7 @@ const sendActivationEmail = ({ name, email, _id }) => {
 
 const sendRegistrationConfirmationEmail = ({ name, email }) => {
   const message = {
-    from: NEXT_PUBLIC_EMAIL,
+    from: NODEMAILER_EMAIL,
     // to: toUser.email // in production uncomment this
     to: email,
     subject: 'Material DB - Registration successful',

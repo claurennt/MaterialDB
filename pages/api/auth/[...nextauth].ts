@@ -25,7 +25,11 @@ export const authOptions: NextAuthOptions = {
       name: 'Credentials',
       credentials: {
         name: { label: 'name', type: 'text' },
-        email: { label: 'email', type: 'text', placeholder: 'test@test.com' },
+        email: {
+          label: 'email',
+          type: 'text',
+          placeholder: 'test@test.com',
+        },
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
@@ -82,32 +86,16 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      try {
-        await dbConnect();
-
-        const admin = await Admin.findOne({ email: token.email }).populate(
-          'topics'
-        );
-
-        if (!admin) {
-          return null;
-        }
-
-        // persist the OAuth access_token and or the user id to the token right after signin
-        return {
-          ...session,
-          user: {
-            ...session.user,
-            id: token.id,
-            email: token.email,
-            picture: session.user.image ?? null,
-            topics: admin?.topics,
-          },
-        };
-      } catch (err) {
-        console.log(err);
-        return null;
-      }
+      // persist the OAuth access_token and or the user id to the token right after signin
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id,
+          email: token.email,
+          picture: session.user.image ?? null,
+        },
+      };
     },
   },
 };
