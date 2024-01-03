@@ -27,7 +27,6 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
   const [open, setOpen] = useState<boolean>(false);
   const { status } = useSession();
 
-
   return (
     <>
       <Head>
