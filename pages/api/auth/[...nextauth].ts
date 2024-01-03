@@ -60,8 +60,8 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    //handles the redirect after successful signin
     async redirect({ url, baseUrl }) {
-      console.log(baseUrl);
       // Allows relative callback URLs
       if (url.startsWith('/')) return `${baseUrl}${url}`;
       // Allows callback URLs on the same origin
