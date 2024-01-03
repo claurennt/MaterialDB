@@ -31,13 +31,14 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
 
   useEffect(() => {
     let timerId: number;
+
     if (session) setIsLoading(false);
     else {
       timerId = window.setTimeout(() => setIsLoading(false), 1000);
     }
     return () => clearTimeout(timerId);
   }, [session]);
-
+  console.log(session);
   return (
     <>
       <Head>
