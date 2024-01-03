@@ -47,17 +47,24 @@ const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
     name: string
   ) => {
     const target = e.target as HTMLInputElement;
-
-    if (name === 'tags') setTagValue(target.value);
-
-    if (name === 'url') setNewLink((prev) => ({ ...prev, url: target.value }));
-
-    if (name === 'category')
-      setNewLink((prev) => ({ ...prev, category: target.value }));
+    //handleChange for newLink modal
+    if (type === 'link') {
+      if (name === 'tags') {
+        setTagValue(target.value);
+      }
+      if (name === 'url') {
+        setNewLink((prev) => ({ ...prev, url: target.value }));
+      }
+      if (name === 'category') {
+        setNewLink((prev) => ({ ...prev, category: target.value }));
+      }
+    }
+    //handleChange for newTopic modal
+    else setNewTopic((prev) => ({ ...prev, [target.name]: target.value }));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (type === 'link' && e.key === 'Enter') {
       setNewLink((prev) => ({ ...prev, tags: [...prev.tags, tagValue] }));
 
       setTagValue('');
@@ -81,7 +88,7 @@ const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
 
     setOpen(false);
     /* triggers a session update in the nextauth callback,
-     this session change will then trigger a state update in the useEffect in the Home component */
+       this session change will then trigger a state update in the useEffect in the Home component */
     update();
   };
 
@@ -162,50 +169,53 @@ const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
                         />
                       ))}
                       <div className='flex flex-wrap'>
-                        {newLink.tags?.map((tag: string) => (
-                          <span
-                            id='tag-dismiss-default'
-                            className='px-2 py-1 me-2 mt-1 text-sm font-medium text-tertiary-100 bg-primary-300 rounded'
-                          >
-                            {tag}
-                            <button
-                              onClick={() => handleRemoveTag(tag)}
-                              type='button'
-                              className='inline-flex items-center p-1 ms-2 text-sm text-tertiary-100 bg-transparent rounded-sm hover:bg-blue-200 hover:text-blue-900 dark:hover:bg-blue-800 dark:hover:text-blue-300'
-                              data-dismiss-target='#tag-dismiss-default'
-                              aria-label='Remove'
+                        {type === 'link' &&
+                          newLink.tags?.map((tag: string) => (
+                            <span
+                              id='tag-dismiss-default'
+                              className='px-2 py-1 me-2 mt-1 text-sm font-medium text-tertiary-100 bg-primary-300 rounded'
                             >
-                              <svg
-                                className='w-2 h-2'
-                                aria-hidden='true'
-                                xmlns='http://www.w3.org/2000/svg'
-                                fill='none'
-                                viewBox='0 0 14 14'
+                              {tag}
+                              <button
+                                onClick={() => handleRemoveTag(tag)}
+                                type='button'
+                                className='inline-flex items-center p-1 ms-2 text-sm text-tertiary-100 bg-transparent rounded-sm hover:bg-blue-200 hover:text-blue-900 dark:hover:bg-blue-800 dark:hover:text-blue-300'
+                                data-dismiss-target='#tag-dismiss-default'
+                                aria-label='Remove'
                               >
-                                <path
-                                  stroke='currentColor'
-                                  strokeLinecap='round'
-                                  strokeLinejoin='round'
-                                  strokeWidth='2'
-                                  d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'
-                                />
-                              </svg>
-                              <span className='sr-only'>Remove tag</span>
-                            </button>
-                          </span>
-                        ))}
+                                <svg
+                                  className='w-2 h-2'
+                                  aria-hidden='true'
+                                  xmlns='http://www.w3.org/2000/svg'
+                                  fill='none'
+                                  viewBox='0 0 14 14'
+                                >
+                                  <path
+                                    stroke='currentColor'
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                    strokeWidth='2'
+                                    d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'
+                                  />
+                                </svg>
+                                <span className='sr-only'>Remove tag</span>
+                              </button>
+                            </span>
+                          ))}
                       </div>
-                      <fieldset>
-                        {' '}
-                        <legend>Select a category for this resource:</legend>
-                        {categories?.map(({ type, index }) => (
-                          <Category
-                            key={index}
-                            type={type}
-                            handleChange={handleChange}
-                          />
-                        ))}
-                      </fieldset>
+                      {type === 'link' && (
+                        <fieldset>
+                          {' '}
+                          <legend>Select a category for this resource:</legend>
+                          {categories?.map(({ type, index }) => (
+                            <Category
+                              key={index}
+                              type={type}
+                              handleChange={handleChange}
+                            />
+                          ))}
+                        </fieldset>
+                      )}
                     </div>
                   </div>
                 </div>

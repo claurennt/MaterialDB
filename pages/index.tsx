@@ -14,6 +14,9 @@ import NewLinkForm from 'components/NewLinkForm';
 import Subtitle from 'components/Subtitle';
 import Topic from 'models/Topic';
 import MainTitle from 'components/MainTitle';
+import NextAuth from 'next-auth/next';
+import { authOptions } from './api/auth/[...nextauth]';
+import Admin from 'models/Admin';
 
 type HomeProps = { currentTopics: ITopic[]; session: Session };
 
@@ -22,23 +25,8 @@ const jost = Jost({ subsets: ['latin'], variable: '--font-inter' });
 
 const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
   const [open, setOpen] = useState<boolean>(false);
+  const { status } = useSession();
 
-  const { data: session } = useSession();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  const retrievedTopics: ITopic[] | Session['user']['topics'] =
-    currentTopics?.length ? currentTopics : session?.user?.topics || [];
-
-  useEffect(() => {
-    let timerId: number;
-
-    if (session) setIsLoading(false);
-    else {
-      timerId = window.setTimeout(() => setIsLoading(false), 1000);
-    }
-    return () => clearTimeout(timerId);
-  }, [session]);
-  console.log(session);
   return (
     <>
       <Head>
@@ -50,14 +38,14 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
           <main className='flex flex-col items-center gap-y-10 text-center pt-20'>
             <MainTitle />
             <Subtitle setOpen={setOpen} />
-            <BounceLoader color='#FD5244' loading={isLoading} size={100} />
-            {!session && !isLoading && <AuthLinks />}
 
-            {retrievedTopics?.length > 0 ? (
-              <Topics topicsArray={retrievedTopics} />
+            {!currentTopics && <AuthLinks />}
+
+            {currentTopics?.length > 0 ? (
+              <Topics topicsArray={currentTopics} />
             ) : null}
 
-            {open && session && (
+            {open && status === 'authenticated' && (
               <NewLinkForm type='topic' open={open} setOpen={setOpen} />
             )}
           </main>
@@ -84,7 +72,18 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         return { props: { currentTopics: JSON.parse(JSON.stringify(topics)) } };
     }
 
-    return { props: { currentTopics: null } };
+    const {
+      user: { email },
+    } = await getServerSession(ctx.req, ctx.res, authOptions);
+    const loggedInUserTopics = await Admin.findOne({ email }).populate(
+      'topics'
+    );
+
+    return {
+      props: {
+        currentTopics: JSON.parse(JSON.stringify(loggedInUserTopics.topics)),
+      },
+    };
   } catch (err) {
     console.log('err', err);
     //if no admin is authenticated and no query is present in the url send null
