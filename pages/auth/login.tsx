@@ -1,3 +1,4 @@
+'use server';
 import React, { useRef } from 'react';
 import { signIn } from 'next-auth/react';
 
@@ -20,7 +21,7 @@ const Login = () => {
     };
 
     // signIn function from NextAuth api that trigggers the authorization-jwt-session flow
-    await signIn('username-login', {
+    await signIn('credentials', {
       ...data,
       callbackUrl: '/',
     });
