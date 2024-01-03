@@ -1,10 +1,9 @@
-'use client';
 import React, { useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { Jost } from 'next/font/google';
 import { useSession } from 'next-auth/react';
-import { Session } from 'next-auth';
+import { Session, getServerSession } from 'next-auth';
 import { BounceLoader } from 'react-spinners';
 
 import { ITopic } from 'types/mongoose';
@@ -34,7 +33,7 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
     let timerId: number;
     if (session) setIsLoading(false);
     else {
-      timerId = window.setTimeout(() => setIsLoading(false), 500);
+      timerId = window.setTimeout(() => setIsLoading(false), 1000);
     }
     return () => clearTimeout(timerId);
   }, [session]);
