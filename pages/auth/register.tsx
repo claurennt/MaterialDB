@@ -65,12 +65,6 @@ const Register = () => {
 
   return (
     <>
-      <div role='alert'>
-        <span className='sr-only'>
-          Your account has been activated! You are being redirected to the login
-          form...
-        </span>
-      </div>
       <ToastContainer
         ref={toastId}
         position='top-center'
@@ -92,7 +86,7 @@ const Register = () => {
             src={logo}
             alt='Your Company'
           />
-          <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight'>
+          <h2 className='mt-8 text-center text-2xl font-bold leading-9 tracking-tight'>
             Sign in to your account
           </h2>
         </div>
