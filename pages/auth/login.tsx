@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/router';
+
 import Image from 'next/image';
 import logo from 'public/logo.png';
 
@@ -8,7 +8,6 @@ const Login = () => {
   const emailRef = useRef(null);
 
   const passwordRef = useRef(null);
-  const router = useRouter();
 
   const loginAdmin = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -21,8 +20,10 @@ const Login = () => {
     };
 
     // signIn function from NextAuth api that trigggers the authorization-jwt-session flow
-    await signIn('username-login', { ...data, redirect: false });
-    router.push('/');
+    await signIn('credentials', {
+      ...data,
+      callbackUrl: '/',
+    });
 
     //TODO else senda  toast that notify about failed auth
   };

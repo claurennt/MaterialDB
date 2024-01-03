@@ -21,10 +21,8 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     CredentialsProvider({
-      id: 'username-login',
       // The name to display on the sign in form (e.g. "Sign in with...")
       name: 'Credentials',
-
       credentials: {
         name: { label: 'name', type: 'text' },
         email: { label: 'email', type: 'text', placeholder: 'test@test.com' },
@@ -45,7 +43,7 @@ export const authOptions: NextAuthOptions = {
           const isPasswordSame = await bcrypt.compare(password, admin.password);
 
           if (!isPasswordSame) {
-            throw new Error('The passwords do not match');
+            return null;
           }
 
           return {
@@ -62,6 +60,14 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    //handles the redirect after successful signin
+    async redirect({ url, baseUrl }) {
+      // Allows relative callback URLs
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
+    },
     async jwt({ token, user }) {
       // user is defined only immediately after signin in
       if (user) {

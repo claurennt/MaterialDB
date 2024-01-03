@@ -1,5 +1,4 @@
-const { environment, PORT, NEXT_PUBLIC_URL, NEXTAUTH_SECRET, NEXTAUTH_URL } =
-  process.env;
+const { environment, PORT, NEXT_PUBLIC_URL, NEXTAUTH_SECRET } = process.env;
 const port = PORT || 3000;
 
 const nextConfig = {
@@ -16,7 +15,6 @@ const nextConfig = {
   env: {
     NEXTAUTH_SECRET,
     NEXT_PUBLIC_URL,
-    NEXTAUTH_URL,
   },
 };
 module.exports = nextConfig;
