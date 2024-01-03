@@ -73,7 +73,6 @@ export const authOptions: NextAuthOptions = {
       return baseUrl;
     },
     async jwt({ token, user }) {
-      // console.log({ token, user });
       // user is defined only immediately after signin in
       if (user) {
         return {
@@ -86,21 +85,15 @@ export const authOptions: NextAuthOptions = {
 
       return token;
     },
-    async session({ session, token, ...rest }) {
-      await dbConnect();
-
-      const admin = await Admin.findOne({ email: session.user.email });
-
+    async session({ session, token }) {
       // persist the OAuth access_token and or the user id to the token right after signin
       return {
         ...session,
-        admin,
         user: {
           ...session.user,
           id: token.id,
           email: token.email,
           picture: session.user.image ?? null,
-          topics: admin?.topics,
         },
       };
     },
