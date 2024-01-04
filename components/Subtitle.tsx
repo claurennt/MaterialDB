@@ -2,6 +2,7 @@ import React from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import styles from 'pages/index.module.css';
+import AddNewButton from './AddNewButton';
 
 type SubtitleProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,13 +22,7 @@ const Subtitle: React.FunctionComponent<SubtitleProps> = ({ setOpen }) => {
             Start adding new <span className='text-primary-100 '>topics</span>{' '}
             to your collection!
           </p>
-          <button
-            aria-label='open form to add new topic'
-            className='bg-primary-100 p-1 text-lg hover:bg-primary-neon focus:bg-primary-neon text-white font-bold py-2 px-4 rounded-full'
-            onClick={() => setOpen(true)}
-          >
-            Add topic
-          </button>
+          <AddNewButton text='topic' setOpen={setOpen} />
         </>
       ) : (
         <h2 className='text-3xl'>

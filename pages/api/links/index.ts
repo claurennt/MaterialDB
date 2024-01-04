@@ -5,6 +5,7 @@ import Admin from 'models/Admin';
 import Link from 'models/Link';
 import scrapeArticleTitle from 'utils/server/scrapeArticleTitle';
 import { ILink } from 'types/mongoose';
+
 export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { method } = req;
 
@@ -51,9 +52,8 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
           { new: true }
         ).populate('links');
-        return res
-          .status(200)
-          .json({ message: 'Successfully added link', updatedTopic });
+
+        return res.status(200).send(updatedTopic);
       } catch (error) {
         console.log(error.stack);
         res.status(400).send(error);

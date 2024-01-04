@@ -51,10 +51,11 @@ export default async function handler(
 
     case 'DELETE' /* Delete a link by its ID */:
       try {
-        const deletedLink = await Link.deleteOne({ _id });
+        const deletedLink = await Link.findByIdAndDelete({ _id });
 
         return res.status(200).send(deletedLink);
       } catch (error) {
+        console.log(error);
         return res.status(400).send(error.message);
       }
   }

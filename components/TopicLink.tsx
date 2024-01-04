@@ -3,10 +3,13 @@ import Tag from './Tag';
 import { nanoid } from 'nanoid';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import axios from 'axios';
+import Image from 'next/image';
+
 import type { HighlightSearchTerm } from 'types/components';
 import { ILink } from 'types/mongoose';
 import { useSession } from 'next-auth/react';
 import { categories } from 'utils/client/data';
+import copy from 'public/copy.png';
 
 type TopicLinkProps = {
   link: ILink;
@@ -16,6 +19,7 @@ type TopicLinkProps = {
 
 const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
   link: { title, url, tags, _id, category },
+  link,
   search,
   setTopicLinks,
 }) => {
@@ -44,29 +48,38 @@ const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
           -
         </button>
       )}
-      <div>
-        <button
-          className={`text-white text-m mx-2 px-2`}
+      <div className='flex flex-row'>
+        <span
+          className={`text-white text-m mx-2 px-2 h-fit self-center`}
           style={{ backgroundColor: color }}
         >
           {category}
-        </button>
-        <a
-          href={url}
-          target='_blank'
-          className='text-2xl'
-          dangerouslySetInnerHTML={
-            search ? highlightSearchTerm(title) : { __html: title }
-          }
-        />
+        </span>
+        <div>
+          <div className='flex'>
+            <a
+              href={url}
+              target='_blank'
+              className='text-2xl'
+              dangerouslySetInnerHTML={
+                search ? highlightSearchTerm(title) : { __html: title }
+              }
+            />
 
-        <CopyToClipboard text={url}>
-          <button className='text-blue-600 text-lg mx-3 '>copy</button>
-        </CopyToClipboard>
-        <div className='flex flex-row'>
-          {tags?.map((tag) => (
-            <Tag key={nanoid()} tag={tag} />
-          ))}
+            <CopyToClipboard text={url}>
+              <button
+                className='text-secondary-200 text-lg mx-3 self-center'
+                aria-label='copy link to clipboard'
+              >
+                <Image width='25' height='25' src={copy} alt='Material DB' />
+              </button>
+            </CopyToClipboard>
+          </div>
+          <div className='flex flex-row'>
+            {tags?.map((tag) => (
+              <Tag key={nanoid()} tag={tag} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
