@@ -19,6 +19,7 @@ type TopicLinkProps = {
 
 const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
   link: { title, url, tags, _id, category },
+  link,
   search,
 }) => {
   const { data: session } = useSession();
