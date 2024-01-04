@@ -2,8 +2,9 @@ import DBClient from 'utils/server/DBClient';
 import Topic from 'models/Topic';
 import Link from 'models/Link';
 import Admin from 'models/Admin';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req, res) {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const {
     body,
     method,
@@ -45,7 +46,7 @@ export default async function handler(req, res) {
             .send('Something went wrong, no topic wwas created');
         }
 
-        const t = await Admin.findByIdAndUpdate(
+        await Admin.findByIdAndUpdate(
           creatorId,
           {
             $push: {
@@ -79,4 +80,6 @@ export default async function handler(req, res) {
       res.status(400).json({ success: false });
       break;
   }
-}
+};
+
+export default handler;

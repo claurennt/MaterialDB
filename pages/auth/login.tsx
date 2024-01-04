@@ -36,7 +36,7 @@ const Login = () => {
             height='40'
             className='mx-auto h-10 w-auto'
             src={logo}
-            alt='Your Company'
+            alt='Material DB'
           />
           <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight '>
             Sign in to your account
