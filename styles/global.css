@@ -39,7 +39,9 @@ a {
 }
 
 mark {
-  background-color: pink;
+  padding: 2px 0;
+  background-color: var(--primary-color-neon);
+  color: white;
 }
 
 .sr-only {

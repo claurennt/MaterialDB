@@ -14,7 +14,7 @@ import NewLinkForm from 'components/NewLinkForm';
 import Subtitle from 'components/Subtitle';
 import Topic from 'models/Topic';
 import MainTitle from 'components/MainTitle';
-import NextAuth from 'next-auth/next';
+
 import { authOptions } from './api/auth/[...nextauth]';
 import Admin from 'models/Admin';
 
@@ -33,7 +33,7 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
         <title>MaterialDB</title>
         <link rel='icon' href='/logo.ico' />
       </Head>
-      <div className={'min-h-full'}>
+      <div className='min-h-full'>
         <div className={`${jost.variable} font-sans pb-2 `}>
           <main className='flex flex-col items-center gap-y-10 text-center pt-20'>
             <MainTitle />
@@ -49,7 +49,11 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
               <NewLinkForm type='topic' open={open} setOpen={setOpen} />
             )}
           </main>
-          <footer className='text-center absolute bottom-5 w-full'>
+          <footer
+            className={`text-center ${
+              currentTopics?.length > 0 ? 'static' : 'absolute'
+            } bottom-5 w-full`}
+          >
             made with love by claurennt
           </footer>
         </div>
@@ -75,6 +79,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const {
       user: { email },
     } = await getServerSession(ctx.req, ctx.res, authOptions);
+
     const loggedInUserTopics = await Admin.findOne({ email }).populate(
       'topics'
     );

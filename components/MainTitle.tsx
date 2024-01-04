@@ -6,7 +6,7 @@ const MainTitle = () => {
   return (
     <>
       {session?.user ? (
-        <h1 className='font-sans text-5xl '>
+        <h1 className='font-sans text-5xl'>
           Welcome back to your{' '}
           <span className='text-primary-100  m-0 p-0'>MaterialDB</span>{' '}
           {session.user.name}!

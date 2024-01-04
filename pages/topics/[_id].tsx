@@ -6,10 +6,12 @@ import { nanoid } from 'nanoid';
 import TopicLink from 'components/TopicLink';
 import NewLinkForm from 'components/NewLinkForm';
 import SearchBar from 'components/SearchBar';
-
+import DBClient from 'utils/server/DBClient';
 import { ILink, ITopic } from 'types/mongoose';
 import Topic from 'models/Topic';
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
+import Link from 'models/Link';
+import AddNewButton from 'components/AddNewButton';
 
 type TopicPageProps = {
   individualTopic: ITopic;
@@ -46,9 +48,9 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
   };
 
   return (
-    <div className=''>
+    <div>
       <button
-        className='absolute top-0 right-0 mx-5 px-5 text-base '
+        className='bg-primary-100 text-sm hover:bg-blue-700 text-white hover:bg-primary-neon focus:bg-primary-neon font-bold py-1 px-2 rounded-tl rounded-br m-5 absolute right-20 top-0'
         onClick={() => router.replace('/')}
       >
         Home
@@ -62,26 +64,21 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
           type='link'
         />
       )}
-
-      <h1 className='font-medium leading-tight text-5xl mt-0 mb-5 text-primary-100 text-center'>
-        {name}
-      </h1>
-      {session && (
-        <button
-          aria-label='open modal to app new topic'
-          className='bg-primary-100 p-1 text-lg hover:bg-primary-neon focus:bg-primary-neon text-white font-bold py-2 px-4 rounded-full'
-          onClick={() => setOpen(true)}
-        >
-          Add new link
-        </button>
-      )}
-      <SearchBar handleSubmit={handleSubmit} />
-
+      <div className='flex flex-col items-center text-center pt-10 gap-4 pb-10'>
+        <h1 className='leading-tight text-5xl mt-0 mb-5 text-primary-100 text-center'>
+          {name}
+        </h1>
+        <div className='flex gap-10'>
+          <SearchBar handleSubmit={handleSubmit} />
+          <span className='self-center'>OR </span>
+          {session && <AddNewButton text='link' setOpen={setOpen} />}
+        </div>
+      </div>
       {topicLinks?.map((link) => (
         <TopicLink
           setTopicLinks={setTopicLinks}
           search={search}
-          key={nanoid()}
+          key={link._id}
           link={link}
         />
       ))}
@@ -92,8 +89,10 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
 export default TopicPage;
 
 export const getServerSideProps: GetServerSideProps = async ({
-  params: { _id },
+  query: { _id },
 }) => {
+  await DBClient();
+
   try {
     /* find topic by id in our database */
     const topic = await Topic.findById(_id).populate('links');

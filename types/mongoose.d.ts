@@ -8,17 +8,18 @@ interface IAdmin {
   activated?: boolean;
 
   /** for array of referenced documents: https://mongoosejs.com/docs/typescript/schemas.html#arrays*/
-  topics?: Types.DocumentArray<ITopics>;
+  topics?: Types.DocumentArray<ITopic>;
   _conditions?: { _id: string };
 }
 
 interface ILink {
   category: string;
-  title?: string;
+  title: string;
   /** for "primitive" arrays: https://mongoosejs.com/docs/typescript/schemas.html#arrays*/
   tags: string[];
   url: string;
   _id: string;
+  _topic: Types.Document<ITopic>;
 }
 
 interface ITopic {
