@@ -9,6 +9,8 @@ import type { AddNewFunction, NewTopic, NewLink } from 'types/components';
 import { ILink } from 'types/mongoose';
 import { categories, topicInputs, linkInputs } from 'utils/client/data';
 import Category from './Category';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 type NewLinkFormType = 'topic' | 'link';
 
@@ -23,7 +25,6 @@ type NewLinkFormProps = {
 const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
   individualTopicId,
   setOpen,
-  setTopicLinks,
   type,
   open,
 }) => {
@@ -40,13 +41,19 @@ const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
 
   const [tagValue, setTagValue] = useState<string>('');
 
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
+
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const topicName = searchParams.get('name');
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     name: string
   ) => {
     const target = e.target as HTMLInputElement;
+
     //handleChange for newLink modal
     if (type === 'link') {
       if (name === 'tags') {
@@ -87,22 +94,22 @@ const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
     });
 
     setOpen(false);
-    /* triggers a session update in the nextauth callback,
-       this session change will then trigger a state update in the useEffect in the Home component */
-    update();
+    router.replace(router.asPath);
   };
 
   const addNewLink: AddNewFunction = async (e) => {
     e.preventDefault();
 
     await axios.put(`/api/topics/${individualTopicId}`, {
-      newLink,
+      ...newLink,
+      _topic: topicName,
     });
 
-    // close the modal and refresh the page to get updated server side props and display new added link
-    setTimeout(() => setOpen(false), 500);
+    router.replace(router.asPath);
   };
+
   const inputs = type === 'link' ? linkInputs : topicInputs;
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <div aria-modal='true' role='dialog'>
@@ -170,8 +177,9 @@ const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
                       ))}
                       <div className='flex flex-wrap'>
                         {type === 'link' &&
-                          newLink.tags?.map((tag: string) => (
+                          newLink.tags?.map((tag: string, i: number) => (
                             <span
+                              key={tag + i}
                               id='tag-dismiss-default'
                               className='px-2 py-1 me-2 mt-1 text-sm font-medium text-tertiary-100 bg-primary-300 rounded'
                             >
@@ -207,9 +215,9 @@ const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
                         <fieldset>
                           {' '}
                           <legend>Select a category for this resource:</legend>
-                          {categories?.map(({ type, index }) => (
+                          {categories?.map(({ type, color, index }) => (
                             <Category
-                              key={index}
+                              key={color + index}
                               type={type}
                               handleChange={handleChange}
                             />
@@ -221,15 +229,19 @@ const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
                 </div>
                 <div className='bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse'>
                   {session && (
-                    <button
-                      type='button'
-                      className='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm'
-                      onClick={(e) =>
-                        type === 'topic' ? addNewTopic(e) : addNewLink(e)
-                      }
-                    >
-                      +
-                    </button>
+                    <>
+                      <button
+                        aria-labelledby='add-button'
+                        type='button'
+                        className='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm'
+                        onClick={(e) =>
+                          type === 'topic' ? addNewTopic(e) : addNewLink(e)
+                        }
+                      >
+                        +
+                      </button>
+                      <span id='add-button'>Click to create new {type}</span>
+                    </>
                   )}
                 </div>
               </div>
