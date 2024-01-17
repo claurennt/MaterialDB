@@ -9,6 +9,8 @@ import type { AddNewFunction, NewTopic, NewLink } from 'types/components';
 import { ILink } from 'types/mongoose';
 import { categories, topicInputs, linkInputs } from 'utils/client/data';
 import Category from './Category';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 import { useRouter } from 'next/router';
 
@@ -103,6 +105,7 @@ const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
     });
 
     setOpen(false);
+
     router.replace(router.asPath);
   };
 

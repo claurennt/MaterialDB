@@ -53,6 +53,7 @@ export default async function handler(
       try {
         const deletedLink = await Link.findOneAndDelete({ _id });
 
+
         return res.status(200).send(deletedLink);
       } catch (error) {
         console.log(error);

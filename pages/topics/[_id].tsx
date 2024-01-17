@@ -8,9 +8,7 @@ import 'models/Link';
 import TopicLink from 'components/TopicLink';
 import NewLinkForm from 'components/NewLinkForm';
 import SearchBar from 'components/SearchBar';
-
 import { useSession } from 'next-auth/react';
-
 import AddNewButton from 'components/AddNewButton';
 
 type TopicPageProps = {
@@ -73,6 +71,7 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
       </div>
       {individualTopic?.links?.map((link, i) => (
         <TopicLink search={search} key={link._id ?? i} link={link} />
+
       ))}
     </div>
   );
@@ -83,6 +82,8 @@ export default TopicPage;
 export const getServerSideProps: GetServerSideProps = async ({
   query: { _id },
 }) => {
+  await DBClient();
+
   try {
     await DBClient();
 

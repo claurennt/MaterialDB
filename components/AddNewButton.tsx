@@ -5,6 +5,7 @@ type AddNewButtonProps = {
   setOpen: (open: boolean) => void;
 };
 
+
 const AddNewButton: React.FunctionComponent<AddNewButtonProps> = ({
   text,
   setOpen,

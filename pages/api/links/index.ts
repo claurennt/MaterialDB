@@ -7,6 +7,7 @@ import scrapeArticleTitle from 'utils/server/scrapeArticleTitle';
 import { ILink } from 'types/mongoose';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+
   const { method } = req;
 
   await DBClient();

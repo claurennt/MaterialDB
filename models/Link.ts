@@ -11,7 +11,6 @@ const linkSchema = new Schema<ILink>({
   url: { type: String, required: true },
   _topic: { type: Schema.Types.ObjectId, ref: 'Topic' },
 });
-
 // after a findAndDeleteOne request for a link document is sent, delete its own reference inside the Topic document
 linkSchema.post('findOneAndDelete', async function (this: ILink, next) {
   const { _id } = this;
@@ -28,7 +27,8 @@ linkSchema.post('findOneAndDelete', async function (this: ILink, next) {
   }
 });
 
+
 const Link: Model<ILink> =
-  mongoose.models?.Link || mongoose.model('Link', linkSchema);
+  mongoose.models.Link || mongoose.model('Link', linkSchema);
 
 export default Link;
