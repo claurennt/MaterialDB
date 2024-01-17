@@ -7,10 +7,6 @@ import { useRouter } from 'next/router';
 
 const LogoutButton = () => {
   const router = useRouter();
-import { useRouter } from 'next/router';
-
-const LogoutButton = () => {
-  const router = useRouter();
 
   return (
     <button
