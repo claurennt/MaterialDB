@@ -2,7 +2,7 @@ import React from 'react';
 
 type AddNewButtonProps = {
   text: string;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen: (open: boolean) => void;
 };
 
 const AddNewButton: React.FunctionComponent<AddNewButtonProps> = ({

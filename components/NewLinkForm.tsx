@@ -100,6 +100,7 @@ const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
     await axios.put(`/api/topics/${individualTopicId}`, {
       ...newLink,
       _topic: router.query._id,
+      _topic: router.query._id,
     });
 
     setOpen(false);
