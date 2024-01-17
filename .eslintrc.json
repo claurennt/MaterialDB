@@ -1,4 +1,9 @@
 {
-  "extends": ["next/core-web-vitals", "eslint:recommended", "next/babel"],
+  "extends": [
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "plugins": ["@next/eslint-plugin-next"]
 }
