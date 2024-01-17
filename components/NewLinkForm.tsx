@@ -9,7 +9,7 @@ import type { AddNewFunction, NewTopic, NewLink } from 'types/components';
 import { ILink } from 'types/mongoose';
 import { categories, topicInputs, linkInputs } from 'utils/client/data';
 import Category from './Category';
-import { useSearchParams } from 'next/navigation';
+
 import { useRouter } from 'next/router';
 
 type NewLinkFormType = 'topic' | 'link';
@@ -44,9 +44,6 @@ const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
   const { data: session } = useSession();
 
   const router = useRouter();
-
-  const searchParams = useSearchParams();
-  const topicName = searchParams.get('name');
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -102,9 +99,10 @@ const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
 
     await axios.put(`/api/topics/${individualTopicId}`, {
       ...newLink,
-      _topic: topicName,
+      _topic: router.query._id,
     });
 
+    setOpen(false);
     router.replace(router.asPath);
   };
 
