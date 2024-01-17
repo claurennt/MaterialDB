@@ -3,7 +3,7 @@ import TopicCard from './TopicCard';
 
 import { ITopic } from 'types/mongoose';
 
-type TopicsProps = { topicsArray: ITopic[] | {}[] };
+type TopicsProps = { topicsArray: ITopic[] };
 
 const Topics: React.FunctionComponent<TopicsProps> = ({ topicsArray }) => {
   return (

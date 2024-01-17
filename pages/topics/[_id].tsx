@@ -1,16 +1,16 @@
 import type { GetServerSideProps } from 'next';
 import { useRouter, NextRouter } from 'next/router';
 import React, { useState } from 'react';
-import { nanoid } from 'nanoid';
-
+import DBClient from 'utils/server/DBClient';
+import { ITopic } from 'types/mongoose';
+import Topic from 'models/Topic';
+import 'models/Link';
 import TopicLink from 'components/TopicLink';
 import NewLinkForm from 'components/NewLinkForm';
 import SearchBar from 'components/SearchBar';
-import DBClient from 'utils/server/DBClient';
-import { ILink, ITopic } from 'types/mongoose';
-import Topic from 'models/Topic';
-import { getSession, useSession } from 'next-auth/react';
-import Link from 'models/Link';
+
+import { useSession } from 'next-auth/react';
+
 import AddNewButton from 'components/AddNewButton';
 
 type TopicPageProps = {
@@ -23,14 +23,12 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
   const [open, setOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<undefined | string>();
 
-  const [topicLinks, setTopicLinks] = useState<ILink[]>(individualTopic.links);
-
   const { data: session } = useSession();
 
-  //get router info with props passed with Link component
+  // gets router info with props passed with Link component
   const router: NextRouter = useRouter();
   const {
-    query: { name },
+    query: { name, _id },
   } = router;
 
   // handle search submit
@@ -55,10 +53,9 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
       >
         Home
       </button>
-      {open && (
+      {open && _id && (
         <NewLinkForm
           individualTopicId={individualTopic._id}
-          setTopicLinks={setTopicLinks}
           setOpen={setOpen}
           open={open}
           type='link'
@@ -74,13 +71,8 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
           {session && <AddNewButton text='link' setOpen={setOpen} />}
         </div>
       </div>
-      {topicLinks?.map((link) => (
-        <TopicLink
-          setTopicLinks={setTopicLinks}
-          search={search}
-          key={link._id}
-          link={link}
-        />
+      {individualTopic?.links?.map((link, i) => (
+        <TopicLink search={search} key={link._id ?? i} link={link} />
       ))}
     </div>
   );
@@ -91,9 +83,9 @@ export default TopicPage;
 export const getServerSideProps: GetServerSideProps = async ({
   query: { _id },
 }) => {
-  await DBClient();
-
   try {
+    await DBClient();
+
     /* find topic by id in our database */
     const topic = await Topic.findById(_id).populate('links');
 

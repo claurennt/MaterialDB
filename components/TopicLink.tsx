@@ -10,24 +10,24 @@ import { ILink } from 'types/mongoose';
 import { useSession } from 'next-auth/react';
 import { categories } from 'utils/client/data';
 import copy from 'public/copy.png';
+import { useRouter } from 'next/router';
 
 type TopicLinkProps = {
   link: ILink;
   search: string;
-  setTopicLinks: React.Dispatch<React.SetStateAction<ILink[]>>;
 };
 
 const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
   link: { title, url, tags, _id, category },
-  link,
   search,
-  setTopicLinks,
 }) => {
   const { data: session } = useSession();
-  const deleteLink = async () => {
-    const { data } = await axios.delete(`/api/links/${_id}`);
+  const router = useRouter();
 
-    setTopicLinks((prev) => prev.filter((link) => link._id !== data._id));
+  const deleteLink = async () => {
+    await axios.delete(`/api/links/${_id}`);
+
+    router.replace(router.asPath);
   };
 
   // highlight query using regular expression
