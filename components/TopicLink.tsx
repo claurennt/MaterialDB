@@ -12,7 +12,6 @@ import { categories } from 'utils/client/data';
 import copy from 'public/copy.png';
 import { useRouter } from 'next/router';
 
-
 type TopicLinkProps = {
   link: ILink;
   search: string;
@@ -20,7 +19,7 @@ type TopicLinkProps = {
 
 const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
   link: { title, url, tags, _id, category },
-  link,
+
   search,
 }) => {
   const { data: session } = useSession();
