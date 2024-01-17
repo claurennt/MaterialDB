@@ -6,7 +6,8 @@ import Link from 'models/Link';
 import scrapeArticleTitle from 'utils/server/scrapeArticleTitle';
 import { ILink } from 'types/mongoose';
 
-export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+
   const { method } = req;
 
   await DBClient();
@@ -58,5 +59,15 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         console.log(error.stack);
         res.status(400).send(error);
       }
+    case 'DELETE' /* Delete all links */:
+      try {
+        await Link.deleteMany();
+
+        return res.status(200).send('Deleted all the links');
+      } catch (error) {
+        console.log(error);
+        return res.status(400).send(error);
+      }
   }
 };
+export default handler;

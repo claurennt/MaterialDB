@@ -1,9 +1,10 @@
 import React from 'react';
 
-interface AddNewButtonProps {
+type AddNewButtonProps = {
   text: string;
   setOpen: (open: boolean) => void;
-}
+};
+
 
 const AddNewButton: React.FunctionComponent<AddNewButtonProps> = ({
   text,

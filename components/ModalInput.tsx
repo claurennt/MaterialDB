@@ -1,5 +1,4 @@
 import React from 'react';
-import { NewLink, NewTopic } from 'types/components';
 
 type ModalInputsProps = {
   handleKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
