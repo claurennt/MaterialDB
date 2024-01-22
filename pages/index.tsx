@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { Jost } from 'next/font/google';
 import { useSession } from 'next-auth/react';
-import { Session, getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth';
 
 import { ITopic } from 'types/mongoose';
 import Topics from 'components/Topics';
