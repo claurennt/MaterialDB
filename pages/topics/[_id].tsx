@@ -46,7 +46,7 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
   return (
     <div>
       <button
-        className='bg-primary-100 text-sm hover:bg-blue-700 text-white hover:bg-primary-neon focus:bg-primary-neon font-bold py-1 px-2 rounded-tl rounded-br m-5 absolute right-20 top-0'
+        className='bg-primary-100 text-sm  text-white hover:bg-primary-neon focus:bg-primary-neon font-bold py-1 px-2 rounded-tl rounded-br m-5 absolute right-20 top-0'
         onClick={() => router.replace('/')}
       >
         Home
@@ -71,7 +71,6 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
       </div>
       {individualTopic?.links?.map((link, i) => (
         <TopicLink search={search} key={link._id ?? i} link={link} />
-
       ))}
     </div>
   );
