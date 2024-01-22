@@ -11,7 +11,10 @@
     "build": "next build",
     "start": "next start",
     "stop": "taskkill /im node.exe /F",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:e2e:open": "cypress open",
+    "test:e2e:run": "cypress run",
+    "test:components": "cypress run --component"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^2.0.7",
@@ -46,6 +49,8 @@
   },
   "devDependencies": {
     "@tanstack/react-query-devtools": "^5.8.9",
+    "@testing-library/cypress": "^10.0.1",
+    "@types/jest": "^29.5.11",
     "@types/node": "^20.10.0",
     "@types/react": "^18.2.39",
     "@types/react-dom": "^18.2.17",
@@ -53,6 +58,8 @@
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "autoprefixer": "^10.4.16",
     "cross-env": "^7.0.3",
+    "cypress": "^13.6.3",
+    "cypress-social-logins": "^1.14.1",
     "eslint": "8.55.0",
     "eslint-config-next": "14.0.4",
     "kill-port": "^2.0.1",

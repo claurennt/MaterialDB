@@ -13,7 +13,7 @@ const MainTitle = () => {
         </h1>
       ) : (
         <h1 className='font-sans text-5xl'>
-          Welcome to <span className='text-primary-100 '> MaterialDB!</span>
+          Welcome to <span className='text-primary-100'>MaterialDB!</span>
         </h1>
       )}
     </>
