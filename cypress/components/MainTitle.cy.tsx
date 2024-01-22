@@ -21,9 +21,6 @@ describe('<MainTitle />', () => {
       </SessionProvider>
     );
     cy.contains(`Welcome back to your MaterialDB ${session.user.name}!`);
-
-    // cy.ByCy('home-page-users-link').should('have.attr', 'href', '/users');
-    // cy.getByCy('add-to-cart-comp').should('be.visible');
   });
 
   it('should only say hello without a session', () => {

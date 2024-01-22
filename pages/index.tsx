@@ -17,7 +17,7 @@ import MainTitle from 'components/MainTitle';
 import { authOptions } from './api/auth/[...nextauth]';
 import Admin from 'models/Admin';
 
-type HomeProps = { currentTopics: ITopic[]; session: Session };
+type HomeProps = { currentTopics: ITopic[] };
 
 //font for the project
 const jost = Jost({ subsets: ['latin'], variable: '--font-inter' });
@@ -61,6 +61,8 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
   );
 };
 
+export default Home;
+
 //pre-render page with server side props
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
@@ -75,24 +77,25 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         return { props: { currentTopics: JSON.parse(JSON.stringify(topics)) } };
     }
 
-    const {
-      user: { email },
-    } = await getServerSession(ctx.req, ctx.res, authOptions);
+    const data = await getServerSession(ctx.req, ctx.res, authOptions);
+    if (data?.user) {
+      const {
+        user: { email },
+      } = data;
+      const loggedInUserTopics = await Admin.findOne({ email }).populate(
+        'topics'
+      );
 
-    const loggedInUserTopics = await Admin.findOne({ email }).populate(
-      'topics'
-    );
-
-    return {
-      props: {
-        currentTopics: JSON.parse(JSON.stringify(loggedInUserTopics.topics)),
-      },
-    };
+      return {
+        props: {
+          currentTopics: JSON.parse(JSON.stringify(loggedInUserTopics.topics)),
+        },
+      };
+    }
+    return { props: { currentTopics: null } };
   } catch (err) {
     console.log('err', err);
     //if no admin is authenticated and no query is present in the url send null
     return { props: { currentTopics: null } };
   }
 };
-
-export default Home;

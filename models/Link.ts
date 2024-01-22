@@ -29,6 +29,6 @@ linkSchema.post('findOneAndDelete', async function (this: ILink, next) {
 });
 
 const Link: Model<ILink> =
-  mongoose.models.Link || mongoose.model('Link', linkSchema);
+  mongoose.models?.Link || mongoose.model('Link', linkSchema);
 
 export default Link;
