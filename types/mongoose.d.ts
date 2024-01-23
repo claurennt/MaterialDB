@@ -19,7 +19,7 @@ interface ILink {
   tags: string[];
   url: string;
   _id: string;
-  _topic: Types.Document<ITopic>;
+  _topic: Document<ITopic>;
 }
 
 interface ITopic {

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useSession } from 'next-auth/react';
 
 const MainTitle = () => {
@@ -8,7 +9,7 @@ const MainTitle = () => {
       {session?.user ? (
         <h1 className='font-sans text-5xl'>
           Welcome back to your{' '}
-          <span className='text-primary-100  m-0 p-0'>MaterialDB</span>{' '}
+          <span className='text-primary-100 m-0 p-0'>MaterialDB</span>{' '}
           {session.user.name}!
         </h1>
       ) : (

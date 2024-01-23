@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import styles from '/pages/index.module.css';
+import styles from 'pages/index.module.css';
 
 const AuthButtons = () => {
   const { authLink } = styles;
