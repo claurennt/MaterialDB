@@ -16,7 +16,7 @@
     "jsx": "preserve",
     "baseUrl": ".",
 
-    "types": ["node", "cypress"]
+    "types": ["node", "cypress", "jest", "@testing-library/jest-dom"]
   },
 
   "include": [
@@ -24,7 +24,8 @@
     "**/*.ts",
     "**/*.tsx",
     "cypress",
-    "./cypress/support/index.d.ts"
+    "./cypress/support/index.d.ts",
+    "__tests__"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "**/*.test.tsx"]
 }
