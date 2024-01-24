@@ -3,21 +3,18 @@ import React, { Fragment, useState } from 'react';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { Dialog, Transition } from '@headlessui/react';
+import { useRouter } from 'next/router';
 
 import ModalInput from './ModalInput';
 import type { AddNewFunction, NewTopic, NewLink } from 'types/components';
-import { ILink } from 'types/mongoose';
 import { categories, topicInputs, linkInputs } from 'utils/client/data';
 import Category from './Category';
-
-import { useRouter } from 'next/router';
 
 type NewLinkFormType = 'topic' | 'link';
 
 type NewLinkFormProps = {
   individualTopicId?: string;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setTopicLinks?: React.Dispatch<React.SetStateAction<ILink[]>>;
   type: NewLinkFormType;
   open: boolean;
 };
