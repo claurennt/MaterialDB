@@ -1,11 +1,11 @@
 import React from 'react';
 import Category from '../components/Category';
-import { render, screen, fireEvent, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 
-describe('<Category />', () => {
-  it('should check the radio input on click', () => {
+describe('Category', () => {
+  it('should check the radio input on click', async () => {
     const handleChangeMock = jest.fn();
 
     render(<Category type='dummy category' handleChange={handleChangeMock} />);
@@ -14,7 +14,7 @@ describe('<Category />', () => {
 
     expect(radio).not.toBeChecked();
 
-    fireEvent.click(radio);
+    await userEvent.click(radio);
 
     expect(radio).toBeChecked();
   });
