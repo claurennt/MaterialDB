@@ -5,7 +5,7 @@ import { Session } from 'next-auth';
 
 const session: Session = {
   user: {
-    id: '1',
+    id: '777',
     name: 'Claudia',
     email: 'claudia@gmail.com',
     image: null,
