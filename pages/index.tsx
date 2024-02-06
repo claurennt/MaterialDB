@@ -8,7 +8,7 @@ import { getServerSession } from 'next-auth';
 import { ITopic } from 'types/mongoose';
 import Topics from 'components/Topics';
 import DBClient from 'utils/server/DBClient';
-import AuthLinks from 'components/AuthLinks';
+import AuthButtons from 'components/AuthButtons';
 import NewLinkForm from 'components/NewLinkForm';
 import Subtitle from 'components/Subtitle';
 import Topic from 'models/Topic';
@@ -38,7 +38,7 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
             <MainTitle />
             <Subtitle setOpen={setOpen} />
 
-            {!currentTopics && <AuthLinks />}
+            {!currentTopics && <AuthButtons />}
 
             {currentTopics?.length > 0 ? (
               <Topics topicsArray={currentTopics} />
