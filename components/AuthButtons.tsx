@@ -5,6 +5,7 @@ import styles from 'pages/index.module.css';
 
 const AuthButtons = () => {
   const { authLink } = styles;
+
   const searchParams = useSearchParams();
   const userId = searchParams.get('userId');
 
