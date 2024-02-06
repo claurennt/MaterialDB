@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import '../utils/__mocks__/next-router-mock';
+import '../utils/__mocks__';
 
 import { renderWithSession, renderWithoutSession } from '../utils/helpers-test';
 
