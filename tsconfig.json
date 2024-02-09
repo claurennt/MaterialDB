@@ -15,6 +15,13 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": ".",
+    "paths": {
+      "@models": ["models/index.ts"],
+      "@types": ["types/index.ts"],
+      "@components": ["components/index.ts"],
+      "@utils/client": ["utils/client/*"],
+      "@utils/server": ["utils/server/index.ts"]
+    },
 
     "types": ["node", "cypress", "jest", "@testing-library/jest-dom"]
   },

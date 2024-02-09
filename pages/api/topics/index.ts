@@ -1,7 +1,6 @@
-import DBClient from 'utils/server/DBClient';
-import Topic from 'models/Topic';
-import Link from 'models/Link';
-import Admin from 'models/Admin';
+import { DBClient } from '@utils/server';
+import { Topic, Admin } from '@models';
+
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

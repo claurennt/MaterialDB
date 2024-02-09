@@ -1,17 +1,14 @@
 import type { GetServerSideProps } from 'next';
 import { useRouter, NextRouter } from 'next/router';
 import React, { useState } from 'react';
-import DBClient from 'utils/server/DBClient';
-import { ITopic } from 'types/mongoose';
-import Topic from 'models/Topic';
-import 'models/Link';
-import TopicLink from 'components/TopicLink';
-import NewLinkForm from 'components/NewLinkForm';
-import SearchBar from 'components/SearchBar';
+import { DBClient } from '@utils/server';
+import { ITopic } from '@types';
+import { Topic } from '@models';
+import '@models';
+
+import { TopicLink, NewLinkForm, AddNewButton, SearchBar } from '@components';
 
 import { useSession } from 'next-auth/react';
-
-import AddNewButton from 'components/AddNewButton';
 
 type TopicPageProps = {
   individualTopic: ITopic;

@@ -4,10 +4,9 @@ import type { NextAuthOptions } from 'next-auth';
 import bcrypt from 'bcrypt';
 
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
-import clientPromise from 'utils/server/clientPromise';
+import { clientPromise, DBClient } from '@utils/server';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import Admin from 'models/Admin';
-import DBCLient from 'utils/server/DBClient';
+import { Admin } from '@models';
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -36,7 +35,7 @@ export const authOptions: NextAuthOptions = {
         const { email, password } = credentials;
         if (!email || !password) throw new Error('Missing credentials');
 
-        await DBCLient();
+        await DBClient();
         try {
           const admin = await Admin.findOne({ email }).select('+password');
 
