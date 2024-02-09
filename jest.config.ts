@@ -13,6 +13,10 @@ const config: Config = {
   testEnvironment: 'jsdom',
   moduleNameMapper: {
     '^utils/client/(.*)$': '<rootDir>/utils/client/$1',
+    '^utils/server/(.*)$': '<rootDir>/utils/server/$1',
+    '^utils/test/(.*)$': '<rootDir>/utils/test/$1',
+    '^models/(.*)$': '<rootDir>/models/$1',
+    '^components/(.*)$': '<rootDir>/components/$1',
   },
 };
 
