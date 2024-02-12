@@ -1,9 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import DBClient from 'utils/server/DBClient';
-import Topic from 'models/Topic';
-import Link from 'models/Link';
+import { DBClient } from '@utils/server';
+import { Topic, Link } from '@models';
 
-import scrapeArticleTitle from 'utils/server/scrapeArticleTitle';
+import { scrapeArticleTitle } from '@utils/server';
 
 export default async function handler(
   req: NextApiRequest,

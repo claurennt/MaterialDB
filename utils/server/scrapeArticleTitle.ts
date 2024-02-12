@@ -1,7 +1,6 @@
 import puppeteer from 'puppeteer';
-import axios from 'axios';
 
-const scrapeArticleTitle = async (link: string) => {
+export const scrapeArticleTitle = async (link: string) => {
   // Launch the browser
   const browser = await puppeteer.launch();
 
@@ -19,5 +18,3 @@ const scrapeArticleTitle = async (link: string) => {
 
   return title;
 };
-
-export default scrapeArticleTitle;

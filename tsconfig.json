@@ -15,17 +15,17 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": ".",
+    "paths": {
+      "@models": ["models/index.ts"],
+      "@types": ["types/index.ts"],
+      "@components": ["components/index.ts"],
+      "@utils/client": ["utils/client/*"],
+      "@utils/server": ["utils/server/index.ts"]
+    },
 
-    "types": ["node", "cypress", "jest", "@testing-library/jest-dom"]
+    "types": ["node", "jest", "@testing-library/jest-dom"]
   },
 
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "cypress",
-    "./cypress/support/index.d.ts",
-    "__tests__"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "__tests__"],
   "exclude": ["node_modules", "**/*.test.tsx"]
 }

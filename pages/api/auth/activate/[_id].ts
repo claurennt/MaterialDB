@@ -1,7 +1,6 @@
-import DBClient from 'utils/server/DBClient';
-import Admin from 'models/Admin';
-import { NextAPIHandler } from 'types/next-auth';
-import { sendRegistrationConfirmationEmail } from 'utils/server/mailer';
+import { DBClient, sendRegistrationConfirmationEmail } from '@utils/server';
+import { Admin } from '@models';
+import { NextAPIHandler } from '@types';
 
 const handler: NextAPIHandler = async (req, res) => {
   const { method } = req;
