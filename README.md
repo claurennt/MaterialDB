@@ -1,19 +1,26 @@
-# MaterialDB 
-## A NextJS app where you can collect useful links and resources that help you become a better developer/instructor.
+# 🔗 MaterialDB 📚
+## MaterialDB is a super handy NextJS app that's all about making life easier for developers and instructors who are drowning in bookmarks of educational content. 
+It's our little rebellion against the chaos of managing tons of learning materials, helping you to keep everything neat, tidy, and just a click away.
 
-### Purpose of MaterialDB:
-In my journey as Developer/Instructor I often find myself struggling to save and organize my bookmarks. That's why I have decided to develop MaterialDB, a website that allows me to save links to videos/tutorials/articles/resources/documentation and organize them by topic. 
+### Purpose
+In my journey as Developer/Instructor I often find myself struggling to save and organize my bookmarks. That's why I have decided to develop MaterialDB, a website that allows me to save links to videos/tutorials/articles/resources/documentation and organize them by topic.
 
-#### Features:
-- The app allows admins to create new topics, update or delete existing ones. On each topic page admins can add/save links to useful resources. By using the link to the website, the app will automatically scrape the head of the document and save the link with its title information. Moreover, tags can be used and the type of resource should be specified.
- 
-- AdminS can share their own version on MaterialDB with colleAgues/students by appending following query parameter to the base url ```?userId={id}```
-For instance [https://material-db.netlify.app/?userId=626faa6e6b1dbcd848d2eb44](https://material-db.netlify.app/?userId=626faa6e6b1dbcd848d2eb44) will show MaterialDB for user with id **626faa6e6b1dbcd848d2eb44**
+### 🌍 Features
 
-- Each topic page has a search bar with a highlight query effect
+* **Efficient Resource Management**: MaterialDB enables users (specifically admins) to create, update, and delete topics, making it effortless to categorize and manage resources according to specific subjects or interests.
+* **Dynamic Resource Addition**: With an intuitive interface, admins can easily add links to various resources such as videos, tutorials, articles, and documentation. The app automatically extracts and saves the title information from the link's metadata, streamlining the organization process.
+* **Personalized Sharing**: MaterialDB supports personalized sharing options, allowing admins to share their curated list of resources with colleagues or students through a unique URL parameter based on the user's ID.
+* **Enhanced Search Functionality**: Each topic page is equipped with a search bar that features a highlight query effect, enhancing the user's ability to find relevant resources quickly.
+* **Convenient Copy to Clipboard**: Next to each link, a "copy to clipboard" button facilitates easy sharing and referencing of resources without the need for manual copying.
 
-- Next to each link a button is present with a "copy to clipboard" functionality
+### ⚙️ Technologies Used
 
-Current Status: MVP
+MaterialDB harnesses the power of modern web technologies to deliver a seamless and user-friendly experience:
 
-Next features to be implemented: registration of new users in the Front-End
+* NextJS + Typescript
+* 🛡️ Authentication: Next-Auth
+* 🛢️ Database: Mongoose
+* 🧪 Testing: Jest and React Testing Library
+
+MaterialDB stands as a testament to the importance of organization and accessibility in the digital age, offering developers and instructors a dedicated platform for managing their most valued educational resources. Whether you're looking to streamline your bookmarking process or share knowledge with peers, MaterialDB is your go-to solution for curating and accessing educational content efficiently.
+
