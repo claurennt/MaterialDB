@@ -8,6 +8,7 @@ const createJestConfig = nextJest({
 
 // Add any custom config to be passed to Jest
 const config: Config = {
+  preset: '@shelf/jest-mongodb',
   collectCoverage: true,
   coverageDirectory: 'coverage',
   testEnvironment: 'jsdom',
