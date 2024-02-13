@@ -202,7 +202,7 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
                                 type='button'
                                 className='inline-flex items-center p-1 ms-2 text-sm text-tertiary-100 bg-transparent rounded-sm hover:bg-blue-200 hover:text-blue-900 dark:hover:bg-blue-800 dark:hover:text-blue-300'
                                 data-dismiss-target='#tag-dismiss-default'
-                                aria-labelledby='remove-tag'
+                                aria-labelledby={`remove-tag-${tag}${i}`}
                               >
                                 {' '}
                                 <span
@@ -227,7 +227,10 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
                                     />
                                   </svg>
                                 </span>
-                                <span className='sr-only' id='remove-tag'>
+                                <span
+                                  className='sr-only'
+                                  id={`remove-tag-${tag}${i}`}
+                                >
                                   Remove tag {tag} from list
                                 </span>
                               </button>

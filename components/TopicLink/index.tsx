@@ -37,9 +37,18 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
   return (
     <div className='mt-5 flex'>
       {session && (
-        <button className='text-blue-600 text-4xl mx-3 ' onClick={deleteLink}>
-          -
-        </button>
+        <>
+          <button
+            className='text-blue-600 text-4xl mx-3 '
+            onClick={deleteLink}
+            aria-labelledby={`remove-link-${_id}`}
+          >
+            -
+          </button>
+          <span className='sr-only' id={`remove-link-${_id}`}>
+            Remove current link from list
+          </span>
+        </>
       )}
       <div className='flex flex-row'>
         <span
