@@ -1,6 +1,8 @@
 import mongoose, { Model } from 'mongoose';
+import jwt from 'jsonwebtoken';
 
 import { IAdmin } from '@types';
+import { Topic } from 'models/Topic';
 const Schema = mongoose.Schema;
 
 // the schema is the blueprint of our  model
@@ -12,6 +14,37 @@ const adminSchema = new Schema<IAdmin>({
   activated: { type: Boolean, default: false },
   topics: [{ type: Schema.Types.ObjectId, ref: 'Topic', default: [] }],
 });
+
+adminSchema.pre(
+  'deleteOne',
+  { document: false, query: true },
+  async function (next) {
+    const _id = this.getFilter()['_id'];
+
+    try {
+      await Topic.findOneAndDelete({ _creator: _id });
+
+      next();
+    } catch (e) {
+      console.log(e);
+      throw new Error(
+        `Somenthing went wrong. Topic reference with id ${_id} was not deleted from admin.`
+      );
+    }
+  }
+);
+
+adminSchema.methods.generateToken = function () {
+  console.log('this', this);
+  const payload = {
+    _id: this._id,
+    name: this.name,
+    email: this.email,
+  };
+
+  const token = jwt.sign(payload, process.env.NEXTAUTH_SECRET);
+  return token;
+};
 
 export const Admin: Model<IAdmin> =
   mongoose.models?.Admin || mongoose.model<IAdmin>('Admin', adminSchema);

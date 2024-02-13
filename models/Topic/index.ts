@@ -15,22 +15,26 @@ const topicSchema = new Schema<ITopic>({
 
 /* before a deleteone request for a link document is sent, delete its own reference inside the Admin document,
 if no reference was found cancel the operation and send an error*/
-topicSchema.pre('deleteOne', async function (this: ITopic, next) {
-  const { _id } = this;
+topicSchema.pre(
+  'deleteOne',
+  { document: false, query: true },
+  async function (next) {
+    const _id = this.getFilter()['_id'];
 
-  const result = await Admin.findOneAndUpdate(
-    { topics: { $eq: _id } },
-    { $pull: { topics: _id } }
-  );
-
-  if (!result)
-    return next(
-      new Error(
-        `404 Not Found: No reference to a document with id ${_id} was found in the selected admin. Operation canceled. `
-      )
-    );
-  next();
-});
+    try {
+      await Admin.findOneAndUpdate(
+        { links: { $eq: _id } },
+        { $pull: { links: _id } }
+      );
+      next();
+    } catch (e) {
+      console.log(e);
+      throw new Error(
+        `Somenthing went wrong. Topic reference with id ${_id} was not deleted from admin.`
+      );
+    }
+  }
+);
 export const Topic: Model<ITopic> =
   mongoose.models?.Topic ||
   mongoose.model<ITopic>('Topic', topicSchema, 'topics');
