@@ -48,12 +48,14 @@ export const authOptions: NextAuthOptions = {
           if (!isPasswordSame) {
             return null;
           }
+          const access_token = admin.generateToken();
 
           return {
             id: admin._id.toString(),
             name: admin.name,
             email: admin.email,
             image: admin.image,
+            access_token,
           };
         } catch (error) {
           console.log(error);
@@ -71,7 +73,7 @@ export const authOptions: NextAuthOptions = {
       else if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, ...rest }) {
       // user is defined only immediately after signin in
       if (user) {
         return {
@@ -92,7 +94,8 @@ export const authOptions: NextAuthOptions = {
           ...session.user,
           id: token.id,
           email: token.email,
-          picture: session.user.image ?? null,
+          image: session.user.image ?? null,
+          access_token: token.access_token,
         },
       };
     },

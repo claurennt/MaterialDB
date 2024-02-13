@@ -80,8 +80,6 @@ export default TopicPage;
 export const getServerSideProps: GetServerSideProps = async ({
   query: { _id },
 }) => {
-  await DBClient();
-
   try {
     await DBClient();
 
