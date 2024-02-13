@@ -1,6 +1,7 @@
 import { Types, Document } from 'mongoose';
 
-interface IAdmin {
+interface IAdmin extends Document {
+  generateToken: () => string;
   name: string;
   password: string;
   email: string;
