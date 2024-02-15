@@ -1,5 +1,5 @@
 import mongoose, { Model } from 'mongoose';
-import { Topic } from '..';
+import { Topic } from '@models';
 import { ILink } from '@types';
 
 const Schema = mongoose.Schema;

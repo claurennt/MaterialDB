@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { DefaultSession, JWT } from 'next-auth';
+import { DefaultSession } from 'next-auth';
 
 import { Admin } from './pages';
 import { ITopic } from './mongoose';
@@ -12,10 +12,13 @@ declare module 'next-auth' {
   interface Session {
     expires: string;
     user: {
-      access_token: JWT;
+      name: string;
+      email: string;
+      image: string;
+      access_token?: string;
       id: string;
       topics: [] | ITopic[];
-    } & DefaultSession['user'];
+    } & DefaultSession;
   }
 }
 

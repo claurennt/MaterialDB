@@ -1,8 +1,9 @@
 import mongoose, { Model } from 'mongoose';
-import jwt from 'jsonwebtoken';
-
+import * as jose from 'jose';
+import { SECRET } from '../../pages/globals';
 import { IAdmin } from '@types';
-import { Topic } from 'models/Topic';
+import { Topic } from '@models';
+
 const Schema = mongoose.Schema;
 
 // the schema is the blueprint of our  model
@@ -33,17 +34,21 @@ adminSchema.pre(
     }
   }
 );
-
-adminSchema.methods.generateToken = function () {
-  console.log('this', this);
+adminSchema.methods.generateToken = async function () {
   const payload = {
     _id: this._id,
     name: this.name,
     email: this.email,
   };
 
-  const token = jwt.sign(payload, process.env.NEXTAUTH_SECRET);
-  return token;
+  // Create a new JWT and sign it
+  const jwt = await new jose.SignJWT(payload)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    // .setExpirationTime('2h')
+    .sign(SECRET);
+
+  return jwt;
 };
 
 export const Admin: Model<IAdmin> =

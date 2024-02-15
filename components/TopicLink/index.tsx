@@ -2,7 +2,7 @@ import React from 'react';
 import { Tag } from '..';
 import { nanoid } from 'nanoid';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import axios from 'axios';
+
 import Image from 'next/image';
 
 import { ILink } from 'types/mongoose';
@@ -11,6 +11,8 @@ import { categories } from 'utils/client/data';
 import highlightSearchTerm from 'utils/client/highlightSearch';
 import copy from 'public/copy.png';
 import { useRouter } from 'next/router';
+
+import { deleteResource } from 'utils/client/sendRequest';
 
 type TopicLinkProps = {
   link: ILink;
@@ -23,10 +25,14 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
   search,
 }) => {
   const { data: session } = useSession();
+
   const router = useRouter();
+  const {
+    user: { access_token },
+  } = session && session;
 
   const deleteLink = async () => {
-    await axios.delete(`/api/links/${_id}`);
+    deleteResource(access_token, `/api/links/${_id}`);
 
     router.replace(router.asPath);
   };
