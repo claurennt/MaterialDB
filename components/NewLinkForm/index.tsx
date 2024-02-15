@@ -1,10 +1,10 @@
 /* This example requires Tailwind CSS v2.0+ */
 import React, { Fragment, useRef, useState } from 'react';
-import axios from 'axios';
+
 import { useSession } from 'next-auth/react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useRouter } from 'next/router';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { Category } from '../Category';

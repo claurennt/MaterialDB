@@ -4,9 +4,11 @@ import Head from 'next/head';
 import { Jost } from 'next/font/google';
 import { useSession } from 'next-auth/react';
 import { getServerSession } from 'next-auth';
+import * as jose from 'jose';
+import 'react-toastify/dist/ReactToastify.css';
 
+import { SECRET } from './globals';
 import { ITopic } from '@types';
-
 import { DBClient } from '@utils/server';
 import {
   AuthButtons,
@@ -15,9 +17,7 @@ import {
   Subtitle,
   Topics,
 } from '@components';
-
 import { Topic, Admin } from '@models';
-
 import { authOptions } from './api/auth/[...nextauth]';
 
 type HomeProps = { currentTopics: ITopic[] };
@@ -27,7 +27,8 @@ const jost = Jost({ subsets: ['latin'], variable: '--font-inter' });
 
 const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
   const [open, setOpen] = useState<boolean>(false);
-  const { status } = useSession();
+
+  const { status, data: session } = useSession();
 
   return (
     <>
@@ -41,7 +42,7 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
             <MainTitle />
             <Subtitle setOpen={setOpen} />
 
-            {!currentTopics && <AuthButtons />}
+            {!session && !currentTopics && <AuthButtons />}
 
             {currentTopics?.length > 0 ? (
               <Topics topicsArray={currentTopics} />
@@ -76,29 +77,36 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     if (query.userId) {
       const topics = await Topic.find(query && { _creator: query.userId });
 
-      if (topics)
-        return { props: { currentTopics: JSON.parse(JSON.stringify(topics)) } };
+      return { props: { currentTopics: JSON.parse(JSON.stringify(topics)) } };
     }
 
     const data = await getServerSession(ctx.req, ctx.res, authOptions);
-    if (data?.user) {
-      const {
-        user: { email },
-      } = data;
-      const loggedInUserTopics = await Admin.findOne({ email }).populate(
-        'topics'
-      );
 
-      return {
-        props: {
-          currentTopics: JSON.parse(JSON.stringify(loggedInUserTopics.topics)),
-        },
-      };
+    if (!data) {
+      return { props: { currentTopics: null } };
     }
-    return { props: { currentTopics: null } };
+
+    const {
+      user: { access_token },
+    } = data;
+
+    const {
+      payload: { email },
+    } = await jose.jwtVerify(access_token, SECRET);
+
+    const loggedInUserTopics = await Admin.findOne({
+      email,
+    }).populate('topics');
+
+    return {
+      props: {
+        currentTopics: JSON.parse(JSON.stringify(loggedInUserTopics.topics)),
+      },
+    };
   } catch (err) {
-    console.log('err', err);
-    //if no admin is authenticated and no query is present in the url send null
-    return { props: { currentTopics: null } };
+    console.log(err);
+    return err.code === 'ERR_JWS_INVALID'
+      ? { props: {} }
+      : { props: { currentTopics: null } };
   }
 };

@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
           if (!isPasswordSame) {
             return null;
           }
-          const access_token = admin.generateToken();
+          const access_token = await admin.generateToken();
 
           return {
             id: admin._id.toString(),
@@ -58,7 +58,7 @@ export const authOptions: NextAuthOptions = {
             access_token,
           };
         } catch (error) {
-          console.log(error);
+          console.log('AUTH ERROR', error);
           return null;
         }
       },
@@ -73,7 +73,7 @@ export const authOptions: NextAuthOptions = {
       else if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },
-    async jwt({ token, user, ...rest }) {
+    async jwt({ token, user }) {
       // user is defined only immediately after signin in
       if (user) {
         return {

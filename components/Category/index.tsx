@@ -9,7 +9,7 @@ export const Category: React.FunctionComponent<CategoryProps> = ({
   type,
   handleChange,
 }) => (
-  <div className='flex items-center h-5 pt-5'>
+  <div className='flex items-center h-5 pt-2'>
     <input
       value={type}
       onChange={(e) => handleChange(e, 'category')}
