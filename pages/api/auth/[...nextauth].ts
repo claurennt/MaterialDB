@@ -48,15 +48,17 @@ export const authOptions: NextAuthOptions = {
           if (!isPasswordSame) {
             return null;
           }
+          const access_token = await admin.generateToken();
 
           return {
             id: admin._id.toString(),
             name: admin.name,
             email: admin.email,
             image: admin.image,
+            access_token,
           };
         } catch (error) {
-          console.log(error);
+          console.log('AUTH ERROR', error);
           return null;
         }
       },
@@ -92,7 +94,8 @@ export const authOptions: NextAuthOptions = {
           ...session.user,
           id: token.id,
           email: token.email,
-          picture: session.user.image ?? null,
+          image: session.user.image ?? null,
+          access_token: token.access_token,
         },
       };
     },

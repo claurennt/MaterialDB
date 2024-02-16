@@ -4,14 +4,15 @@ import { SessionProvider } from 'next-auth/react';
 import { Session } from 'next-auth';
 
 const session: Session = {
+  expires: '3000-01-01T00:00:00.000Z',
   user: {
     id: '777',
     name: 'Claudia',
     email: 'claudia@gmail.com',
     image: null,
     topics: [],
+    expires: '3000-01-01T00:00:00.000Z',
   },
-  expires: '3000-01-01T00:00:00.000Z',
 };
 
 const WithSession: React.FunctionComponent<{

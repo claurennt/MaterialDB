@@ -1,12 +1,12 @@
 import { Types, Document } from 'mongoose';
 
-interface IAdmin {
+interface IAdmin extends Document {
+  generateToken?: () => string;
   name: string;
   password: string;
   email: string;
   image?: string | null;
   activated?: boolean;
-
   /** for array of referenced documents: https://mongoosejs.com/docs/typescript/schemas.html#arrays*/
   topics?: Types.DocumentArray<ITopic>;
   _conditions?: { _id: string };

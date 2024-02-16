@@ -1,11 +1,10 @@
 import React, { useRef } from 'react';
 import { signIn } from 'next-auth/react';
-
-import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/router';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { ToastContainer, toast } from 'react-toastify';
 import Image from 'next/image';
+
+import 'react-toastify/dist/ReactToastify.css';
 import logo from 'public/logo.png';
 
 const Login = () => {
@@ -14,6 +13,9 @@ const Login = () => {
   const toastId = useRef(null);
 
   const router = useRouter();
+  const {
+    query: { redirect },
+  } = router;
 
   const loginAdmin = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -26,13 +28,13 @@ const Login = () => {
     };
 
     // signIn function from NextAuth api that trigggers the authorization-jwt-session flow
-    const signInResponse = await signIn('credentials', {
+    const { error, url } = await signIn('credentials', {
       ...data,
       callbackUrl: '/',
       redirect: false,
     });
 
-    if (!signInResponse.ok) {
+    if (error && redirect) {
       emailRef.current.value = '';
       passwordRef.current.value = '';
       toast.error(
@@ -44,8 +46,8 @@ const Login = () => {
         'Successful login! You are being redirected to your topics dashboard'
       );
       setTimeout(() => {
-        router.push(signInResponse.url);
-      }, 4000);
+        router.push(url);
+      }, 2000);
     }
   };
 

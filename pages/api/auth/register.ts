@@ -28,7 +28,7 @@ export const handler: NextAPIHandler = async (req, res) => {
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const newAdmin = new Admin<IAdmin>({
+      const newAdmin = new Admin({
         email,
         name,
         password: hashedPassword,

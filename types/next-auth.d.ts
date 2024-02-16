@@ -12,9 +12,13 @@ declare module 'next-auth' {
   interface Session {
     expires: string;
     user: {
+      name: string;
+      email: string;
+      image: string;
+      access_token?: string;
       id: string;
       topics: [] | ITopic[];
-    } & DefaultSession['user'];
+    } & DefaultSession;
   }
 }
 

@@ -1,7 +1,6 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import { DBClient } from '@utils/server';
 import { Topic, Admin } from '@models';
-
-import { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const {

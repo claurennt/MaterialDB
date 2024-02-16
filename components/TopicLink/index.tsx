@@ -2,15 +2,13 @@ import React from 'react';
 import { Tag } from '..';
 import { nanoid } from 'nanoid';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import axios from 'axios';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
-
 import { ILink } from 'types/mongoose';
 import { useSession } from 'next-auth/react';
-import { categories } from 'utils/client/data';
-import highlightSearchTerm from 'utils/client/highlightSearch';
+
+import { categories, highlightSearchTerm, deleteResource } from 'utils/client';
 import copy from 'public/copy.png';
-import { useRouter } from 'next/router';
 
 type TopicLinkProps = {
   link: ILink;
@@ -23,10 +21,14 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
   search,
 }) => {
   const { data: session } = useSession();
+
   const router = useRouter();
+  const {
+    user: { access_token },
+  } = session;
 
   const deleteLink = async () => {
-    await axios.delete(`/api/links/${_id}`);
+    deleteResource(access_token, `/api/links/${_id}`);
 
     router.replace(router.asPath);
   };
@@ -37,9 +39,18 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
   return (
     <div className='mt-5 flex'>
       {session && (
-        <button className='text-blue-600 text-4xl mx-3 ' onClick={deleteLink}>
-          -
-        </button>
+        <>
+          <button
+            className='text-blue-600 text-4xl mx-3 '
+            onClick={deleteLink}
+            aria-labelledby={`remove-link-${_id}`}
+          >
+            -
+          </button>
+          <span className='sr-only' id={`remove-link-${_id}`}>
+            Remove current link from list
+          </span>
+        </>
       )}
       <div className='flex flex-row'>
         <span

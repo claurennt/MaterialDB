@@ -19,7 +19,7 @@ export const ModalInput: React.FunctionComponent<ModalInputsProps> = ({
     {' '}
     <div key={placeholder} className='mt-2 flex rounded-md shadow-sm'>
       <label
-        className='inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm'
+        className='inline-flex items-center px-3 rounded-l-md border border-r-0 border-secondary-100 bg-gray-50 text-secondary-100 text-sm'
         aria-hidden
         htmlFor={name}
       >
@@ -32,7 +32,7 @@ export const ModalInput: React.FunctionComponent<ModalInputsProps> = ({
         type='text'
         name={name}
         id={name}
-        className=' text-gray-900 focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300 text-red'
+        className=' text-gray-900 focus:border-primary-neon focus:border-1 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300 border-s-secondary-100'
         placeholder={placeholder}
         aria-labelledby={name === 'tags' ? 'tags-explanation' : undefined}
       />

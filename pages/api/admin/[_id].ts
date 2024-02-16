@@ -1,10 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { DBClient } from '@utils/server';
-import { Link } from '@models';
-
-import { ILink } from '@types';
+import { Admin } from '@models';
+import { getToken } from 'next-auth/jwt';
+import { IAdmin } from '@types';
 import { scrapeArticleTitle } from '@utils/server';
-
+import { cookies } from 'next/headers';
+const secret = process.env.NEXTAUTH_SECRET;
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -19,13 +20,16 @@ export default async function handler(
   switch (method) {
     case 'GET' /* Get a link by its ID */:
       try {
-        const individualLink: ILink | null = await Link.findById(_id);
+        const token = await getToken({ req, secret });
+
+        const individualLink: IAdmin | null = await Admin.findById(_id);
 
         if (!individualLink) {
           return res.status(404).send('No link was found with the id');
         }
         return res.status(200).send(individualLink);
       } catch (error) {
+        console.log(error);
         return res.status(400).send(error);
       }
 
@@ -40,7 +44,7 @@ export default async function handler(
           we will scrape the page and get it from the title s metadata in the head*/
         if (!link.title) link.title = await scrapeArticleTitle(link.url);
 
-        const updatedLink: ILink = await Link.findByIdAndUpdate(_id, link, {
+        const updatedLink: IAdmin = await Admin.findByIdAndUpdate(_id, link, {
           new: true,
         });
 
@@ -51,15 +55,9 @@ export default async function handler(
 
     case 'DELETE' /* Delete a link by its ID */:
       try {
-        const { deletedCount } = await Link.deleteOne({ _id });
-        if (deletedCount)
-          return res.status(200).send('Successfully deleted link');
+        await Admin.deleteOne({ _id });
 
-        return res
-          .status(400)
-          .send(
-            `Something went wrong and the link with id ${_id} was not deleted.`
-          );
+        return res.status(200).send('Successfully deleted admin');
       } catch (error) {
         console.log(error);
         return res.status(400).send(error.message);
