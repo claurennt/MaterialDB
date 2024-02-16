@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { AppProps } from 'next/app';
 import { SessionProvider } from 'next-auth/react';
-
-import { useState } from 'react';
+import { Session } from 'next-auth';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import 'styles/global.css';
 import { Layout } from '@components';
-import { Session } from 'next-auth';
+
 interface IAppProps extends AppProps {
   pageProps: { session: Session };
 }

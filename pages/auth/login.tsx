@@ -1,11 +1,10 @@
 import React, { useRef } from 'react';
 import { signIn } from 'next-auth/react';
-
-import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/router';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { ToastContainer, toast } from 'react-toastify';
 import Image from 'next/image';
+
+import 'react-toastify/dist/ReactToastify.css';
 import logo from 'public/logo.png';
 
 const Login = () => {

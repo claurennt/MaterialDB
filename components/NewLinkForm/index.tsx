@@ -10,8 +10,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Category } from '../Category';
 import { ModalInput } from '../ModalInput';
 import type { NewTopic, NewLink } from 'types/components';
-import { categories, topicInputs, linkInputs } from 'utils/client/data';
-import { addNewResource } from 'utils/client/sendRequest';
+import {
+  categories,
+  topicInputs,
+  linkInputs,
+  addNewResource,
+} from 'utils/client';
 
 type NewLinkFormType = 'topic' | 'link';
 

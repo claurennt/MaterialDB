@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useRouter, useSearchParams } from 'next/navigation';
 
 import logo from 'public/logo.png';
 

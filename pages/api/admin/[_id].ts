@@ -55,7 +55,7 @@ export default async function handler(
 
     case 'DELETE' /* Delete a link by its ID */:
       try {
-        const admin = await Admin.deleteOne({ _id });
+        await Admin.deleteOne({ _id });
 
         return res.status(200).send('Successfully deleted admin');
       } catch (error) {

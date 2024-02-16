@@ -1,14 +1,12 @@
 import type { GetServerSideProps } from 'next';
 import { useRouter, NextRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 import { DBClient } from '@utils/server';
 import { ITopic } from '@types';
 import { Topic } from '@models';
 import '@models';
-
 import { TopicLink, NewLinkForm, AddNewButton, SearchBar } from '@components';
-
-import { useSession } from 'next-auth/react';
 
 type TopicPageProps = {
   individualTopic: ITopic;
