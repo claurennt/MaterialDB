@@ -7,7 +7,7 @@ import { getServerSession } from 'next-auth';
 import * as jose from 'jose';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { SECRET } from './globals';
+import { SECRET } from '../utils/globals';
 import { ITopic } from '@types';
 import { DBClient } from '@utils/server';
 import {
