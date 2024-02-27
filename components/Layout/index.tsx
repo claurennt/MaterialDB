@@ -13,8 +13,8 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({ children }) => {
 
   return (
     <>
-      {session && pathname.includes('auth') && <LogoutButton />}
-      <main>{children}</main>
+      {session && !pathname.includes('auth') && <LogoutButton />}
+      <>{children}</>
     </>
   );
 };

@@ -42,7 +42,7 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
             <MainTitle />
             <Subtitle setOpen={setOpen} />
 
-            {!session && !currentTopics && <AuthButtons />}
+            {!session && <AuthButtons />}
 
             {currentTopics?.length > 0 ? (
               <Topics topicsArray={currentTopics} />
