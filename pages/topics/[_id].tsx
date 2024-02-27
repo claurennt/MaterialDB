@@ -23,7 +23,7 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
   // gets router info with props passed with Link component
   const router: NextRouter = useRouter();
   const {
-    query: { name, _id },
+    query: { name, _id, userId },
   } = router;
 
   // handle search submit
@@ -43,8 +43,10 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
   return (
     <div>
       <button
-        className='bg-primary-100 text-sm  text-white hover:bg-primary-neon focus:bg-primary-neon font-bold py-1 px-2 rounded-tl rounded-br m-5 absolute right-20 top-0'
-        onClick={() => router.replace('/')}
+        className={`self-center bg-primary-neon p-1 text-sm hover:bg-secondary-100 ease-linear duration-300 active:scale-75 text-white font-bold px-4 rounded-tl rounded-br absolute top-4 ${
+          session ? 'right-24' : 'right-4'
+        }`}
+        onClick={() => router.replace(`/?userId=${userId}`)}
       >
         Home
       </button>

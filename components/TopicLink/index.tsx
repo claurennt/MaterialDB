@@ -23,12 +23,14 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
   const { data: session } = useSession();
 
   const router = useRouter();
-  const {
-    user: { access_token },
-  } = session;
-
+  let userToken;
+  if (session?.user) {
+    const {
+      user: { access_token = userToken },
+    } = session;
+  }
   const deleteLink = async () => {
-    deleteResource(access_token, `/api/links/${_id}`);
+    deleteResource(userToken, `/api/links/${_id}`);
 
     router.replace(router.asPath);
   };
