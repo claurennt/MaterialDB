@@ -3,7 +3,7 @@ import { getAxiosClient } from 'utils/server/axios';
 import { toast } from 'react-toastify';
 
 const isNewLink = (payload: any): payload is NewLink & { _topic: string } =>
-  (payload as NewLink).url in payload;
+  'url' in payload;
 
 export const addNewResource = async (
   e: React.MouseEvent,

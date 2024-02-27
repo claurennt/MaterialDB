@@ -23,9 +23,10 @@ export const ModalInput: React.FunctionComponent<ModalInputsProps> = ({
         aria-hidden
         htmlFor={name}
       >
-        {name}
+        {name}*
       </label>
       <input
+        required
         value={value}
         onKeyDown={name === 'tags' ? handleKeyDown : null}
         onChange={(e) => handleChange(e, name)}

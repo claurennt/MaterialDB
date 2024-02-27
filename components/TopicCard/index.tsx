@@ -21,6 +21,8 @@ export const TopicCard: React.FunctionComponent<TopicCardProps> = ({
   const searchParams = useSearchParams();
   const userId = searchParams.get('userId');
 
+  let query = userId ? { userId, _id, name } : { _id, name };
+
   const correctIconName = getIconName(lowerCaseName);
   const src = correctIconName
     ? `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${correctIconName}/${correctIconName}-original.svg`
@@ -33,11 +35,7 @@ export const TopicCard: React.FunctionComponent<TopicCardProps> = ({
       className={card}
       href={{
         pathname: '/topics/[_id]',
-        query: {
-          _id,
-          name,
-          userId,
-        },
+        query,
       }}
       key={_id}
     >

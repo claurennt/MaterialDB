@@ -101,7 +101,7 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
     e.preventDefault();
     const payload = { ...newTopic, creatorId: session.user.id };
 
-    addNewResource(e, access_token, payload);
+    await addNewResource(e, access_token, payload);
     closeModalAndNavigate();
   };
 
@@ -109,7 +109,7 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
     e.preventDefault();
     const payload = { ...newLink, _topic: individualTopicId };
 
-    addNewResource(e, access_token, payload);
+    await addNewResource(e, access_token, payload);
     closeModalAndNavigate();
   };
 
@@ -221,7 +221,7 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
                         {type === 'link' && (
                           <fieldset>
                             <legend className='text-gray-500 pt-3'>
-                              Select a category for this resource:
+                              Select a category for this resource:*
                             </legend>
                             {categories?.map(({ type, color, index }) => (
                               <Category

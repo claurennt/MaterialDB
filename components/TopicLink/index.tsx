@@ -28,7 +28,7 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
     userToken = session.user.access_token;
   }
   const deleteLink = async () => {
-    deleteResource(userToken, `/api/links/${_id}`);
+    await deleteResource(userToken, `/api/links/${_id}`);
 
     router.replace(router.asPath);
   };
