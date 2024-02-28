@@ -1,7 +1,7 @@
 import type { GetServerSideProps } from 'next';
 import { useRouter, NextRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { DBClient } from '@utils/server';
 import { ITopic } from '@types';
 import { Topic } from '@models';
