@@ -27,10 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     case 'POST' /* Edit a model by its ID */:
       try {
-        const {
-          newTopic: { name, description },
-          creatorId,
-        } = body;
+        const { name, description, creatorId } = body;
 
         const newTopic = await Topic.create({
           name,
