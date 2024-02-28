@@ -13,7 +13,8 @@
     "stop": "taskkill /im node.exe /F",
     "lint": "next lint",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:components": "jest --watch",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^2.0.7",
@@ -46,6 +47,8 @@
     "swr": "^2.2.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.8.5",
+    "@playwright/test": "^1.42.0",
     "@shelf/jest-mongodb": "^4.2.0",
     "@tanstack/react-query-devtools": "^5.8.9",
     "@testing-library/dom": "^9.3.4",
