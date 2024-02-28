@@ -4,14 +4,14 @@ import { DefaultSession } from 'next-auth';
 import { Admin } from './pages';
 import { ITopic } from './mongoose';
 
-interface User extends DefaultSession['user'] {
+type User = {
   name: string;
   email: string;
   image: string;
   access_token?: string;
   id: string;
   topics: [] | ITopic[];
-}
+} & DefaultSession['user'];
 //module augmentation for Session
 
 declare module 'next-auth' {
