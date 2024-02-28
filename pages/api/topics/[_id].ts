@@ -64,7 +64,7 @@ export default async function handler(
         return res.status(200).send(newLink);
       } catch (error) {
         console.log(error.stack);
-        return res.status(400).send(error);
+        return res.status(500).send(error);
       }
 
     case 'DELETE' /* Delete a Topic by its ID */:
@@ -78,7 +78,7 @@ export default async function handler(
       }
 
     default:
-      res.status(400).json({ success: false });
+      res.status(400).json({ success: false, message: 'did not work' });
       break;
   }
 }

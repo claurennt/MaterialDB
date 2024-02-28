@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { testWithSession } from './fixtures';
 import { BASE_URL } from './globals';
 
-test.beforeEach(async ({ page }) => await page.goto(BASE_URL));
-
-test.describe('Home', () => {
+test.describe('Home without Session', () => {
   test('should show the auth links when session is null', async ({ page }) => {
+    await page.goto(BASE_URL);
     const registerLink = page.getByRole('link', { name: 'Register' });
     const loginLink = page.getByRole('link', { name: 'Login' });
 
@@ -12,44 +12,52 @@ test.describe('Home', () => {
     await expect(registerLink).toBeVisible();
     await expect(loginLink).toBeVisible();
   });
-  test('should only show the Logout button after successful login', async ({
-    page,
-  }) => {
-    const loginLink = page.getByRole('link', { name: 'Login' });
+});
 
-    // navigate to login page on Login link click
-    await loginLink.click();
-    await page.waitForURL('**/login');
+testWithSession.describe('Home with Session', () => {
+  testWithSession(
+    'should only show the Logout button after successful login',
+    async ({ pageWithAuth: page }) => {
+      await page.goto(BASE_URL);
+      const loginLink = page.getByRole('link', { name: 'Login' });
 
-    // retrieve inputs
-    const emailInput = page.getByLabel('email');
-    const passwordInput = page.getByLabel('password');
+      const logoutButton = page.getByRole('button', { name: 'Logout' });
+
+      // assert that logout button is present now that user is logged in
+      await expect(logoutButton).toBeVisible();
+
+      const registerLink = page.getByRole('link', { name: 'Register' });
+
+      // assert that auth links are not visible now that user is logged in
+      await expect(registerLink).not.toBeVisible();
+      await expect(loginLink).not.toBeVisible();
+    }
+  );
+});
+testWithSession(
+  'should successfully add new topic',
+  async ({ pageWithAuth: page }) => {
+    await page.goto(BASE_URL);
+
+    const addNewTopicButton = page.getByRole('button', {
+      name: 'Add new topic',
+    });
+
+    // open modal
+    await addNewTopicButton.click();
+
+    //  retrieve inputs
+    const nameInput = page.getByLabel('name');
+    const descriptionInput = page.getByLabel('description');
 
     // fill inputs
-    await emailInput.fill('test_user@test.com');
-    await passwordInput.fill('test_user');
+    await nameInput.fill('test-topic');
+    await descriptionInput.fill('test-description');
 
-    // assert that inputs contain correct content
-    await expect(emailInput).toHaveValue('test_user@test.com');
-    await expect(passwordInput).toHaveValue('test_user');
+    // submit request
+    const submit = page.getByText('+');
+    await submit.click();
 
-    //submit form and navigate to baseurl
-    const submitButton = page.getByRole('button');
-    await submitButton.click();
-    await page.waitForTimeout(2200);
-
-    // assert navigation to / url
-    await expect(page).toHaveURL(BASE_URL);
-
-    const logoutButton = page.getByRole('button', { name: 'Logout' });
-
-    // assert that logout button is present now that user is logged in
-    await expect(logoutButton).toBeVisible();
-
-    const registerLink = page.getByRole('link', { name: 'Register' });
-
-    // assert that auth links are not visible now that user is logged in
-    await expect(registerLink).not.toBeVisible();
-    await expect(loginLink).not.toBeVisible();
-  });
-});
+    await page.waitForSelector('text="test-topic"');
+  }
+);

@@ -18,7 +18,7 @@ export async function middleware(req: NextRequest) {
   } catch (err) {
     return NextResponse.json(
       { error: 'Something went wrong' },
-      { status: 400 }
+      { status: 500 }
     );
   }
 }
