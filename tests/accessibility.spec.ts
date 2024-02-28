@@ -1,10 +1,7 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { BASE_URL } from './globals';
 
-const BASE_URL =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3000'
-    : 'https://material-db.vercel.app';
 test.describe('Accessibility', () => {
   test('should not have any automatically detectable accessibility issues', async ({
     page,
