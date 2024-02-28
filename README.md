@@ -20,7 +20,7 @@ MaterialDB harnesses the power of modern web technologies to deliver a seamless 
 * NextJS + Typescript
 * 🛡️ Authentication: Next-Auth
 * 🛢️ Database: Mongoose
-* 🧪 Testing: Jest and React Testing Library
+* 🧪 Testing: Jest, React Testing Library and Playwright
 
 MaterialDB stands as a testament to the importance of organization and accessibility in the digital age, offering developers and instructors a dedicated platform for managing their most valued educational resources. Whether you're looking to streamline your bookmarking process or share knowledge with peers, MaterialDB is your go-to solution for curating and accessing educational content efficiently.
 
