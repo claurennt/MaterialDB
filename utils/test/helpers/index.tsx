@@ -11,7 +11,6 @@ const session: Session = {
     email: 'claudia@gmail.com',
     image: null,
     topics: [],
-    expires: '3000-01-01T00:00:00.000Z',
   },
 };
 

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import styles from 'pages/index.module.css';
 import { getIconName } from '../../utils/client';
 import { useSearchParams } from 'next/navigation';
+
 type TopicCardProps = {
   name: string;
   _id: string;
@@ -21,7 +22,7 @@ export const TopicCard: React.FunctionComponent<TopicCardProps> = ({
   const searchParams = useSearchParams();
   const userId = searchParams.get('userId');
 
-  let query = userId ? { userId, _id, name } : { _id, name };
+  const query = userId ? { userId, _id, name } : { _id, name };
 
   const correctIconName = getIconName(lowerCaseName);
   const src = correctIconName
