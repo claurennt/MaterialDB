@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { BASE_URL } from './globals';
 
-test.beforeEach(async ({ page }) => await page.goto('http://localhost:3000'));
+test.beforeEach(async ({ page }) => await page.goto(BASE_URL));
 
 test.describe('Home', () => {
   test('should show the auth links when session is null', async ({ page }) => {
@@ -38,7 +39,7 @@ test.describe('Home', () => {
     await page.waitForTimeout(2200);
 
     // assert navigation to / url
-    await expect(page).toHaveURL('http://localhost:3000/');
+    await expect(page).toHaveURL(BASE_URL);
 
     const logoutButton = page.getByRole('button', { name: 'Logout' });
 
