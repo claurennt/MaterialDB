@@ -1,6 +1,6 @@
 import mongoose, { Model } from 'mongoose';
 import * as jose from 'jose';
-import { SECRET } from '../../utils/globals';
+import { SECRET } from '../../globals';
 import { IAdmin } from '@types';
 import { Topic } from '@models';
 
