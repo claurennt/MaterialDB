@@ -7,18 +7,19 @@ import { getServerSession } from 'next-auth';
 import * as jose from 'jose';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { SECRET } from '../utils/globals';
+import { SECRET } from '../globals';
 import { ITopic } from '@types';
 import { DBClient } from '@utils/server';
 import {
-  AuthButtons,
   NewLinkForm,
   MainTitle,
   Subtitle,
   Topics,
+  AuthLinks,
 } from '@components';
 import { Topic, Admin } from '@models';
 import { authOptions } from './api/auth/[...nextauth]';
+import { useSearchParams } from 'next/navigation';
 
 type HomeProps = { currentTopics: ITopic[] };
 
@@ -28,8 +29,9 @@ const jost = Jost({ subsets: ['latin'], variable: '--font-inter' });
 const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
   const [open, setOpen] = useState<boolean>(false);
 
-  const { status, data: session } = useSession();
-
+  const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const userId = searchParams.get('userId');
   return (
     <>
       <Head>
@@ -41,14 +43,12 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
           <main className='flex flex-col items-center gap-y-10 text-center pt-20'>
             <MainTitle />
             <Subtitle setOpen={setOpen} />
-
-            {!session && <AuthButtons />}
-
+            {!session && !userId && <AuthLinks />}
             {currentTopics?.length > 0 ? (
               <Topics topicsArray={currentTopics} />
             ) : null}
 
-            {open && status === 'authenticated' && (
+            {open && session && (
               <NewLinkForm type='topic' open={open} setOpen={setOpen} />
             )}
           </main>
