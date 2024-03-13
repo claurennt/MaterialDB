@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,8 +13,10 @@ const Register = () => {
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
   const toastId = useRef(null);
-  const searchParams = useSearchParams();
+
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const activated = searchParams.get('activated');
 
   const registerAdmin = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -46,8 +49,6 @@ const Register = () => {
       },
     });
   };
-
-  const activated = searchParams.get('activated');
 
   // show toast and re-directs the user to the login form after successful email activation
   useEffect(() => {
@@ -87,7 +88,7 @@ const Register = () => {
             alt='Your Company'
           />
           <h2 className='mt-8 text-center text-2xl font-bold leading-9 tracking-tight'>
-            Sign in to your account
+            Create a new account
           </h2>
         </div>
 
@@ -149,14 +150,6 @@ const Register = () => {
                 >
                   Password*
                 </label>
-                <div className='text-sm'>
-                  <a
-                    href='#'
-                    className='font-semibold text-indigo-600 hover:text-indigo-500'
-                  >
-                    Forgot password?
-                  </a>
-                </div>
               </div>
               <div className='mt-2'>
                 <input
@@ -178,7 +171,7 @@ const Register = () => {
                   passwordRef && usernameRef && emailRef ? '' : 'opacity-30' //blurs and deactivates the button if input values are missing
                 } px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 group-invalid:pointer-events-none group-invalid:opacity-30`}
               >
-                Sign in
+                Sign up
               </button>
             </div>
           </form>
