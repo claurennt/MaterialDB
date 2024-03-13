@@ -40,13 +40,13 @@ export const authOptions: NextAuthOptions = {
           const admin = await Admin.findOne({ email }).select('+password');
 
           if (!admin) {
-            return null;
+            throw new Error('Wrong email');
           }
 
           const isPasswordSame = await bcrypt.compare(password, admin.password);
 
           if (!isPasswordSame) {
-            return null;
+            throw new Error('Wrong password');
           }
           const access_token = await admin.generateToken();
 
@@ -59,7 +59,7 @@ export const authOptions: NextAuthOptions = {
           };
         } catch (error) {
           console.log('AUTH ERROR', error);
-          return null;
+          throw new Error(error);
         }
       },
     }),
@@ -87,6 +87,16 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
+      console.log({
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id,
+          email: token.email,
+          image: session.user.image ?? null,
+          access_token: token.access_token,
+        },
+      });
       // persist the OAuth access_token and or the user id to the token right after signin
       return {
         ...session,

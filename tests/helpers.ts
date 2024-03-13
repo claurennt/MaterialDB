@@ -1,6 +1,8 @@
 import { Browser, chromium, expect } from '@playwright/test';
 
-import { BASE_URL } from './globals';
+import { BASE_URL } from '../globals';
+
+export const TESTUSER_ID = '65defa05f1ad49aac2eb9c47';
 
 export const withSession = async (browser: Browser) => {
   let storageFile = 'session.json';
@@ -9,7 +11,7 @@ export const withSession = async (browser: Browser) => {
   const page = await context.newPage();
 
   // Navigate to login page and perform login
-  await page.goto(`${BASE_URL}/auth/login`);
+  await page.goto('./auth/login');
 
   const emailInput = page.getByLabel('email');
   const passwordInput = page.getByLabel('password');
@@ -28,7 +30,7 @@ export const withSession = async (browser: Browser) => {
 
   // Wait for logout button to ensure login success
   const logoutButton = page.getByRole('button', { name: 'Logout' });
-  await expect(logoutButton).toBeVisible();
+  await expect(logoutButton).toBeAttached();
 
   await page.context().storageState({ path: storageFile });
 

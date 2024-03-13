@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server';
 import * as jose from 'jose';
-import { SECRET } from 'utils/globals';
+import { SECRET } from './globals';
 
 // middlewares use the edge runtime so we can't use jsonwebtoken module because it is using crypto, so we need jose
 export async function middleware(req: NextRequest) {

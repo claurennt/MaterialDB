@@ -21,10 +21,7 @@ const handler: NextAPIHandler = async (req, res) => {
           activated: true,
         });
 
-        setTimeout(
-          () => sendRegistrationConfirmationEmail({ name, email }),
-          10000
-        );
+        setTimeout(() => sendRegistrationConfirmationEmail(name, email), 10000);
 
         return res.status(200).redirect('/auth/register?activated=true');
       } catch (error) {

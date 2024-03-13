@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { signIn } from 'next-auth/react';
+
 import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 import Image from 'next/image';
@@ -13,9 +14,6 @@ const Login = () => {
   const toastId = useRef(null);
 
   const router = useRouter();
-  const {
-    query: { redirect },
-  } = router;
 
   const loginAdmin = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -34,7 +32,7 @@ const Login = () => {
       redirect: false,
     });
 
-    if (error && redirect) {
+    if (error) {
       emailRef.current.value = '';
       passwordRef.current.value = '';
       toast.error(

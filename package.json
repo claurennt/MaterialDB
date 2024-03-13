@@ -7,7 +7,8 @@
     "yarn": "please-use-npm"
   },
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS='--inspect' next dev ",
+    "dev": "next dev",
+    "debug": "cross-env NODE_OPTIONS='--inspect' next dev ",
     "build": "next build",
     "start": "next start",
     "stop": "taskkill /im node.exe /F",

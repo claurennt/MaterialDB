@@ -75,7 +75,7 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
                 className='text-secondary-200 text-lg mx-3 self-center'
                 aria-label='copy link to clipboard'
               >
-                <Image width='25' height='25' src={copy} alt='Material DB' />
+                <Image width='25' height='25' src={copy} alt='' />
               </button>
             </CopyToClipboard>
           </div>

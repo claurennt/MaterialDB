@@ -4,6 +4,13 @@ const { NODEMAILER_EMAIL, NODEMAILER_PASSWORD, PROJECT_URL } = process.env;
 const port = process.env.PORT || 3000;
 const environment = process.env.NODE_ENV;
 
+type Message = {
+  from: string;
+  to: string;
+  subject: string;
+  html: string;
+};
+
 const BASEURL =
   environment === 'development' ? `http://localhost:${port}` : `${PROJECT_URL}`;
 
@@ -18,20 +25,20 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendEmail = async (message) => {
+const sendEmail = async (message: Message) => {
   try {
     await transporter.sendMail(message);
   } catch (err) {
+    console.log('err email', err);
     throw new Error('Error: something went wrong. Email not sent');
   }
 };
 
-const sendActivationEmail = ({ name, email, _id }) => {
+const sendActivationEmail = (name: string, email: string, _id: string) => {
   const activationLink = `${BASEURL}/api/auth/activate/${_id}`;
 
   const message = {
     from: NODEMAILER_EMAIL,
-    // to: toUser.email // in production uncomment this
     to: email,
     subject: 'Material DB - Activate Account',
     html: `
@@ -46,7 +53,7 @@ const sendActivationEmail = ({ name, email, _id }) => {
   return sendEmail(message);
 };
 
-const sendRegistrationConfirmationEmail = ({ name, email }) => {
+const sendRegistrationConfirmationEmail = (name: string, email: string) => {
   const message = {
     from: NODEMAILER_EMAIL,
     // to: toUser.email // in production uncomment this

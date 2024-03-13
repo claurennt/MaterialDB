@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { LogoutButton } from '..';
+import { AuthLinks, LogoutButton } from '..';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -9,11 +9,17 @@ type LayoutProps = {
 
 export const Layout: React.FunctionComponent<LayoutProps> = ({ children }) => {
   const { data: session } = useSession();
-  const { pathname } = useRouter();
+  const {
+    pathname,
+    query: { userId },
+  } = useRouter();
 
   return (
     <>
-      {session && !pathname.includes('auth') && <LogoutButton />}
+      <header>
+        {!pathname.includes('auth') &&
+          (session ? <LogoutButton /> : userId ? <AuthLinks /> : null)}
+      </header>
       <>{children}</>
     </>
   );

@@ -39,11 +39,7 @@ export const handler: NextAPIHandler = async (req, res) => {
       const { _id } = newAdmin;
 
       //send confirmation email to user
-      sendActivationEmail({
-        _id,
-        email,
-        name,
-      });
+      sendActivationEmail(name, email, _id);
 
       return res.status(201).send('Admin created');
     }

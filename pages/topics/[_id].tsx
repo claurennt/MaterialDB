@@ -7,6 +7,7 @@ import { ITopic } from '@types';
 import { Topic } from '@models';
 import '@models';
 import { TopicLink, NewLinkForm, AddNewButton, SearchBar } from '@components';
+import Link from 'next/link';
 
 type TopicPageProps = {
   individualTopic: ITopic;
@@ -42,14 +43,17 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
 
   return (
     <div>
-      <button
-        className={`self-center bg-primary-neon p-1 text-sm hover:bg-secondary-100 ease-linear duration-300 active:scale-75 text-white font-bold px-4 rounded-tl rounded-br absolute top-4 ${
-          session ? 'right-24' : 'right-4'
+      <Link
+        className={`self-center text-primary-300 p-1 text-lg hover:text-secondary-300 ease-linear duration-300 active:scale-75 font-bold px-5 absolute top-3 ${
+          session ? 'right-24' : 'left-2'
         }`}
-        onClick={() => router.replace(`/${userId ? `userId=${userId}` : ''}`)}
+        href={{
+          pathname: '/',
+          query: `${userId ? `userId=${userId}` : ''}`,
+        }}
       >
         Home
-      </button>
+      </Link>
       {open && _id && (
         <NewLinkForm
           individualTopicId={individualTopic._id}
@@ -59,13 +63,18 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
         />
       )}
       <div className='flex flex-col items-center text-center pt-10 gap-4 pb-10'>
-        <h1 className='leading-tight text-5xl mt-0 mb-5 text-primary-100 text-center'>
-          {name}
+        <h1 className='leading-tight text-5xl mt-0 mb-5 text-primary-100 text-center pt-3'>
+          {individualTopic?.name ?? name}
         </h1>
         <div className='flex gap-10'>
           <SearchBar handleSubmit={handleSubmit} />
-          <span className='self-center'>OR </span>
-          {session && <AddNewButton text='link' setOpen={setOpen} />}
+
+          {session && (
+            <>
+              <span className='self-center'>OR </span>{' '}
+              <AddNewButton text='link' setOpen={setOpen} />
+            </>
+          )}
         </div>
       </div>
       {individualTopic?.links?.map((link, i) => (
