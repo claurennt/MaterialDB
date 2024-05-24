@@ -8,7 +8,7 @@ export const Tag = ({ tag, tagsNumber, index }) => (
         : index === tagsNumber - 1
         ? 'rounded-r'
         : ''
-    } px-2 mx-1 mt-2 bg-primary-neon text-md hover:bg-secondary-300 focus:bg-primary-neon text-white`}
+    } px-2 mx-10 mt-1 bg-primary-neon text-md hover:bg-secondary-300 focus:bg-primary-neon text-white`}
   >
     {tag}
   </button>
