@@ -87,16 +87,6 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      console.log({
-        ...session,
-        user: {
-          ...session.user,
-          id: token.id,
-          email: token.email,
-          image: session.user.image ?? null,
-          access_token: token.access_token,
-        },
-      });
       // persist the OAuth access_token and or the user id to the token right after signin
       return {
         ...session,

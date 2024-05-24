@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { DBClient } from '@utils/server';
 import { Topic, Link } from '@models';
 
-import { scrapeArticleTitle } from '@utils/server';
+import { scrapeLinkWebsite } from '@utils/server';
 
 export default async function handler(
   req: NextApiRequest,
@@ -33,20 +33,19 @@ export default async function handler(
 
     case 'PUT' /* Edit a Topic by its ID */:
       try {
-        const { url, tags, category, _topic } = body;
+        const { url, tags, _topic } = body;
 
         if (!url)
           return res.status(404).send('Bad request: url property missing');
 
         // we scrape the page and get the title from the title's metadata in the head
-        const title = await scrapeArticleTitle(url);
+        const title = await scrapeLinkWebsite(url);
 
         // creates one Link document
         const newLink = await Link.create({
           url,
           tags,
           title,
-          category,
           _topic,
         });
 

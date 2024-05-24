@@ -7,15 +7,9 @@ import { useRouter } from 'next/router';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { Category } from '../Category';
 import { ModalInput } from '../ModalInput';
 import type { NewTopic, NewLink } from 'types/components';
-import {
-  categories,
-  topicInputs,
-  linkInputs,
-  addNewResource,
-} from 'utils/client';
+import { topicInputs, linkInputs, addNewResource } from 'utils/client';
 
 type NewLinkFormType = 'topic' | 'link';
 
@@ -41,7 +35,6 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
 
   const [newLink, setNewLink] = useState<NewLink>({
     url: '',
-    category: '',
     tags: [],
   });
 
@@ -68,9 +61,6 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
       }
       if (name === 'url') {
         setNewLink((prev) => ({ ...prev, url: target.value }));
-      }
-      if (name === 'category') {
-        setNewLink((prev) => ({ ...prev, category: target.value }));
       }
     }
     //handleChange for newTopic modal
@@ -218,20 +208,6 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
                               </button>
                             ))}
                         </div>
-                        {type === 'link' && (
-                          <fieldset>
-                            <legend className='text-gray-500 pt-3'>
-                              Select a category for this resource:*
-                            </legend>
-                            {categories?.map(({ type, color, index }) => (
-                              <Category
-                                key={color + index}
-                                type={type}
-                                handleChange={handleChange}
-                              />
-                            ))}
-                          </fieldset>
-                        )}
                       </div>
                     </div>
                   </div>
