@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
-export const getAxiosClient = (AUTH_TOKEN: string) => {
+export const getAxiosClient = (AUTH_TOKEN?: string) => {
   const AxiosClient: AxiosInstance = axios.create({
     headers: {
       'Content-Type': 'application/json',

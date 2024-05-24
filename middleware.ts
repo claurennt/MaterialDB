@@ -17,7 +17,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   } catch (err) {
     return NextResponse.json(
-      { error: 'Something went wrong' },
+      { error: 'Something went wrong - token missing' },
       { status: 500 }
     );
   }
