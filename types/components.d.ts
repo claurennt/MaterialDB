@@ -1,7 +1,7 @@
 import { ITopic, ILink } from './mongoose';
 
 type NewTopic = Pick<ITopic, 'name' | 'description'>;
-type NewLink = Pick<ILink, 'url' | 'category' | 'tags'>;
+type NewLink = Pick<ILink, 'url' | 'tags'>;
 
 type AddNewFunction = (
   e:

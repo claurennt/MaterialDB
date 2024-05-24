@@ -13,7 +13,6 @@ interface IAdmin extends Document {
 }
 
 interface ILink {
-  category: string;
   title: string;
   /** for "primitive" arrays: https://mongoosejs.com/docs/typescript/schemas.html#arrays*/
   tags: string[];

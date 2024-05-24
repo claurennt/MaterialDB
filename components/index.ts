@@ -1,6 +1,5 @@
 export * from './AddNewButton';
 export * from './AuthLinks';
-export * from './Category';
 export * from './Layout';
 export * from './Logo';
 export * from './LogoutButton';

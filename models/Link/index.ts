@@ -5,7 +5,6 @@ import { ILink } from '@types';
 const Schema = mongoose.Schema;
 
 const linkSchema = new Schema<ILink>({
-  category: { type: String, required: true },
   title: { type: String },
   tags: { type: [String], required: true },
   url: { type: String, required: true },
