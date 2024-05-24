@@ -71,7 +71,7 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
                   <Image width='25' height='25' src={copy} alt='' />
                 </button>
               </CopyToClipboard>
-              <div>
+              <div className='mx-10'>
                 {tags?.map((tag, index) => (
                   <Tag
                     key={index}
