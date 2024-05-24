@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { DBClient } from '@utils/server';
 import { Topic, Link } from 'models';
 
-import { scrapeArticleTitle } from '@utils/server';
+import { scrapeLinkWebsite } from '@utils/server';
 import { ILink } from '@types';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -34,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         /*if the user hasn't provided a title for the link they are saving,
           we will scrape the page and get it from the title s metadata in the head*/
-        const title = req.body.title || (await scrapeArticleTitle(url));
+        const title = req.body.title || (await scrapeLinkWebsite(url));
 
         const newLink = await Link.create({
           url,

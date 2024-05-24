@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { DBClient } from '@utils/server';
 import { Admin } from '@models';
 import { IAdmin } from '@types';
-import { scrapeArticleTitle } from '@utils/server';
+import { scrapeLinkWebsite } from '@utils/server';
 
 export default async function handler(
   req: NextApiRequest,
@@ -40,7 +40,7 @@ export default async function handler(
 
         /*if the user hasn't provided a title for the link they are saving,
           we will scrape the page and get it from the title s metadata in the head*/
-        if (!link.title) link.title = await scrapeArticleTitle(link.url);
+        if (!link.title) link.title = await scrapeLinkWebsite(link.url);
 
         const adminWithUpdatedLink: IAdmin = await Admin.findByIdAndUpdate(
           _id,
