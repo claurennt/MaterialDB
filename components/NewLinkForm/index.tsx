@@ -95,8 +95,8 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
     const payload = { ...newTopic, creatorId: session.user.id };
     try {
       await addNewResource(e, access_token, payload);
+      setLiveRegionContent('New topic successfully added.');
       closeModalAndNavigate();
-      setLiveRegionContent('New link successfully added.');
     } catch (e) {
       setLiveRegionContent('Something went wrong. Please try again.');
     }
@@ -108,8 +108,11 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
 
     try {
       await addNewResource(e, access_token, payload);
+      setLiveRegionContent('New link successfully added.');
       closeModalAndNavigate();
-    } catch (e) {}
+    } catch (e) {
+      setLiveRegionContent('Something went wrong. Please try again.');
+    }
   };
 
   const inputs = type === 'link' ? linkInputs : topicInputs;
