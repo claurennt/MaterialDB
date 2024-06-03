@@ -27,22 +27,26 @@ export const TopicCard: React.FunctionComponent<TopicCardProps> = ({
   const correctIconName = getIconName(lowerCaseName);
   const src = correctIconName
     ? `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${correctIconName}/${correctIconName}-original.svg`
+    : name.toLowerCase().includes('accessibility')
+    ? 'https://www.w3.org/WAI/content-images/wai-media-guide/body.svg'
     : `https://img.icons8.com/ios-filled/50/fd5244/${
         name.startsWith('UX') ? 'illustrator--v1' : 'source-code'
       }.png`;
 
   return (
-    <Link
-      className={card}
-      href={{
-        pathname: '/topics/[_id]',
-        query,
-      }}
-      key={_id}
-    >
-      <Image src={src} height='50' width='50' aria-hidden='true' alt='' />
-      <h3>{name}</h3>
-      <p>{description}</p>
-    </Link>
+    <li>
+      <Link
+        className={card}
+        href={{
+          pathname: '/topics/[_id]',
+          query,
+        }}
+        key={_id}
+      >
+        <Image src={src} height='50' width='50' aria-hidden='true' alt='' />
+        <h3>{name}</h3>
+        <p>{description}</p>
+      </Link>
+    </li>
   );
 };

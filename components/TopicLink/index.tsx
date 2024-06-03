@@ -12,11 +12,14 @@ import copy from 'public/copy.png';
 type TopicLinkProps = {
   link: ILink;
   search: string;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  filteringTags: string[];
 };
 
 export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
   link: { title, url, tags, _id },
-
+  onClick,
+  filteringTags,
   search,
 }) => {
   const { data: session } = useSession();
@@ -71,12 +74,14 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
                   <Image width='25' height='25' src={copy} alt='' />
                 </button>
               </CopyToClipboard>
-              <div>
+              <div className='ml-10'>
                 {tags?.map((tag, index) => (
                   <Tag
+                    filteringTags={filteringTags}
+                    onClick={onClick}
                     key={index}
                     tag={tag}
-                    tagsNumber={tags.length}
+                    totalTags={tags.length}
                     index={index}
                   />
                 ))}
