@@ -7,6 +7,7 @@ In my journey as Developer/Instructor I often find myself struggling to save and
 
 ### 🌍 Features
 
+* **Accessibility optimized:** MaterialDB is optimized for screen reader and keyboard users, ensuring an inclusive experience for all.
 * **Efficient Resource Management**: MaterialDB enables users (specifically admins) to create, update, and delete topics, making it effortless to categorize and manage resources according to specific subjects or interests.
 * **Dynamic Resource Addition**: With an intuitive interface, admins can easily add links to various resources such as videos, tutorials, articles, and documentation. The app automatically extracts and saves the title information from the link's metadata, streamlining the organization process.
 * **Personalized Sharing**: MaterialDB supports personalized sharing options, allowing admins to share their curated list of resources with colleagues or students through a unique URL parameter based on the user's ID.
