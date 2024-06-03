@@ -1,4 +1,13 @@
-import puppeteer, { Page } from 'puppeteer';
+import { Page } from 'puppeteer';
+
+// Puppeteer extra is a wrapper around puppeteer,
+import puppeteer from 'puppeteer-extra';
+
+// Stealth plugin to make puppeteer look like a real browser
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+
+// Use the plugin
+puppeteer.use(StealthPlugin());
 
 const scrapeTitle = async (page: Page) => {
   const title = await page.$eval('head > title', (el) => el.textContent);
@@ -11,7 +20,14 @@ export const scrapeLinkWebsite = async (
 ) => {
   try {
     // Launch the browser
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--window-size=1920,1080',
+      ],
+      headless: true,
+    });
 
     // Open a new tab
     const page = await browser.newPage();
