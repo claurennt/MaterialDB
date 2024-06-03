@@ -58,6 +58,7 @@ const Login = () => {
         newestOnTop={false}
         closeOnClick
         rtl={false}
+        aria-live='assertive'
       />
       <div className='flex flex-1 flex-col justify-center px-6 py-12 lg:px-8  text-white h-screen items-center '>
         <div className='sm:mx-auto sm:w-full sm:max-w-sm'>

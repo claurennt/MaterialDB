@@ -40,6 +40,9 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
 
   const [tagValue, setTagValue] = useState<string>('');
 
+  const [liveRegionContent, setLiveRegionContent] = useState<
+    string | undefined
+  >();
   const { data: session } = useSession();
 
   const {
@@ -84,30 +87,38 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
   // Handles closing the modal and navigating
   const closeModalAndNavigate = () => {
     setOpen(false);
-    router.replace(router.asPath);
+    setTimeout(() => router.replace(router.asPath), 3000);
   };
 
   const addNewTopic = async (e: React.MouseEvent) => {
     e.preventDefault();
     const payload = { ...newTopic, creatorId: session.user.id };
-
-    await addNewResource(e, access_token, payload);
-    closeModalAndNavigate();
+    try {
+      await addNewResource(e, access_token, payload);
+      closeModalAndNavigate();
+      setLiveRegionContent('New link successfully added.');
+    } catch (e) {
+      setLiveRegionContent('Something went wrong. Please try again.');
+    }
   };
 
   const addNewLink = async (e: React.MouseEvent) => {
     e.preventDefault();
     const payload = { ...newLink, _topic: individualTopicId };
 
-    await addNewResource(e, access_token, payload);
-    closeModalAndNavigate();
+    try {
+      await addNewResource(e, access_token, payload);
+      closeModalAndNavigate();
+    } catch (e) {}
   };
 
   const inputs = type === 'link' ? linkInputs : topicInputs;
 
   return (
     <>
-      {' '}
+      <div aria-live='assertive' role='alert'>
+        <p>{liveRegionContent}</p>
+      </div>
       <Transition.Root show={open} as={Fragment}>
         <div aria-modal='true' role='dialog'>
           <Dialog

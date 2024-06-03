@@ -30,7 +30,7 @@ export const Subtitle: React.FunctionComponent<SubtitleProps> = ({
         <h2 className='text-3xl'>
           MaterialDB is an app where you can collect useful links and resources
           that help you become a better
-          <span className='text-primary-100'>developer/instructor</span>.
+          <span className='text-primary-100'> developer/instructor</span>.
         </h2>
       )}
       {userId && !session && (

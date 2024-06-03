@@ -1,7 +1,7 @@
 import type { GetServerSideProps } from 'next';
 import { useRouter, NextRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DBClient } from '@utils/server';
 import { ITopic } from '@types';
 import { Topic } from '@models';
@@ -18,7 +18,8 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<undefined | string>();
-
+  const [filteringTags, setFilteringTags] = useState<string[]>([]);
+  const [liveRegionContent, setLiveRegionContent] = useState<string>('');
   const { data: session } = useSession();
 
   // gets router info with props passed with Link component
@@ -40,9 +41,37 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
 
     target.search.value = '';
   };
+  const filterResultsByActiveTag = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const target = e.target as HTMLButtonElement;
+    setFilteringTags((prev) =>
+      prev.includes(target.innerText)
+        ? [
+            ...prev.filter(
+              (tag) => tag.toLowerCase() !== target.innerText.toLowerCase()
+            ),
+          ]
+        : [
+            ...prev.filter(
+              (tag) => tag.toLowerCase() !== target.innerText.toLowerCase()
+            ),
+            target.innerText.toLowerCase(),
+          ]
+    );
+  };
+  useEffect(() => {
+    setLiveRegionContent(
+      filteringTags.length
+        ? `Now showing all links with tags: ${filteringTags}`
+        : `all tag filters have been removed`
+    );
+  }, [filteringTags]);
 
   return (
     <div>
+      <span aria-live='polite' role='alert' className='sr-only'>
+        {liveRegionContent}
+      </span>
       <Link
         className={`self-center text-primary-300 p-1 text-lg hover:text-secondary-300 ease-linear duration-300 active:scale-75 font-bold px-5 absolute top-3 ${
           session ? 'right-24' : 'left-2'
@@ -77,9 +106,21 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
           )}
         </div>
       </div>
-      {individualTopic?.links?.map((link, i) => (
-        <TopicLink search={search} key={link._id ?? i} link={link} />
-      ))}
+      {individualTopic?.links
+        ?.filter((link) =>
+          filteringTags.length
+            ? link.tags.some((tag) => filteringTags.includes(tag))
+            : link
+        )
+        .map((link, i) => (
+          <TopicLink
+            filteringTags={filteringTags}
+            search={search}
+            key={link._id ?? i}
+            link={link}
+            onClick={filterResultsByActiveTag}
+          />
+        ))}
     </div>
   );
 };
