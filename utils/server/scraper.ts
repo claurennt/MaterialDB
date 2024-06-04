@@ -1,25 +1,22 @@
-import puppeteer, { Page } from 'puppeteer';
+import playwright, { Page } from 'playwright';
 
 const scrapeTitle = async (page: Page) => {
-  const title = await page.$eval('head > title', (el) => el.textContent);
+  // Interact with the DOM to retrieve the desired content
+  const title = await page.textContent('head > title');
+
   return title;
 };
 
-export const scrapeLinkWebsite = async (
-  link: string,
-  target: string = 'title'
-) => {
+export const scrapeLinkWebsite = async (link: string) => {
   try {
-    // Launch the browser
-    const browser = await puppeteer.launch();
+    const browser = await playwright.chromium.launch({ headless: true });
 
-    // Open a new tab
-    const page = await browser.newPage();
+    const context = await browser.newContext();
 
-    // Visit the page and wait until network connections are completed
-    await page.goto(link, { waitUntil: 'networkidle2' });
+    const page = await context.newPage();
 
-    // Interact with the DOM to retrieve the desired content
+    await page.goto(link);
+
     const scrapedContent = await scrapeTitle(page);
 
     // Close the browser instance to clean up the memory
