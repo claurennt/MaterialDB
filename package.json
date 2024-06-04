@@ -10,7 +10,7 @@
     "dev": "next dev",
     "debug": "cross-env NODE_OPTIONS='--inspect' next dev ",
     "build": "next build",
-    "start": "next start",
+    "start": "next start && npx playwright install --with-deps",
     "stop": "taskkill /im node.exe /F",
     "lint": "next lint",
     "test": "jest",
