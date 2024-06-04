@@ -1,4 +1,6 @@
+
 import { Page, chromium } from 'playwright';
+
 
 const scrapeTitle = async (page: Page) => {
   // Interact with the DOM to retrieve the desired content
@@ -9,6 +11,7 @@ const scrapeTitle = async (page: Page) => {
 
 export const scrapeLinkWebsite = async (link: string) => {
   try {
+
     const browser = await chromium.launch({
       headless: false,
       executablePath: '/usr/lib/playwright',
@@ -18,7 +21,7 @@ export const scrapeLinkWebsite = async (link: string) => {
 
     const page = await context.newPage();
 
-    await page.goto('https://github.com/topics/javascript');
+    await page.goto(link);
 
     const scrapedContent = await scrapeTitle(page);
 
