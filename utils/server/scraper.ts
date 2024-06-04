@@ -14,7 +14,6 @@ export const scrapeLinkWebsite = async (link: string) => {
 
     const browser = await chromium.launch({
       headless: false,
-      executablePath: '/usr/lib/playwright',
     });
 
     const context = await browser.newContext();
