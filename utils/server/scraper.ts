@@ -9,7 +9,10 @@ const scrapeTitle = async (page: Page) => {
 
 export const scrapeLinkWebsite = async (link: string) => {
   try {
-    const browser = await chromium.launch({ headless: false });
+    const browser = await chromium.launch({
+      headless: false,
+      executablePath: '/usr/lib/playwright',
+    });
 
     const context = await browser.newContext();
 
