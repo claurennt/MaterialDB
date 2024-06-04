@@ -9,13 +9,13 @@ const scrapeTitle = async (page: Page) => {
 
 export const scrapeLinkWebsite = async (link: string) => {
   try {
-    const browser = await chromium.launch({ headless: true });
+    const browser = await chromium.launch({ headless: false });
 
     const context = await browser.newContext();
 
     const page = await context.newPage();
 
-    await page.goto(link);
+    await page.goto('https://github.com/topics/javascript');
 
     const scrapedContent = await scrapeTitle(page);
 
