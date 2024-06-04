@@ -1,4 +1,4 @@
-import { Page, chromium } from 'playwright';
+import { Page, chromium } from 'playwright-core';
 
 const scrapeTitle = async (page: Page) => {
   // Interact with the DOM to retrieve the desired content
