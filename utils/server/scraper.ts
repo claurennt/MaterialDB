@@ -1,5 +1,4 @@
-// import playwright, { Page } from 'playwright';
-import { chromium, Page } from 'playwright-chromium';
+import { Page, chromium } from 'playwright';
 
 const scrapeTitle = async (page: Page) => {
   // Interact with the DOM to retrieve the desired content
@@ -11,7 +10,8 @@ const scrapeTitle = async (page: Page) => {
 export const scrapeLinkWebsite = async (link: string) => {
   try {
     const browser = await chromium.launch({
-      chromiumSandbox: false,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      executablePath: '/usr/bin/google-chrome-stable',
     });
 
     const context = await browser.newContext();
