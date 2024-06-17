@@ -1,13 +1,6 @@
 // import playwright, { Page } from 'playwright';
 import { chromium, Page } from 'playwright-chromium';
 
-(async () => {
-  const browser = await chromium.launch({});
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  await page.goto('http://whatsmyuseragent.org/');
-  await browser.close();
-})();
 const scrapeTitle = async (page: Page) => {
   // Interact with the DOM to retrieve the desired content
   const title = await page.textContent('head > title');
