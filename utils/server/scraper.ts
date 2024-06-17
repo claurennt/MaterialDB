@@ -1,5 +1,6 @@
-import playwright, { Page } from 'playwright';
-
+//import { Page } from 'playwright';
+import chromium from '@sparticuz/chromium';
+import { chromium as playwright, Page } from 'playwright-core';
 const scrapeTitle = async (page: Page) => {
   // Interact with the DOM to retrieve the desired content
   const title = await page.textContent('head > title');
@@ -9,7 +10,11 @@ const scrapeTitle = async (page: Page) => {
 
 export const scrapeLinkWebsite = async (link: string) => {
   try {
-    const browser = await playwright.chromium.launch({ headless: true });
+    const browser = await playwright.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: Boolean(chromium.headless),
+    });
 
     const context = await browser.newContext();
 
