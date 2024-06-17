@@ -28,7 +28,6 @@ RUN npx playwright install chromium
 # Copy the local code to the container image
 COPY . .
 
-RUN npm run build
 
 # Expose the port on which your app runs
 EXPOSE 3000
