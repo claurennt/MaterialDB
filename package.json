@@ -18,6 +18,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@auth/core": "^0.32.0",
     "@auth/mongodb-adapter": "^2.0.7",
     "@headlessui/react": "^1.5.0",
     "@next/eslint-plugin-next": "^14.0.4",
@@ -34,8 +35,9 @@
     "mongoose": "^8.0.1",
     "nanoid": "^5.0.3",
     "next": "^14.0.3",
-    "next-auth": "^4.24.5",
+    "next-auth": "^4.24.7",
     "nodemailer": "^6.9.7",
+    "playwright-chromium": "^1.44.1",
     "puppeteer": "^13.5.2",
     "react": "^18.2.0",
     "react-copy-to-clipboard": "^5.1.0",

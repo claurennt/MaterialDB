@@ -1,28 +1,53 @@
-name: Playwright Tests
+name: Build and Run Docker Image
+
 on:
   push:
-    branches: main
+    branches:
+      - main # Replace with your main branch name
+      - master # Replace with your master branch name
+  pull_request:
+    branches:
+      - main # Replace with your main branch name
+      - master # Replace with your master branch name
 
 jobs:
-  test:
-    timeout-minutes: 60
+  build-and-run-docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - name: Install dependencies
-        run: npm ci
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Docker (if needed)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get remove docker docker-engine docker.io containerd runc
+          sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+          echo \
+            "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+            $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+      - name: Build Docker image
+        run: docker build -t my-app-image .
+
+      - name: Run Docker container
+        run: docker run -d -p 3000:3000 --name my-app-container my-app-image
+
+      - name: Wait for application to start
+        run: sleep 10 # Adjust the wait time as necessary
+
       - name: Run Playwright tests
-        run: NODE_ENV=test npx playwright test
-        env:
-          NODE_ENV: test
-      - uses: actions/upload-artifact@v3
-        if: always()
+        run: docker exec my-app-container npx playwright test
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v2
         with:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+
+      - name: Stop Docker container
+        run: docker stop my-app-container
