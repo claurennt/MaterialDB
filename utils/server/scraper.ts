@@ -1,4 +1,3 @@
-//import { Page } from 'playwright';
 import chromium from '@sparticuz/chromium';
 import { chromium as playwright, Page } from 'playwright-core';
 const scrapeTitle = async (page: Page) => {

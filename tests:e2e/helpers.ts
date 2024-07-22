@@ -1,6 +1,4 @@
-import { Browser, chromium, expect } from '@playwright/test';
-
-import { BASE_URL } from '../globals';
+import { Browser, expect } from '@playwright/test';
 
 export const TESTUSER_ID = '65defa05f1ad49aac2eb9c47';
 
@@ -27,14 +25,12 @@ export const withSession = async (browser: Browser) => {
   await submitButton.click();
 
   await page.waitForTimeout(2200);
-
+  //await page.goto(BASE_URL);
   // Wait for logout button to ensure login success
   const logoutButton = page.getByRole('button', { name: 'Logout' });
   await expect(logoutButton).toBeAttached();
 
   await page.context().storageState({ path: storageFile });
-
-  await page.goto(BASE_URL);
 
   return { page, context };
 };

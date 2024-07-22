@@ -18,7 +18,7 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<undefined | string>();
-  const [filteringTags, setFilteringTags] = useState<string[]>([]);
+  const [filteringTags, setFilteringTags] = useState<string[] | null>(null);
   const [liveRegionContent, setLiveRegionContent] = useState<string>('');
   const { data: session } = useSession();
 
@@ -60,13 +60,14 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
     );
   };
   useEffect(() => {
-    setLiveRegionContent(
-      filteringTags.length
-        ? `Now showing all links with tags: ${filteringTags}`
-        : `all tag filters have been removed`
-    );
+    if (filteringTags)
+      setLiveRegionContent(
+        filteringTags.length
+          ? `Now showing all links with tags: ${filteringTags}`
+          : `all tag filters have been removed`
+      );
   }, [filteringTags]);
-
+  console.log(typeof filteringTags);
   return (
     <div>
       <span aria-live='polite' role='alert' className='sr-only'>
