@@ -5,7 +5,7 @@ import 'utils/test/mocks';
 import 'utils/client/data';
 import { NewLinkForm } from '..';
 import userEvent from '@testing-library/user-event';
-import { renderWithSession } from '../../../utils/test';
+import { renderWithSession } from '../../../utils/tests:unit';
 
 import axios from 'axios';
 import { useRouter } from 'next/router';

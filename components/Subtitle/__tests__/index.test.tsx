@@ -6,7 +6,7 @@ import '../../../utils/test/mocks';
 import {
   renderWithSession,
   renderWithoutSession,
-} from '../../../utils/test/helpers';
+} from '../../../utils/tests:unit/helpers';
 
 import { Subtitle } from '..';
 

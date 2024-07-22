@@ -26,14 +26,14 @@ export const Tag: React.FunctionComponent<TagProps> = ({
           ? 'rounded-r'
           : ''
       } px-2 mx-1 mt-1 text-md hover:bg-secondary-300  text-white ${
-        filteringTags.includes(tag) ? 'bg-secondary-200' : 'bg-primary-neon'
+        filteringTags?.includes(tag) ? 'bg-secondary-200' : 'bg-primary-neon'
       }`}
     >
       {tag}
     </button>
 
     <span className='sr-only' id={`tag-${index}`}>
-      {filteringTags.includes(tag)
+      {filteringTags?.includes(tag)
         ? `Click to remove filter tag ${tag}`
         : ` Click to filter all links with tag ${tag}`}
     </span>
