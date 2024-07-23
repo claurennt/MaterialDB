@@ -14,7 +14,7 @@
     "stop": "taskkill /im node.exe /F",
     "lint": "next lint",
     "test": "jest",
-    "test:components": "jest --watch",
+    "test:unit": "jest --watch",
     "test:e2e": "playwright test"
   },
   "dependencies": {
@@ -33,10 +33,12 @@
     "cookies-next": "^2.0.4",
     "js-cookies": "^1.0.4",
     "mongodb": "^6.6.2",
+    "mongodb-memory-server": "^10.0.0",
     "mongoose": "^8.0.1",
     "nanoid": "^5.0.3",
     "next": "^14.0.3",
     "next-auth": "^4.24.7",
+    "next-router-mock": "^0.9.13",
     "nodemailer": "^6.9.7",
     "playwright-core": "^1.45.2",
     "puppeteer": "^13.5.2",
@@ -51,7 +53,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.9.1",
     "@playwright/test": "^1.42.0",
-    "@shelf/jest-mongodb": "^4.2.0",
+    "@shelf/jest-mongodb": "^4.3.2",
     "@tanstack/react-query-devtools": "^5.8.9",
     "@testing-library/dom": "^9.3.4",
     "@testing-library/jest-dom": "^6.2.1",
