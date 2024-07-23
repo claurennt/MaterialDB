@@ -6,7 +6,7 @@ import '@testing-library/jest-dom';
 import {
   renderWithSession,
   renderWithoutSession,
-} from '../../../utils/test/helpers';
+} from '../../../utils/tests:unit/helpers';
 
 import { MainTitle } from '..';
 

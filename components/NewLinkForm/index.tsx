@@ -8,12 +8,12 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ModalInput } from '../ModalInput';
-import type { NewTopic, NewLink } from 'types/components';
-import { topicInputs, linkInputs, addNewResource } from 'utils/client';
+import type { NewTopic, NewLink } from '@types';
+import { topicInputs, linkInputs, addNewResource } from '@utils/client';
 
 type NewLinkFormType = 'topic' | 'link';
 
-type NewLinkFormProps = {
+export type NewLinkFormProps = {
   individualTopicId?: string;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   type: NewLinkFormType;
@@ -123,16 +123,17 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
         <p>{liveRegionContent}</p>
       </div>
       <Transition.Root show={open} as={Fragment}>
-        <div aria-modal='true' role='dialog'>
+        <div
+          aria-modal='true'
+          role='dialog'
+          aria-labelledby={`${type}-dialog-title`}
+        >
           <Dialog
             as='div'
             className='fixed z-10 inset-0 overflow-y-auto'
             onClose={setOpen}
           >
-            <div
-              className='flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'
-              role='dialog'
-            >
+            <div className='flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
               <ToastContainer
                 role='alert'
                 ref={toastId}
@@ -176,6 +177,7 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
                         <div className='flex mb-4'>
                           <div className='mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-secondary-200 sm:mx-0 sm:h-10 sm:w-10'></div>
                           <Dialog.Title
+                            id={`${type}-dialog-title`}
                             as='h3'
                             className='text-lg leading-6 font-medium text-gray-900 ms-4 self-center'
                           >
@@ -201,7 +203,7 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
                                 key={tag + i}
                                 onClick={() => handleRemoveTag(tag)}
                                 type='button'
-                                className='inline-flex items-center p-1 ms-2 text-sm text-tertiary-100 bg-transparent rounded-sm'
+                                className='inline-flex items-center py-1 m-0 text-sm text-tertiary-100 bg-transparent rounded-sm'
                                 data-dismiss-target='#tag-dismiss-default'
                                 aria-labelledby={`remove-tag-${tag}${i}`}
                               >

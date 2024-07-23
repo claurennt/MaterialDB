@@ -15,10 +15,11 @@ const config: Config = {
   moduleNameMapper: {
     '^utils/client/(.*)$': '<rootDir>/utils/client/$1',
     '^utils/server/(.*)$': '<rootDir>/utils/server/$1',
-    '^utils/test/(.*)$': '<rootDir>/utils/test/$1',
+    '^utils/test/(.*)$': '<rootDir>/utils/tests:unit/$1',
     '^models/(.*)$': '<rootDir>/models/$1',
     '^components/(.*)$': '<rootDir>/components/$1',
   },
+  testPathIgnorePatterns: ['/node_modules/', '/e2e:tests'],
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

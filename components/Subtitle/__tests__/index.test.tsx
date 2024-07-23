@@ -1,12 +1,12 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import '../../../utils/test/mocks';
+import 'utils/test/mocks';
 
 import {
   renderWithSession,
   renderWithoutSession,
-} from '../../../utils/test/helpers';
+} from '../../../utils/tests:unit/helpers';
 
 import { Subtitle } from '..';
 

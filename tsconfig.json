@@ -19,7 +19,7 @@
       "@models": ["models/index.ts"],
       "@types": ["types/index.ts"],
       "@components": ["components/index.ts"],
-      "@utils/client": ["utils/client/*"],
+      "@utils/client": ["utils/client/index.ts"],
       "@utils/server": ["utils/server/index.ts"]
     },
 

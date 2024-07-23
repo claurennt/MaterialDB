@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { testWithSession } from './fixtures';
 import { TESTUSER_ID } from './helpers';
-import { BASE_URL } from 'globals';
+import { BASE_URL } from '../globals';
 
 test.describe('Home without Session', () => {
   test('should show the auth links and not show `Add New Topic` and `Logout` button when session is null', async ({
@@ -38,9 +38,6 @@ test.describe('Home without Session', () => {
 });
 
 testWithSession.describe('Home with Session', () => {
-  testWithSession.beforeEach(
-    async ({ pageWithSession: page }) => await page.goto('.')
-  );
   testWithSession(
     'should only show the Logout button after successful login',
     async ({ pageWithSession: page }) => {

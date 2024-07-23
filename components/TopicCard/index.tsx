@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from 'pages/index.module.css';
-import { getIconName } from '../../utils/client';
+import { getIconName } from '@utils/client';
 import { useSearchParams } from 'next/navigation';
 
 type TopicCardProps = {
