@@ -13,9 +13,9 @@
     "start": "next start",
     "stop": "taskkill /im node.exe /F",
     "lint": "next lint",
-    "test": "jest",
-    "test:unit": "jest --watch",
-    "test:e2e": "playwright test"
+    "test:unit": "jest",
+    "test:unit-watch": "jest --watch",
+    "test:playwright": "playwright test"
   },
   "dependencies": {
     "@auth/core": "^0.32.0",

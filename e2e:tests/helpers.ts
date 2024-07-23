@@ -24,8 +24,8 @@ export const withSession = async (browser: Browser) => {
 
   await submitButton.click();
 
-  await page.waitForTimeout(2200);
-  //await page.goto(BASE_URL);
+  await page.waitForTimeout(10000);
+
   // Wait for logout button to ensure login success
   const logoutButton = page.getByRole('button', { name: 'Logout' });
   await expect(logoutButton).toBeAttached();

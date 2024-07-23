@@ -38,9 +38,6 @@ test.describe('Home without Session', () => {
 });
 
 testWithSession.describe('Home with Session', () => {
-  testWithSession.beforeEach(
-    async ({ pageWithSession: page }) => await page.goto('.')
-  );
   testWithSession(
     'should only show the Logout button after successful login',
     async ({ pageWithSession: page }) => {
