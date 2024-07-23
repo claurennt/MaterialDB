@@ -1,5 +1,6 @@
 import type { GetServerSideProps } from 'next';
-import { useRouter, NextRouter } from 'next/router';
+import { useRouter } from 'next/router';
+
 import { useSession } from 'next-auth/react';
 import React, { useState, useRef, useEffect } from 'react';
 import { DBClient } from '@utils/server';
@@ -21,12 +22,12 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
   const [filteringTags, setFilteringTags] = useState<string[]>([]);
   const [liveRegionContent, setLiveRegionContent] = useState<string>('');
 
-  let announceLiveRegion = useRef<boolean>(false);
+  const announceLiveRegion = useRef<boolean>(false);
 
   const { data: session } = useSession();
 
   // gets router info with props passed with Link component
-  const router: NextRouter = useRouter();
+  const router = useRouter();
   const {
     query: { name, _id, userId },
   } = router;

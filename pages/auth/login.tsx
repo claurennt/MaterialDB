@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { signIn } from 'next-auth/react';
 
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import Image from 'next/image';
 

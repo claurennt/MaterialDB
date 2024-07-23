@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 
 import { Tag } from '..';
 import { ILink } from 'types/mongoose';
-import { highlightSearchTerm, deleteResource } from 'utils/client';
+import { highlightSearchTerm, deleteResource } from '@utils/client';
 import copy from 'public/copy.png';
 
 type TopicLinkProps = {
