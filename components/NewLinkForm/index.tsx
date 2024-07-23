@@ -8,12 +8,12 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ModalInput } from '../ModalInput';
-import type { NewTopic, NewLink } from 'types/components';
-import { topicInputs, linkInputs, addNewResource } from 'utils/client';
+import type { NewTopic, NewLink } from '@types';
+import { topicInputs, linkInputs, addNewResource } from '@utils/client';
 
 type NewLinkFormType = 'topic' | 'link';
 
-type NewLinkFormProps = {
+export type NewLinkFormProps = {
   individualTopicId?: string;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   type: NewLinkFormType;
