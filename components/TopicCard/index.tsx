@@ -27,8 +27,9 @@ export const TopicCard: React.FunctionComponent<TopicCardProps> = ({
   const correctIconName = getIconName(lowerCaseName);
   const src = correctIconName
     ? `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${correctIconName}/${correctIconName}-original.svg`
-    : name.toLowerCase().includes('accessibility')
-    ? 'https://www.w3.org/WAI/content-images/wai-media-guide/body.svg'
+    : name.toLowerCase().includes('accessibility') ||
+      name.toLowerCase().includes('a11y')
+    ? '/a11y.svg'
     : `https://img.icons8.com/ios-filled/50/fd5244/${
         name.startsWith('UX') ? 'illustrator--v1' : 'source-code'
       }.png`;
