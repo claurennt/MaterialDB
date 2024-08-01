@@ -5,7 +5,7 @@ const isNewLink = (payload: any): payload is NewLink & { _topic: string } =>
   'url' in payload;
 
 export const addNewResource = async (
-  e: React.MouseEvent,
+  e: React.SyntheticEvent<HTMLButtonElement>,
   token: string,
   payload: NewLink | NewTopic
 ) => {

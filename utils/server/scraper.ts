@@ -34,6 +34,7 @@ export const scrapeLinkWebsite = async (link: string) => {
     browser.close();
     return scrapedContent;
   } catch (error) {
+    console.log(error);
     return 'scraping!' + error;
   }
 };

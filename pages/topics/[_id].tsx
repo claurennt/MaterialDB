@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import React, { useState, useRef, useEffect } from 'react';
 import { DBClient } from '@utils/server';
+import { useLiveRegion } from '@utils/client';
 import { ITopic } from '@types';
 import { Topic } from '@models';
 import '@models';
@@ -20,9 +21,17 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
   const [open, setOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<undefined | string>();
   const [filteringTags, setFilteringTags] = useState<string[]>([]);
-  const [liveRegionContent, setLiveRegionContent] = useState<string>('');
 
   const announceLiveRegion = useRef<boolean>(false);
+  const previousNumberOfLinks = useRef<number>(individualTopic.links.length);
+
+  const liveRegionContent = useLiveRegion({
+    announceLiveRegion,
+    filteringTags,
+    individualTopic,
+    previousNumberOfLinks,
+    open,
+  });
 
   const { data: session } = useSession();
 
@@ -45,6 +54,7 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
 
     target.search.value = '';
   };
+
   const filterResultsByActiveTag = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -58,16 +68,6 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
 
     announceLiveRegion.current = true;
   };
-  useEffect(() => {
-    if (announceLiveRegion.current) {
-      setLiveRegionContent(
-        filteringTags.length
-          ? `Now showing all links with tags: ${filteringTags}`
-          : `all tag filters have been removed`
-      );
-      announceLiveRegion.current = false;
-    }
-  }, [filteringTags]);
 
   return (
     <div>
@@ -108,7 +108,7 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
           )}
         </div>
       </div>
-      {individualTopic?.links
+      {individualTopic.links
         ?.filter((link) =>
           filteringTags.length
             ? link.tags.some((tag) => filteringTags.includes(tag))
