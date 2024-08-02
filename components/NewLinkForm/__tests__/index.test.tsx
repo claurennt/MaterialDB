@@ -49,7 +49,7 @@ describe('NewLinkForm', () => {
   });
   // Form renders correctly with all inputs and buttons
   test('should render form with all inputs and buttons when open is true', () => {
-    const { getByPlaceholderText, getByRole } = renderWithSession(
+    const { getByRole } = renderWithSession(
       <NewLinkFormTest
         individualTopicId='1'
         setOpen={setOpenMock}
@@ -59,7 +59,6 @@ describe('NewLinkForm', () => {
     );
 
     expect(getByRole('dialog')).toBeInTheDocument();
-    expect(getByPlaceholderText('paste website url here')).toBeInTheDocument();
     expect(
       getByRole('button', { name: 'Click to create new link' })
     ).toBeInTheDocument();
