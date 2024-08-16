@@ -10,7 +10,7 @@ describe('FormTag', () => {
     jest.clearAllMocks();
   });
   it('should render a button with the correct tag text when tag is provided', () => {
-    render(<FormTag tag='TestTag' index={0} onClick={() => {}} />);
+    render(<FormTag tag='TestTag' onClick={() => {}} />);
     const tagButton = screen.getByRole('button', {
       name: 'Remove tag TestTag from list',
     });
@@ -18,7 +18,7 @@ describe('FormTag', () => {
   });
 
   it('should trigger onClick', () => {
-    render(<FormTag tag='TestTag2' index={0} onClick={onClickMock} />);
+    render(<FormTag tag='TestTag2' onClick={onClickMock} />);
     const tagButton = screen.getByRole('button', {
       name: 'Remove tag TestTag2 from list',
     });

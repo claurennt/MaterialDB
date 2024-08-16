@@ -2,7 +2,7 @@ import type { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 
 import { useSession } from 'next-auth/react';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { DBClient } from '@utils/server';
 import { useLiveRegion } from '@utils/client';
 import { ITopic } from '@types';

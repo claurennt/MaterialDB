@@ -209,31 +209,29 @@ export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
                         </Dialog.Title>
                       </div>
                       <div className='flex flex-col gap-4'>
-                        {inputs.map(({ name }, index) => {
-                          return (
-                            <ModalInput
-                              ref={(el) => {
-                                if (!el) return;
+                        {inputs.map(({ name }) => (
+                          <ModalInput
+                            ref={(el) => {
+                              if (!el) return;
 
-                                if (name === 'url' || name === 'name')
-                                  inputRef.current = el;
-                              }}
-                              isInputValid={isInputValid}
-                              value={name === 'tags' ? tagValue : undefined}
-                              name={name}
-                              key={name}
-                              handleChange={handleChange}
-                              handleKeyDown={handleKeyDown}
-                            />
-                          );
-                        })}
+                              if (name === 'url' || name === 'name')
+                                inputRef.current = el;
+                            }}
+                            isInputValid={isInputValid}
+                            value={name === 'tags' ? tagValue : undefined}
+                            name={name}
+                            key={name}
+                            handleChange={handleChange}
+                            handleKeyDown={handleKeyDown}
+                          />
+                        ))}
                       </div>
                       <div className='flex flex-wrap'>
                         {type === 'link' &&
                           newLink.tags?.map((tag: string, i: number) => (
                             <FormTag
                               tag={tag}
-                              index={i}
+                              key={tag + i}
                               onClick={handleRemoveTag}
                             />
                           ))}

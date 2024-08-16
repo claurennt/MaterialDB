@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 
 type ModalInputsProps = {
   handleKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
@@ -8,7 +8,8 @@ type ModalInputsProps = {
   isInputValid: boolean;
 };
 
-export const ModalInput = React.forwardRef<HTMLInputElement, ModalInputsProps>(
+// eslint-disable-next-line react/display-name
+export const ModalInput = forwardRef<HTMLInputElement, ModalInputsProps>(
   (props, ref) => {
     const { name, handleKeyDown, handleChange, value, isInputValid } = props;
 
@@ -27,7 +28,6 @@ export const ModalInput = React.forwardRef<HTMLInputElement, ModalInputsProps>(
         <div className='mt-2 flex flex-wrap rounded-md'>
           <label
             className='w-1/4.5 inline-flex items-center px-3 rounded-l-md border border-r-0 border-secondary-100 bg-gray-50 text-secondary-100 text-sm'
-            aria-hidden
             htmlFor={name}
           >
             {name}
