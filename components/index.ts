@@ -12,3 +12,4 @@ export * from './Tag';
 export * from './TopicCard';
 export * from './TopicLink';
 export * from './Topics';
+export * from './FormTag';
