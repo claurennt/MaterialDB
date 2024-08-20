@@ -1,6 +1,5 @@
 export * from './AddNewButton';
 export * from './AuthLinks';
-export * from './Layout';
 export * from './Logo';
 export * from './LogoutButton';
 export * from './MainTitle';
@@ -13,3 +12,4 @@ export * from './TopicCard';
 export * from './TopicLink';
 export * from './Topics';
 export * from './FormTag';
+export * from './Header';

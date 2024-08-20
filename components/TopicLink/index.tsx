@@ -1,12 +1,15 @@
 import React from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 
 import { Tag } from '..';
 import { ILink } from 'types/mongoose';
-import { highlightSearchTerm, deleteResource } from '@utils/client';
+import {
+  highlightSearchTerm,
+  deleteResource,
+  copyToClipboard,
+} from '@utils/client';
 import copy from 'public/copy.png';
 
 type TopicLinkProps = {
@@ -44,7 +47,7 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
               {session && (
                 <>
                   <button
-                    className='text-blue-600 text-4xl mx-3 self-start'
+                    className='text-4xl mx-3 self-start focus:outline-none text-primary-100 focus:ring-2 focus:ring-secondary-100'
                     onClick={deleteLink}
                     aria-labelledby={`remove-link-${_id}`}
                   >
@@ -59,21 +62,22 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
               <a
                 href={url}
                 target='_blank'
-                className='text-2xl'
+                className='text-2xl focus:outline-secondary-100 focus:outline-2 focus:outline-offset-4'
                 dangerouslySetInnerHTML={
                   search
                     ? highlightSearchTerm(search, title)
                     : { __html: title }
                 }
               />
-              <CopyToClipboard text={url}>
-                <button
-                  className='text-secondary-200 text-lg mx-3'
-                  aria-label='copy link to clipboard'
-                >
-                  <Image width='25' height='25' src={copy} alt='' />
-                </button>
-              </CopyToClipboard>
+
+              <button
+                onClick={() => copyToClipboard(url)}
+                className='text-secondary-200 text-lg mx-3 hover:scale-150 focus:outline-secondary-100 focus:outline-2 focus:outline-offset-4'
+                aria-label='copy link to clipboard'
+              >
+                <Image width='25' height='25' src={copy} alt='' />
+              </button>
+
               <div className='ml-10'>
                 {tags?.map((tag, index) => (
                   <Tag

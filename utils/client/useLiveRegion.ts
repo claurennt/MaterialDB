@@ -1,12 +1,19 @@
-import { useEffect, useState } from 'react';
+import { RefObject, useEffect, useState } from 'react';
 
+type UseLiveRegionArgs = {
+  announceLiveRegion: React.MutableRefObject<boolean>;
+  filteringTags: string[];
+  numberOfTopicLinks: number;
+  previousNumberOfLinks: React.MutableRefObject<number>;
+  open: boolean;
+};
 export const useLiveRegion = ({
   announceLiveRegion,
   filteringTags,
-  individualTopic,
+  numberOfTopicLinks,
   previousNumberOfLinks,
   open,
-}) => {
+}: UseLiveRegionArgs) => {
   const [liveRegionContent, setLiveRegionContent] = useState<string>('');
 
   useEffect(() => {
@@ -22,7 +29,7 @@ export const useLiveRegion = ({
   }, [filteringTags]);
 
   useEffect(() => {
-    const currentNumberOfLinks = individualTopic.links.length;
+    const currentNumberOfLinks = numberOfTopicLinks;
     // announces live region when user successfully adds a new link
     if (!open && currentNumberOfLinks > previousNumberOfLinks.current) {
       setLiveRegionContent('New link successfully added to the list.');
@@ -31,7 +38,7 @@ export const useLiveRegion = ({
       previousNumberOfLinks.current = currentNumberOfLinks;
       announceLiveRegion.current = false;
     }
-  }, [individualTopic.links.length, open]);
+  }, [numberOfTopicLinks, open]);
 
   return liveRegionContent;
 };

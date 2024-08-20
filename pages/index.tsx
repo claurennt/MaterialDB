@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GetServerSideProps } from 'next';
-import Head from 'next/head';
+
 import { Jost } from 'next/font/google';
 import { useSession } from 'next-auth/react';
 import { getServerSession } from 'next-auth';
@@ -16,10 +16,11 @@ import {
   Subtitle,
   Topics,
   AuthLinks,
+  Header,
 } from '@components';
 import { Topic, Admin } from '@models';
 import { authOptions } from './api/auth/[...nextauth]';
-import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 type HomeProps = { currentTopics: ITopic[] };
 
@@ -30,14 +31,13 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const { data: session } = useSession();
-  const searchParams = useSearchParams();
-  const userId = searchParams.get('userId');
+
+  const {
+    query: { userId },
+  } = useRouter();
   return (
     <>
-      <Head>
-        <title>MaterialDB</title>
-        <link rel='icon' href='/logo.ico' />
-      </Head>
+      <Header />
       <div className='min-h-full'>
         <div className={`${jost.variable} font-sans pb-2 `}>
           <main className='flex flex-col items-center gap-y-10 text-center pt-20'>

@@ -27,7 +27,7 @@ export const ModalInput = forwardRef<HTMLInputElement, ModalInputsProps>(
         {' '}
         <div className='mt-2 flex flex-wrap rounded-md'>
           <label
-            className='w-1/4.5 inline-flex items-center px-3 rounded-l-md border border-r-0 border-secondary-100 bg-gray-50 text-secondary-100 text-sm'
+            className='w-1/4.5 inline-flex items-center px-3 rounded-l-md border border-primary-neon text-primary-neon bg-secondary-100 text-sm'
             htmlFor={name}
           >
             {name}
@@ -42,7 +42,7 @@ export const ModalInput = forwardRef<HTMLInputElement, ModalInputsProps>(
             type='text'
             name={name}
             id={name}
-            className='text-gray-900 focus:border-primary-neon focus:border-1 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300 border-s-secondary-100'
+            className='text-gray-900 focus:border-primary-neon focus:border flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300 border-s-secondary-100'
             aria-labelledby={ariaLabelledBy}
             aria-invalid={!isInputValid}
           />
@@ -60,7 +60,10 @@ export const ModalInput = forwardRef<HTMLInputElement, ModalInputsProps>(
           )}
         </div>
         {name === 'tags' ? (
-          <span className='text-primary-100 text-sm' id='tags-explanation'>
+          <span
+            className='text-primary-100 text-sm -translate-y-4 xs:-translate-x-4 sm:translate-x-0'
+            id='tags-explanation'
+          >
             Type in a tag and press enter to save
           </span>
         ) : undefined}

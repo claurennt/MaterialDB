@@ -8,8 +8,13 @@ import { useLiveRegion } from '@utils/client';
 import { ITopic } from '@types';
 import { Topic } from '@models';
 import '@models';
-import { TopicLink, NewLinkForm, AddNewButton, SearchBar } from '@components';
-import Link from 'next/link';
+import {
+  TopicLink,
+  NewLinkForm,
+  AddNewButton,
+  SearchBar,
+  Header,
+} from '@components';
 
 type TopicPageProps = {
   individualTopic: ITopic;
@@ -18,17 +23,18 @@ type TopicPageProps = {
 const TopicPage: React.FunctionComponent<TopicPageProps> = ({
   individualTopic,
 }) => {
+  const numberOfTopicLinks = individualTopic.links?.length;
   const [open, setOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<undefined | string>();
   const [filteringTags, setFilteringTags] = useState<string[]>([]);
 
   const announceLiveRegion = useRef<boolean>(false);
-  const previousNumberOfLinks = useRef<number>(individualTopic.links.length);
+  const previousNumberOfLinks = useRef<number>(numberOfTopicLinks);
 
   const liveRegionContent = useLiveRegion({
     announceLiveRegion,
     filteringTags,
-    individualTopic,
+    numberOfTopicLinks,
     previousNumberOfLinks,
     open,
   });
@@ -38,7 +44,7 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
   // gets router info with props passed with Link component
   const router = useRouter();
   const {
-    query: { name, _id, userId },
+    query: { name, _id },
   } = router;
 
   // handle search submit
@@ -70,60 +76,57 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
   };
 
   return (
-    <div>
-      <span aria-live='polite' role='alert' className='sr-only'>
-        {liveRegionContent}
-      </span>
-      <Link
-        className={`self-center text-primary-300 p-1 text-lg hover:text-secondary-300 ease-linear duration-300 active:scale-75 font-bold px-5 absolute top-3 ${
-          session ? 'right-24' : 'left-2'
-        }`}
-        href={{
-          pathname: '/',
-          query: `${userId ? `userId=${userId}` : ''}`,
-        }}
-      >
-        Home
-      </Link>
-      {open && _id && (
-        <NewLinkForm
-          individualTopicId={individualTopic._id}
-          setOpen={setOpen}
-          open={open}
-          type='link'
-        />
-      )}
-      <div className='flex flex-col items-center text-center pt-10 gap-4 pb-10'>
-        <h1 className='leading-tight text-5xl mt-0 mb-5 text-primary-100 text-center pt-3'>
-          {individualTopic?.name ?? name}
-        </h1>
-        <div className='flex gap-10'>
-          <SearchBar handleSubmit={handleSubmit} />
+    <>
+      <Header />
+      <div>
+        <span aria-live='polite' role='alert' className='sr-only'>
+          {liveRegionContent}
+        </span>
 
-          {session && (
-            <>
-              <span className='self-center'>OR </span>{' '}
-              <AddNewButton text='link' setOpen={setOpen} />
-            </>
-          )}
-        </div>
-      </div>
-      {individualTopic.links
-        ?.filter((link) =>
-          filteringTags.length
-            ? link.tags.some((tag) => filteringTags.includes(tag))
-            : link
-        )
-        .map((link, i) => (
-          <TopicLink
-            filteringTags={filteringTags}
-            search={search}
-            key={link._id ?? i}
-            link={link}
-            onClick={filterResultsByActiveTag}
+        {open && _id && (
+          <NewLinkForm
+            individualTopicId={individualTopic._id}
+            setOpen={setOpen}
+            open={open}
+            type='link'
           />
-        ))}
-    </div>
+        )}
+        <div className='flex flex-col items-center text-center pt-10 gap-4 pb-10'>
+          <h1 className='leading-tight text-5xl mt-0 mb-5 text-primary-100 text-center pt-3'>
+            {individualTopic?.name ?? name}
+          </h1>
+          <div className='flex gap-10'>
+            <SearchBar
+              handleSubmit={handleSubmit}
+              search={search}
+              setSearch={setSearch}
+            />
+
+            {session && (
+              <>
+                <span className='self-center'>OR </span>{' '}
+                <AddNewButton text='link' setOpen={setOpen} />
+              </>
+            )}
+          </div>
+        </div>
+        {individualTopic.links
+          ?.filter((link) =>
+            filteringTags.length
+              ? link.tags.some((tag) => filteringTags.includes(tag))
+              : link
+          )
+          .map((link, i) => (
+            <TopicLink
+              filteringTags={filteringTags}
+              search={search}
+              key={link._id ?? i}
+              link={link}
+              onClick={filterResultsByActiveTag}
+            />
+          ))}
+      </div>
+    </>
   );
 };
 
