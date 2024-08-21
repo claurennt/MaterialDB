@@ -10,7 +10,7 @@ import { Topic } from '@models';
 import '@models';
 import {
   TopicLink,
-  NewLinkForm,
+  NewLinkModal,
   AddNewButton,
   SearchBar,
   Header,
@@ -84,7 +84,7 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
         </span>
 
         {open && _id && (
-          <NewLinkForm
+          <NewLinkModal
             individualTopicId={individualTopic._id}
             setOpen={setOpen}
             open={open}

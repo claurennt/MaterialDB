@@ -11,7 +11,7 @@ import { SECRET } from '../globals';
 import { ITopic } from '@types';
 import { DBClient } from '@utils/server';
 import {
-  NewLinkForm,
+  NewLinkModal,
   MainTitle,
   Subtitle,
   Topics,
@@ -49,7 +49,7 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
             ) : null}
 
             {open && session && (
-              <NewLinkForm type='topic' open={open} setOpen={setOpen} />
+              <NewLinkModal type='topic' open={open} setOpen={setOpen} />
             )}
           </main>
           <footer

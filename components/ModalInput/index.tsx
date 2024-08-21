@@ -17,9 +17,9 @@ export const ModalInput = forwardRef<HTMLInputElement, ModalInputsProps>(
     const ariaLabelledBy =
       name === 'tags'
         ? 'tags-explanation'
-        : isRequired
+        : isRequired && !isInputValid
         ? 'form-validation-error'
-        : null;
+        : undefined;
     const onKeyDown = name === 'tags' ? handleKeyDown : null;
 
     return (

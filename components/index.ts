@@ -4,7 +4,7 @@ export * from './Logo';
 export * from './LogoutButton';
 export * from './MainTitle';
 export * from './ModalInput';
-export * from './NewLinkForm';
+export * from './NewLinkModal';
 export * from './SearchBar';
 export * from './Subtitle';
 export * from './Tag';

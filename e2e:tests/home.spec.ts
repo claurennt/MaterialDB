@@ -58,16 +58,23 @@ testWithSession.describe('Home with Session', () => {
   testWithSession(
     'should successfully add new topic',
     async ({ pageWithSession: page }) => {
-      const addNewTopicButton = page.getByRole('button', {
-        name: 'Add new topic',
-      });
+      const addNewTopicButton = page.getByLabel('Open modal with form to add');
+
       await expect(addNewTopicButton).toBeAttached();
       // open modal
       await addNewTopicButton.click();
+      await page.waitForTimeout(500);
+
+      // wait for modal to appear after 500ms
+      const modal = page.getByRole('dialog');
+      await modal.waitFor();
+      expect(modal).toBeVisible();
 
       //  retrieve inputs
-      const nameInput = page.getByLabel('name');
-      const descriptionInput = page.getByLabel('description');
+      const nameInput = await page.locator('#name');
+
+      // Or retrieve input using 'id'
+      const descriptionInput = await page.locator('#description');
 
       // fill inputs
       await nameInput.fill('test-topic');
