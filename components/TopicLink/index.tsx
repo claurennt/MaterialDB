@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
@@ -39,15 +39,15 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
   };
 
   return (
-    <div className='mt-5 flex'>
+    <div className='mt-5 flex ml-1'>
       <div className='flex flex-row'>
         <div>
-          <ul className='flex items-center'>
+          <ul className='flex items-center mt-3'>
             <li>
               {session && (
                 <>
                   <button
-                    className='text-4xl mx-3 self-start focus:outline-none text-primary-100 focus:ring-2 focus:ring-secondary-100'
+                    className='text-4xl mx-3 self-start focus:outline-none text-primary-neon focus:ring-2 focus:ring-secondary-100'
                     onClick={deleteLink}
                     aria-labelledby={`remove-link-${_id}`}
                   >
@@ -62,7 +62,7 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
               <a
                 href={url}
                 target='_blank'
-                className='text-2xl focus:outline-secondary-100 focus:outline-2 focus:outline-offset-4'
+                className='text-lg md:text-2xl underline focus:outline-secondary-100 focus:outline-2 focus:outline-offset-4 text-pr bg-gradient-to-l from-[rgb(181,255,255)] to-[rgb(80,243,243)] bg-clip-text text-transparent'
                 dangerouslySetInnerHTML={
                   search
                     ? highlightSearchTerm(search, title)
@@ -72,13 +72,13 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
 
               <button
                 onClick={() => copyToClipboard(url)}
-                className='text-secondary-200 text-lg mx-3 hover:scale-150 focus:outline-secondary-100 focus:outline-2 focus:outline-offset-4'
+                className='hidden sm:inline text-secondary-200 text-lg mx-3 hover:scale-150 focus:outline-secondary-100 focus:outline-2 focus:outline-offset-4'
                 aria-label='copy link to clipboard'
               >
                 <Image width='25' height='25' src={copy} alt='' />
               </button>
 
-              <div className='ml-10'>
+              <div className='ml-10 mt-1'>
                 {tags?.map((tag, index) => (
                   <Tag
                     filteringTags={filteringTags}

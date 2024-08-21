@@ -21,7 +21,7 @@ export const Subtitle: React.FunctionComponent<SubtitleProps> = ({
       {session ? (
         <>
           <h2 className='text-2xl'>
-            Start adding new <span className='text-primary-100 '>topics</span>{' '}
+            Start adding new <span className='text-primary-100'>topics </span>
             to your collection!
           </h2>
           <AddNewButton text='topic' setOpen={setOpen} />

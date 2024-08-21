@@ -11,6 +11,10 @@ module.exports = {
       ...defaultTheme.screens,
     },
     extend: {
+      backgroundImage: {
+        'gradient-text-cyan':
+          'linear-gradient(90deg, rgb(181, 255, 255), rgb(80, 243, 243))',
+      },
       colors: {
         primary: {
           100: '#735eff',
