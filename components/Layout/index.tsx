@@ -5,11 +5,11 @@ import React from 'react';
 
 export const Layout = ({ children }) => {
   const name = useSearchParams().get('name');
-
+  const title = `${name ? name + ' | ' : ''}MaterialDB`;
   return (
     <>
       <Head>
-        <title>{name ? name : null} | MaterialDB</title>
+        <title>{title}</title>
         <link rel='icon' href='/logo.ico' />
       </Head>
       <>{children}</>
