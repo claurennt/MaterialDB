@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { GetServerSideProps } from 'next';
 
 import { Jost } from 'next/font/google';
@@ -17,10 +17,12 @@ import {
   Topics,
   AuthLinks,
   Header,
+  LiveRegion,
 } from '@components';
 import { Topic, Admin } from '@models';
 import { authOptions } from './api/auth/[...nextauth]';
 import { useRouter } from 'next/router';
+import { useLiveRegion } from '@utils/client';
 
 type HomeProps = { currentTopics: ITopic[] };
 
@@ -35,9 +37,20 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
   const {
     query: { userId },
   } = useRouter();
+  const numberOfTopicLinks = currentTopics?.length;
+  const previousNumberOfLinks = useRef<number>(numberOfTopicLinks);
+
+  const liveRegionContent = useLiveRegion({
+    numberOfTopicLinks,
+    previousNumberOfLinks,
+    open,
+    type: 'topic',
+  });
+
   return (
     <>
       <Header />
+      <LiveRegion liveRegionContent={liveRegionContent} />
       <div className='min-h-full'>
         <div className={`${jost.variable} font-sans pb-2 `}>
           <main className='flex flex-col items-center gap-y-10 text-center pt-20'>

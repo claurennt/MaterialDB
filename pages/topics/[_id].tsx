@@ -14,6 +14,7 @@ import {
   AddNewButton,
   SearchBar,
   Header,
+  LiveRegion,
 } from '@components';
 
 type TopicPageProps = {
@@ -37,6 +38,7 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
     numberOfTopicLinks,
     previousNumberOfLinks,
     open,
+    type: 'link',
   });
 
   const { data: session } = useSession();
@@ -79,9 +81,7 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
     <>
       <Header />
       <div>
-        <span aria-live='polite' role='alert' className='sr-only'>
-          {liveRegionContent}
-        </span>
+        <LiveRegion liveRegionContent={liveRegionContent} />
 
         {open && _id && (
           <NewLinkModal
@@ -91,11 +91,11 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
             type='link'
           />
         )}
-        <div className='flex flex-col items-center text-center pt-10 gap-4 pb-10'>
+        <div className='flex flex-col items-center text-center pt-10 gap-4 pb-10 mt-10'>
           <h1 className='leading-tight text-5xl mt-0 mb-5 text-primary-100 text-center pt-3'>
             {individualTopic?.name ?? name}
           </h1>
-          <div className='flex gap-10'>
+          <div className='flex gap-10 flex-wrap justify-center mx-5'>
             <SearchBar
               handleSubmit={handleSubmit}
               search={search}
