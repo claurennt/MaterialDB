@@ -17,12 +17,12 @@ import {
 } from '@utils/client';
 import { FormTag } from '@components';
 
-type NewLinkFormType = 'topic' | 'link';
+type NewLinkModalType = 'topic' | 'link';
 
-export type NewLinkFormProps = {
+export type NewLinkModalProps = {
   individualTopicId?: string;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  type: NewLinkFormType;
+  type: NewLinkModalType;
   open: boolean;
 };
 
@@ -30,7 +30,7 @@ const isTopic = (state: NewTopic | NewLink): state is NewTopic => {
   return 'name' in state;
 };
 
-export const NewLinkForm: React.FunctionComponent<NewLinkFormProps> = ({
+export const NewLinkModal: React.FunctionComponent<NewLinkModalProps> = ({
   individualTopicId,
   setOpen,
   type,

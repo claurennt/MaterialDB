@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { GetServerSideProps } from 'next';
-import Head from 'next/head';
+
 import { Jost } from 'next/font/google';
 import { useSession } from 'next-auth/react';
 import { getServerSession } from 'next-auth';
@@ -11,15 +11,18 @@ import { SECRET } from '../globals';
 import { ITopic } from '@types';
 import { DBClient } from '@utils/server';
 import {
-  NewLinkForm,
+  NewLinkModal,
   MainTitle,
   Subtitle,
   Topics,
   AuthLinks,
+  Header,
+  LiveRegion,
 } from '@components';
 import { Topic, Admin } from '@models';
 import { authOptions } from './api/auth/[...nextauth]';
-import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
+import { useLiveRegion } from '@utils/client';
 
 type HomeProps = { currentTopics: ITopic[] };
 
@@ -30,14 +33,24 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const { data: session } = useSession();
-  const searchParams = useSearchParams();
-  const userId = searchParams.get('userId');
+
+  const {
+    query: { userId },
+  } = useRouter();
+  const numberOfTopicLinks = currentTopics?.length;
+  const previousNumberOfLinks = useRef<number>(numberOfTopicLinks);
+
+  const liveRegionContent = useLiveRegion({
+    numberOfTopicLinks,
+    previousNumberOfLinks,
+    open,
+    type: 'topic',
+  });
+
   return (
     <>
-      <Head>
-        <title>MaterialDB</title>
-        <link rel='icon' href='/logo.ico' />
-      </Head>
+      <Header />
+      <LiveRegion liveRegionContent={liveRegionContent} />
       <div className='min-h-full'>
         <div className={`${jost.variable} font-sans pb-2 `}>
           <main className='flex flex-col items-center gap-y-10 text-center pt-20'>
@@ -49,7 +62,7 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
             ) : null}
 
             {open && session && (
-              <NewLinkForm type='topic' open={open} setOpen={setOpen} />
+              <NewLinkModal type='topic' open={open} setOpen={setOpen} />
             )}
           </main>
           <footer

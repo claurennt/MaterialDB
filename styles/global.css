@@ -14,7 +14,7 @@
     --primary-color: #735eff;
     --primary-color-200: #7f6bff;
     --primary-color-neon: #1f51ff;
-    --secondary-color: #fd5244;
+    --secondary-color: #b5ffe1;
     --tertiary-color: #0a1046;
   }
 }
@@ -54,4 +54,8 @@ mark {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+}
+
+::-webkit-search-cancel-button {
+  -webkit-appearance: none;
 }

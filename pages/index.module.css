@@ -18,7 +18,7 @@
 }
 .card:hover,
 .card:focus-visible {
-  outline: solid 2px var(--secondary-color);
+  outline: solid 4px var(--secondary-color);
 }
 .card:active,
 .card:focus:not(:focus-visible) {

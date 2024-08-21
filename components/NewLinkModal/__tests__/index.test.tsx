@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import 'utils/client/data';
-import { NewLinkForm, NewLinkFormProps } from '..';
+import { NewLinkModal, NewLinkModalProps } from '..';
 
 import { renderWithSession } from '../../../utils/tests:unit';
 
@@ -11,14 +11,14 @@ import { MemoryRouterProvider } from 'next-router-mock/MemoryRouterProvider/';
 
 const setOpenMock = jest.fn();
 
-const NewLinkFormTest = ({
+const NewLinkModalTest = ({
   type,
   open,
   setOpen,
   individualTopicId = '1',
-}: NewLinkFormProps) => (
+}: NewLinkModalProps) => (
   <MemoryRouterProvider>
-    <NewLinkForm
+    <NewLinkModal
       type={type}
       setOpen={setOpen}
       open={open}
@@ -26,14 +26,14 @@ const NewLinkFormTest = ({
     />
   </MemoryRouterProvider>
 );
-describe('NewLinkForm', () => {
+describe('NewLinkModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   test('shows/hide the modal according to `open` prop value', () => {
     const { rerender } = renderWithSession(
-      <NewLinkFormTest type='topic' open setOpen={setOpenMock} />
+      <NewLinkModalTest type='topic' open setOpen={setOpenMock} />
     );
 
     const modal = screen
@@ -43,14 +43,14 @@ describe('NewLinkForm', () => {
     expect(modal).toBeInTheDocument();
 
     rerender(
-      <NewLinkFormTest type='topic' open={false} setOpen={setOpenMock} />
+      <NewLinkModalTest type='topic' open={false} setOpen={setOpenMock} />
     );
     expect(modal).not.toBeInTheDocument();
   });
   // Form renders correctly with all inputs and buttons
   test('should render form with all inputs and buttons when open is true', () => {
     const { getByRole } = renderWithSession(
-      <NewLinkFormTest
+      <NewLinkModalTest
         individualTopicId='1'
         setOpen={setOpenMock}
         type='link'

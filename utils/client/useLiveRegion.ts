@@ -1,17 +1,26 @@
-import { useEffect, useState } from 'react';
+import { RefObject, useEffect, useState } from 'react';
 
+type UseLiveRegionArgs = {
+  announceLiveRegion?: React.MutableRefObject<boolean>;
+  filteringTags?: string[] | null;
+  numberOfTopicLinks: number;
+  previousNumberOfLinks: React.MutableRefObject<number>;
+  open: boolean;
+  type: string;
+};
 export const useLiveRegion = ({
-  announceLiveRegion,
-  filteringTags,
-  individualTopic,
+  announceLiveRegion = { current: true },
+  filteringTags = null,
+  numberOfTopicLinks,
   previousNumberOfLinks,
   open,
-}) => {
+  type,
+}: UseLiveRegionArgs) => {
   const [liveRegionContent, setLiveRegionContent] = useState<string>('');
 
   useEffect(() => {
     // announces live region when user filters links by clicking on tag button
-    if (announceLiveRegion.current) {
+    if (announceLiveRegion.current && Array.isArray(filteringTags)) {
       setLiveRegionContent(
         filteringTags.length
           ? `Now showing all links with tags: ${filteringTags}`
@@ -22,16 +31,16 @@ export const useLiveRegion = ({
   }, [filteringTags]);
 
   useEffect(() => {
-    const currentNumberOfLinks = individualTopic.links.length;
+    const currentNumberOfLinks = numberOfTopicLinks;
     // announces live region when user successfully adds a new link
     if (!open && currentNumberOfLinks > previousNumberOfLinks.current) {
-      setLiveRegionContent('New link successfully added to the list.');
+      setLiveRegionContent(`New ${type} successfully added to the list.`);
 
       //updates ref with new number of links to include newly added link
       previousNumberOfLinks.current = currentNumberOfLinks;
       announceLiveRegion.current = false;
     }
-  }, [individualTopic.links.length, open]);
+  }, [numberOfTopicLinks, open, type]);
 
   return liveRegionContent;
 };

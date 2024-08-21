@@ -27,7 +27,7 @@ export const Tag: React.FunctionComponent<TagProps> = ({
           : ''
       } px-2 mx-1 mt-1 text-md hover:bg-secondary-300  text-white ${
         filteringTags?.includes(tag) ? 'bg-secondary-200' : 'bg-primary-neon'
-      }`}
+      } focus:outline-secondary-100 focus:outline-2 focus:outline-offset-2`}
     >
       {tag}
     </button>
