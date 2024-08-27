@@ -71,10 +71,10 @@ testWithSession.describe('Home with Session', () => {
       expect(modal).toBeVisible();
 
       //  retrieve inputs
-      const nameInput = await page.locator('#name');
+      const nameInput = page.locator('#name');
 
       // Or retrieve input using 'id'
-      const descriptionInput = await page.locator('#description');
+      const descriptionInput = page.locator('#description');
 
       // fill inputs
       await nameInput.fill('test-topic');
@@ -109,7 +109,7 @@ testWithSession.describe('Home with Session', () => {
         `^${BASE_URL.replace(/\./g, '\\.')}/topics/.*\\?name=test-topic$` //ignores the topic id query param
       );
 
-      // asserts that url starts with ${Base_URL}/topics and ends with ?name=test-topic
+      // asserts that url starts with ${BASE_URL}/topics and ends with ?name=test-topic
       await expect(page).toHaveURL(urlPattern);
     }
   );
