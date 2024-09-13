@@ -120,9 +120,12 @@ export const NewLinkModal: React.FunctionComponent<NewLinkModalProps> = ({
       : Boolean(state.url);
 
     // check if url is malformatted
-    const isValidUrl = !isTopicState && validateUrl(state.url);
+    const isUrlFormatValid = !isTopicState && validateUrl(state.url);
 
-    if (!isValidInput.current || !isValidUrl) {
+    const isValidInputValue =
+      (isValidInput.current && isUrlFormatValid) || isValidInput.current;
+
+    if (!isValidInputValue) {
       setIsError(true);
       inputRef.current.focus(); //it's good practice to auto-focus invalid input after validation
       return;
