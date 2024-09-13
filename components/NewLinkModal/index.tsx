@@ -125,7 +125,7 @@ export const NewLinkModal: React.FunctionComponent<NewLinkModalProps> = ({
     const isValidInputValue =
       (isValidInput.current && isUrlFormatValid) || isValidInput.current;
 
-    if (isValidInputValue) {
+    if (!isValidInputValue) {
       setIsError(true);
       inputRef.current.focus(); //it's good practice to auto-focus invalid input after validation
       return;
