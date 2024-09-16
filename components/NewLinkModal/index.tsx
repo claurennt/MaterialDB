@@ -8,10 +8,15 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ModalInput } from '../ModalInput';
-import { topicInputs, linkInputs, useFormHandler } from '@utils/client';
+import {
+  topicInputs,
+  linkInputs,
+  useFormHandler,
+  useLiveRegion,
+} from '@utils/client';
 import { FormTag, LiveRegion } from '@components';
 import { SubmitFormButton } from 'components/SubmitFormButton';
-import { NewLinkModalType, NewTopic } from '@types';
+import { NewLinkModalType } from '@types';
 
 export type NewLinkModalProps = {
   individualTopicId?: string;
@@ -37,6 +42,8 @@ export const NewLinkModal: React.FC<NewLinkModalProps> = ({
   const { state, dispatch, handleSubmitForm, isValidInput, inputRef } =
     useFormHandler(access_token, session, individualTopicId);
   const { isError, isLoading, newLink, newTopic, tagValue } = state;
+
+  const liveRegionContent = useLiveRegion({ open, type, isError, isLoading });
 
   const closeModalAndNavigate = () => {
     setTimeout(() => {
@@ -97,12 +104,10 @@ export const NewLinkModal: React.FC<NewLinkModalProps> = ({
     // Validate and submit the form
     const isSubmissionSuccessful = await handleSubmitForm(e, state);
 
-    // Handle success or error accordingly
     if (isSubmissionSuccessful) {
-      closeModalAndNavigate();
-    } else {
-      // handleError();
+      return;
     }
+    closeModalAndNavigate();
   };
 
   const isInputValid = isValidInput.current && !isError;
@@ -213,12 +218,11 @@ export const NewLinkModal: React.FC<NewLinkModalProps> = ({
                       />
                     </>
                   )}
-                  {isLoading && !isError && (
-                    <div className='sm:flex sm:flex-row-reverse flex justify-center'>
-                      <ClipLoader />
-                      <LiveRegion liveRegionContent='Submitting form...' />
-                    </div>
-                  )}
+
+                  <div className='sm:flex sm:flex-row-reverse flex justify-center'>
+                    <ClipLoader loading={isLoading} />
+                    <LiveRegion liveRegionContent={liveRegionContent} />
+                  </div>
                 </div>
               </div>
             </Transition.Child>

@@ -3,18 +3,22 @@ import { RefObject, useEffect, useState } from 'react';
 type UseLiveRegionArgs = {
   announceLiveRegion?: React.MutableRefObject<boolean>;
   filteringTags?: string[] | null;
-  numberOfTopicLinks: number;
-  previousNumberOfLinks: React.MutableRefObject<number>;
-  open: boolean;
+  numberOfTopicLinks?: number;
+  previousNumberOfLinks?: React.MutableRefObject<number>;
   type: string;
+  open?: boolean;
+  isError?: boolean;
+  isLoading?: boolean;
 };
 export const useLiveRegion = ({
   announceLiveRegion = { current: true },
   filteringTags = null,
   numberOfTopicLinks,
   previousNumberOfLinks,
-  open,
+  open = false,
   type,
+  isError = false,
+  isLoading = false,
 }: UseLiveRegionArgs) => {
   const [liveRegionContent, setLiveRegionContent] = useState<string>('');
 
@@ -31,6 +35,16 @@ export const useLiveRegion = ({
   }, [filteringTags]);
 
   useEffect(() => {
+    // announces live region when user unsuccessfully adds a new resource or is submitting the form
+    if (open) {
+      if (isError)
+        setLiveRegionContent(
+          `Something went wrong: ${type} addition failed, please try again`
+        );
+
+      if (isLoading) setLiveRegionContent('Submitting form...');
+    }
+
     const currentNumberOfLinks = numberOfTopicLinks;
     // announces live region when user successfully adds a new link
     if (!open && currentNumberOfLinks > previousNumberOfLinks.current) {
@@ -40,7 +54,7 @@ export const useLiveRegion = ({
       previousNumberOfLinks.current = currentNumberOfLinks;
       announceLiveRegion.current = false;
     }
-  }, [numberOfTopicLinks, open, type]);
+  }, [numberOfTopicLinks, open, type, isLoading]);
 
   return liveRegionContent;
 };
