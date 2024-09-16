@@ -1,23 +1,17 @@
-/* This example requires Tailwind CSS v2.0+ */
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useRef } from 'react';
 
 import { useSession } from 'next-auth/react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useRouter } from 'next/router';
+import ClipLoader from 'react-spinners/ClipLoader';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ModalInput } from '../ModalInput';
-import type { NewTopic, NewLink } from '@types';
-import {
-  topicInputs,
-  linkInputs,
-  addNewResource,
-  validateUrl,
-} from '@utils/client';
-import { FormTag } from '@components';
-
-type NewLinkModalType = 'topic' | 'link';
+import { topicInputs, linkInputs, useFormHandler } from '@utils/client';
+import { FormTag, LiveRegion } from '@components';
+import { SubmitFormButton } from 'components/SubmitFormButton';
+import { NewLinkModalType, NewTopic } from '@types';
 
 export type NewLinkModalProps = {
   individualTopicId?: string;
@@ -26,32 +20,13 @@ export type NewLinkModalProps = {
   open: boolean;
 };
 
-const isTopic = (state: NewTopic | NewLink): state is NewTopic => {
-  return 'name' in state;
-};
-
-export const NewLinkModal: React.FunctionComponent<NewLinkModalProps> = ({
+export const NewLinkModal: React.FC<NewLinkModalProps> = ({
   individualTopicId,
   setOpen,
   type,
   open,
 }) => {
   const toastId = useRef(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const isValidInput = useRef<boolean>(true);
-  const announceLiveRegion = useRef<boolean>(false);
-
-  const [newTopic, setNewTopic] = useState<NewTopic>({
-    name: '',
-    description: '',
-  });
-  const [newLink, setNewLink] = useState<NewLink>({
-    url: '',
-    tags: [],
-  });
-  const [tagValue, setTagValue] = useState<string>('');
-  const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
   const { data: session } = useSession();
@@ -59,92 +34,81 @@ export const NewLinkModal: React.FunctionComponent<NewLinkModalProps> = ({
     user: { access_token },
   } = session;
 
+  const { state, dispatch, handleSubmitForm, isValidInput, inputRef } =
+    useFormHandler(access_token, session, individualTopicId);
+  const { isError, isLoading, newLink, newTopic, tagValue } = state;
+
+  const closeModalAndNavigate = () => {
+    setTimeout(() => {
+      setOpen(false);
+      router.replace(router.asPath);
+    }, 3000);
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     name: string
   ) => {
-    // make the error disappear when user starts correcting invalid input
-    if (isError) {
-      setIsError(false);
-    }
-    const target = e.currentTarget;
+    if (isError) dispatch({ type: 'SET_ERROR', payload: false });
+    const value = e.currentTarget.value;
 
     if (type === 'link') {
-      //handleChange for newLink modal
-      if (name === 'tags') {
-        setTagValue(target.value);
-      }
-      if (name === 'url') {
-        setNewLink((prev) => ({ ...prev, url: target.value }));
-      }
+      if (name === 'tags') dispatch({ type: 'SET_TAG_VALUE', payload: value });
+      if (name === 'url')
+        dispatch({
+          type: 'SET_NEW_LINK',
+          payload: { ...newLink, url: value },
+        });
+    } else {
+      dispatch({
+        type: 'SET_NEW_TOPIC',
+        payload: { ...newTopic, [name]: value },
+      });
     }
-    //handleChange for newTopic modal
-    else setNewTopic((prev) => ({ ...prev, [target.name]: target.value }));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (type === 'link' && e.key === 'Enter') {
-      setNewLink((prev) => ({ ...prev, tags: [...prev.tags, tagValue] }));
-
-      setTagValue('');
+      dispatch({
+        type: 'SET_NEW_LINK',
+        payload: {
+          ...newLink,
+          tags: [...newLink.tags, tagValue],
+        },
+      });
+      dispatch({ type: 'SET_TAG_VALUE', payload: '' });
     }
   };
 
   const handleRemoveTag = (currentTag: string) => {
-    setNewLink((prev) => ({
-      ...prev,
-      tags: prev.tags.filter((tag: string) => tag !== currentTag),
-    }));
-  };
-  // Handles closing the modal and navigating
-  const closeModalAndNavigate = () => {
-    setOpen(false);
-    setTimeout(() => router.replace(router.asPath), 3000);
+    dispatch({
+      type: 'SET_NEW_LINK',
+      payload: {
+        ...newLink,
+        tags: newLink.tags.filter((tag) => tag !== currentTag),
+      },
+    });
   };
 
-  const handleSubmitForm = async (
-    e: React.SyntheticEvent<HTMLButtonElement>,
-    state: NewTopic | NewLink
-  ) => {
+  const onFormSubmit = async (e: React.SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (!inputRef.current) return;
+    const state = type === 'link' ? newLink : newTopic;
 
-    const isTopicState = isTopic(state);
-    const payload = isTopicState
-      ? { ...state, creatorId: session.user.id }
-      : { ...state, _topic: individualTopicId };
+    // Validate and submit the form
+    const isSubmissionSuccessful = await handleSubmitForm(e, state);
 
-    //checks if required fields are missing  on submit
-    isValidInput.current = isTopicState
-      ? Boolean(state.name)
-      : Boolean(state.url);
-
-    // check if url is malformatted
-    const isUrlFormatValid = !isTopicState && validateUrl(state.url);
-
-    const isValidInputValue =
-      (isValidInput.current && isUrlFormatValid) || isValidInput.current;
-
-    if (!isValidInputValue) {
-      setIsError(true);
-      inputRef.current.focus(); //it's good practice to auto-focus invalid input after validation
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      await addNewResource(e, access_token, payload);
-      announceLiveRegion.current = true;
+    // Handle success or error accordingly
+    if (isSubmissionSuccessful) {
       closeModalAndNavigate();
-    } catch (error) {
-      setIsError(true);
-      setIsLoading(false);
+    } else {
+      // handleError();
     }
   };
-
-  const inputs = type === 'link' ? linkInputs : topicInputs;
 
   const isInputValid = isValidInput.current && !isError;
+  const inputs = type === 'link' ? linkInputs : topicInputs;
+  const dialogTitle =
+    type === 'topic' ? 'Insert a new topic' : 'Add new article/resource';
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -206,9 +170,7 @@ export const NewLinkModal: React.FunctionComponent<NewLinkModalProps> = ({
                           as='h3'
                           className='text-lg leading-6 font-medium text-gray-900 ms-4 self-center'
                         >
-                          {type === 'topic'
-                            ? 'Insert a new topic'
-                            : 'Add new article/resource'}
+                          {dialogTitle}
                         </Dialog.Title>
                       </div>
                       <div className='flex flex-col gap-4'>
@@ -245,30 +207,17 @@ export const NewLinkModal: React.FunctionComponent<NewLinkModalProps> = ({
                 <div className='bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse flex justify-between'>
                   {session && (
                     <>
-                      <button
-                        aria-labelledby='add-button'
-                        type='button'
-                        className='w-full inline-flex rounded-md border border-transparent shadow-sm px-4 py-2 bg-secondary-200 text-base font-medium text-white hover:bg-secondary-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm'
-                        onClick={(e) =>
-                          type === 'topic'
-                            ? handleSubmitForm(e, newTopic)
-                            : handleSubmitForm(e, newLink)
-                        }
-                      >
-                        +
-                      </button>
-                      <span id='add-button' className='sr-only'>
-                        Click to create new {type}
-                      </span>
+                      <SubmitFormButton
+                        onFormSubmit={onFormSubmit}
+                        type={type}
+                      />
                     </>
                   )}
-                  {isLoading && (
-                    <span className='flex h-5 w-5 self-center'>
-                      <span className='relative motion-safe:animate-spin h-5 w-5 bg-sky-500 '></span>
-                      <div aria-live='assertive' role='alert'>
-                        <p>Submitting form...</p>
-                      </div>
-                    </span>
+                  {isLoading && !isError && (
+                    <div className='sm:flex sm:flex-row-reverse flex justify-center'>
+                      <ClipLoader />
+                      <LiveRegion liveRegionContent='Submitting form...' />
+                    </div>
                   )}
                 </div>
               </div>
