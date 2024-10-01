@@ -14,7 +14,7 @@ import {
   useFormHandler,
   useLiveRegion,
 } from '@utils/client';
-import { FormTag, LiveRegion } from '@components';
+import { LiveRegion, Tag } from '@components';
 import { SubmitFormButton } from 'components/SubmitFormButton';
 import { NewLinkModalType } from '@types';
 
@@ -104,7 +104,7 @@ export const NewLinkModal: React.FC<NewLinkModalProps> = ({
     // Validate and submit the form
     const isSubmissionSuccessful = await handleSubmitForm(e, state);
 
-    if (isSubmissionSuccessful) {
+    if (!isSubmissionSuccessful) {
       return;
     }
     closeModalAndNavigate();
@@ -196,16 +196,17 @@ export const NewLinkModal: React.FC<NewLinkModalProps> = ({
                           />
                         ))}
                       </div>
-                      <div className='flex flex-wrap'>
+                      <ul className='flex flex-wrap list-none'>
                         {type === 'link' &&
                           newLink.tags?.map((tag: string, i: number) => (
-                            <FormTag
+                            <Tag
                               tag={tag}
                               key={tag + i}
                               onClick={handleRemoveTag}
+                              id={`remove-tag-${tag}`}
                             />
                           ))}
-                      </div>
+                      </ul>
                     </div>
                   </div>
                 </div>

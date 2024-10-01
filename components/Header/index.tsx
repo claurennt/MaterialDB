@@ -1,8 +1,8 @@
+import React from 'react';
 import { AuthLinks, LogoutButton } from '@components';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React from 'react';
 
 // This component could be put into a Layout component, but this does not reset the tab order on route change
 export const Header = () => {

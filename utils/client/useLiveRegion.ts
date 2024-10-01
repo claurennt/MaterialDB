@@ -14,7 +14,7 @@ export const useLiveRegion = ({
   announceLiveRegion = { current: true },
   filteringTags = null,
   numberOfTopicLinks,
-  previousNumberOfLinks,
+  previousNumberOfLinks = { current: 0 },
   open = false,
   type,
   isError = false,
