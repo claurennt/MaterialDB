@@ -19,7 +19,7 @@ describe('Header', () => {
     // Reset the mock before each test
     mockUseRouter.mockReset();
   });
-  it('shows Home link and Logout button if pathname is not "/" and session is active ', () => {
+  it('shows Home link and Logout button if pathname is not "/" and session is active', () => {
     mockUseRouter.mockReturnValue({
       pathname: '/nodeJS',
       query: {},
