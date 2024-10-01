@@ -28,7 +28,7 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
   const [open, setOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<undefined | string>();
   const [filteringTags, setFilteringTags] = useState<string[]>([]);
-
+  const [showDeletionPopup, setShowDeletionPopup] = useState(false);
   const announceLiveRegion = useRef<boolean>(false);
   const previousNumberOfLinks = useRef<number>(numberOfTopicLinks);
 
@@ -110,21 +110,31 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
             )}
           </div>
         </div>
-        {individualTopic.links
-          ?.filter((link) =>
-            filteringTags.length
-              ? link.tags.some((tag) => filteringTags.includes(tag))
-              : link
-          )
-          .map((link, i) => (
-            <TopicLink
-              filteringTags={filteringTags}
-              search={search}
-              key={link._id ?? i}
-              link={link}
-              onClick={filterResultsByActiveTag}
-            />
-          ))}
+        <div className='mt-5 flex ml-1'>
+          <div className='flex flex-row'>
+            <div>
+              <ul className='flex items-center flex-col mt-3'>
+                {individualTopic.links
+                  ?.filter((link) =>
+                    filteringTags.length
+                      ? link.tags.some((tag) => filteringTags.includes(tag))
+                      : link
+                  )
+                  .map((link, i) => (
+                    <TopicLink
+                      filteringTags={filteringTags}
+                      search={search}
+                      key={link._id ?? i}
+                      link={link}
+                      onClick={filterResultsByActiveTag}
+                      showDeletionPopup={showDeletionPopup}
+                      setShowDeletionPopup={setShowDeletionPopup}
+                    />
+                  ))}
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
