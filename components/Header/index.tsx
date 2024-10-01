@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-// This component could be put into a Layout component, but this does not reset the tab order on route change
+// This component could be put into a Layout component, but doing that does not reset the tab order on route change
 export const Header = () => {
   const router = useRouter();
   const {
