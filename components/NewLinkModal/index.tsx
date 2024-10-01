@@ -172,7 +172,7 @@ export const NewLinkModal: React.FC<NewLinkModalProps> = ({
                         <div className='mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-secondary-200 sm:mx-0 sm:h-10 sm:w-10'></div>
                         <Dialog.Title
                           id={`${type}-dialog-title`}
-                          as='h3'
+                          as='h1'
                           className='text-lg leading-6 font-medium text-gray-900 ms-4 self-center'
                         >
                           {dialogTitle}

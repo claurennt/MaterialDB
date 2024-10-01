@@ -13,3 +13,4 @@ export * from './TopicLink';
 export * from './Topics';
 export * from './Header';
 export * from './LiveRegion';
+export * from './DeletionPopup';
