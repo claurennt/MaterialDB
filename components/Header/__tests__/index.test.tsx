@@ -5,7 +5,6 @@ import { render, screen } from '@testing-library/react';
 
 import '@testing-library/jest-dom';
 import { renderWithSession } from '../../../utils/tests:unit';
-import { useSession } from 'next-auth/react';
 
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
