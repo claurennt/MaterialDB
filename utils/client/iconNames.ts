@@ -280,7 +280,7 @@ export const iconsNames = [
 export const getIconName = (lowerCaseName) => {
   const startsWith = new RegExp(`^${lowerCaseName}`);
   const endsWithPattern = new RegExp(`${lowerCaseName}$`);
-  let iconName;
+  let iconName: string;
   iconName = iconsNames.find((name) => name === lowerCaseName);
 
   if (!iconName)
