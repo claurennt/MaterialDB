@@ -87,6 +87,7 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
                     tag={tag}
                     totalTags={tags.length}
                     index={index}
+                    id={tag}
                   />
                 ))}
               </div>

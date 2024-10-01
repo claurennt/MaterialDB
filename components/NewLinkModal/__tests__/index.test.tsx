@@ -26,6 +26,7 @@ const NewLinkModalTest = ({
     />
   </MemoryRouterProvider>
 );
+
 describe('NewLinkModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();

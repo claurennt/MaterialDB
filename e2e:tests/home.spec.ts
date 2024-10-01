@@ -67,13 +67,9 @@ testWithSession.describe('Home with Session', () => {
 
       // wait for modal to appear after 500ms
       const modal = page.getByRole('dialog');
-      await modal.waitFor();
-      expect(modal).toBeVisible();
-
-      //  retrieve inputs
+      await modal.waitFor({ state: 'visible' });
+      await expect(modal).toBeAttached();
       const nameInput = page.locator('#name');
-
-      // Or retrieve input using 'id'
       const descriptionInput = page.locator('#description');
 
       // fill inputs
@@ -93,6 +89,7 @@ testWithSession.describe('Home with Session', () => {
       await expect(newlyAddedTopic).toBeAttached();
     }
   );
+
   testWithSession(
     'should navigate to the individual topic page on card click',
     async ({ pageWithSession: page }) => {

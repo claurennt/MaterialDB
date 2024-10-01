@@ -43,7 +43,6 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
   const liveRegionContent = useLiveRegion({
     numberOfTopicLinks,
     previousNumberOfLinks,
-    open,
     type: 'topic',
   });
 
