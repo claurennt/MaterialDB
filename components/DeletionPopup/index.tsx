@@ -15,7 +15,12 @@ export const DeletionPopup = ({
 }: DeletionPopupProps) => {
   return (
     <Transition.Root show={open} as={Fragment}>
-      <div aria-modal='true' role='dialog' aria-label='confirm link deletion'>
+      <div
+        aria-modal='true'
+        role='dialog'
+        aria-label='delete link'
+        aria-describedby='dialog_desc'
+      >
         <Dialog
           as='div'
           className='fixed z-10 inset-0 overflow-y-auto'
@@ -58,11 +63,19 @@ export const DeletionPopup = ({
                         <Dialog.Title
                           as='h1'
                           className='text-lg leading-6 font-medium text-gray-900 ms-4 self-center'
+                          id='dialog_desc'
                         >
                           Are you sure you want to delete this link?
                         </Dialog.Title>
                       </div>
                       <div className='bg-gray-50 px-4 py-3 flex sm:px-6 justify-center gap-9'>
+                        <button
+                          type='button'
+                          onClick={() => setOpen(false)}
+                          className='mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto'
+                        >
+                          No
+                        </button>
                         <button
                           type='button'
                           onClick={() => {
@@ -72,14 +85,6 @@ export const DeletionPopup = ({
                           className='inline-flex w-full justify-center rounded-md bg-tertiary-100 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto'
                         >
                           Yes
-                        </button>
-                        <button
-                          type='button'
-                          data-autofocus
-                          onClick={() => setOpen(false)}
-                          className='mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto'
-                        >
-                          No
                         </button>
                       </div>
                     </div>

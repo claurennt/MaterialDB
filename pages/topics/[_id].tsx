@@ -80,62 +80,55 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
   return (
     <>
       <Header />
-      <div>
-        <LiveRegion liveRegionContent={liveRegionContent} />
 
-        {open && _id && (
-          <NewLinkModal
-            individualTopicId={individualTopic._id}
-            setOpen={setOpen}
-            open={open}
-            type='link'
+      <LiveRegion liveRegionContent={liveRegionContent} />
+
+      {open && _id && (
+        <NewLinkModal
+          individualTopicId={individualTopic._id}
+          setOpen={setOpen}
+          open={open}
+          type='link'
+        />
+      )}
+      <div className='flex flex-col items-center text-center pt-10 gap-4 pb-10 mt-10'>
+        <h1 className='leading-tight text-5xl mt-0 mb-5 text-primary-100 text-center pt-3'>
+          {individualTopic?.name ?? name}
+        </h1>
+        <div className='flex gap-10 flex-wrap justify-center mx-5'>
+          <SearchBar
+            handleSubmit={handleSubmit}
+            search={search}
+            setSearch={setSearch}
           />
-        )}
-        <div className='flex flex-col items-center text-center pt-10 gap-4 pb-10 mt-10'>
-          <h1 className='leading-tight text-5xl mt-0 mb-5 text-primary-100 text-center pt-3'>
-            {individualTopic?.name ?? name}
-          </h1>
-          <div className='flex gap-10 flex-wrap justify-center mx-5'>
-            <SearchBar
-              handleSubmit={handleSubmit}
-              search={search}
-              setSearch={setSearch}
-            />
 
-            {session && (
-              <>
-                <span className='self-center'>OR </span>{' '}
-                <AddNewButton text='link' setOpen={setOpen} />
-              </>
-            )}
-          </div>
-        </div>
-        <div className='mt-5 flex ml-1'>
-          <div className='flex flex-row'>
-            <div>
-              <ul className='flex items-center flex-col mt-3'>
-                {individualTopic.links
-                  ?.filter((link) =>
-                    filteringTags.length
-                      ? link.tags.some((tag) => filteringTags.includes(tag))
-                      : link
-                  )
-                  .map((link, i) => (
-                    <TopicLink
-                      filteringTags={filteringTags}
-                      search={search}
-                      key={link._id ?? i}
-                      link={link}
-                      onClick={filterResultsByActiveTag}
-                      showDeletionPopup={showDeletionPopup}
-                      setShowDeletionPopup={setShowDeletionPopup}
-                    />
-                  ))}
-              </ul>
-            </div>
-          </div>
+          {session && (
+            <>
+              <span className='self-center'>OR </span>{' '}
+              <AddNewButton text='link' setOpen={setOpen} />
+            </>
+          )}
         </div>
       </div>
+      <ul className='flex flex-col mt-3 gap-5'>
+        {individualTopic.links
+          ?.filter((link) =>
+            filteringTags.length
+              ? link.tags.some((tag) => filteringTags.includes(tag))
+              : link
+          )
+          .map((link, i) => (
+            <TopicLink
+              filteringTags={filteringTags}
+              search={search}
+              key={link._id ?? i}
+              link={link}
+              onClick={filterResultsByActiveTag}
+              showDeletionPopup={showDeletionPopup}
+              setShowDeletionPopup={setShowDeletionPopup}
+            />
+          ))}
+      </ul>
     </>
   );
 };
