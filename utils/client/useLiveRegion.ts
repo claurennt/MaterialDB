@@ -44,17 +44,24 @@ export const useLiveRegion = ({
 
       if (isLoading) setLiveRegionContent('Submitting form...');
     }
+  }, [open, isError, isLoading, type]);
 
+  useEffect(() => {
     const currentNumberOfLinks = numberOfTopicLinks;
-    // announces live region when user successfully adds a new link
-    if (!open && currentNumberOfLinks > previousNumberOfLinks.current) {
-      setLiveRegionContent(`New ${type} successfully added to the list.`);
 
-      //updates ref with new number of links to include newly added link
+    if (!open) {
+      // announces live region when user successfully adds a new link
+      if (currentNumberOfLinks > previousNumberOfLinks.current)
+        setLiveRegionContent(`New ${type} successfully added to the list.`);
+      // announces live region when user successfully deletes a link
+      if (currentNumberOfLinks < previousNumberOfLinks.current)
+        setLiveRegionContent(`Successful link deletion`);
+
+      //updates ref with new number of links to include newly added or deleted link
       previousNumberOfLinks.current = currentNumberOfLinks;
       announceLiveRegion.current = false;
     }
-  }, [numberOfTopicLinks, open, type, isLoading]);
+  }, [numberOfTopicLinks, open, previousNumberOfLinks, type]);
 
   return liveRegionContent;
 };
