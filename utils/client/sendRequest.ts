@@ -1,9 +1,7 @@
 import { NewLink, NewTopic } from '@types';
 import { SyntheticEvent } from 'react';
 import { getAxiosClient } from 'utils/server/axios';
-
-const isNewLink = (payload: any): payload is NewLink & { _topic: string } =>
-  'url' in payload;
+import { isNewLink } from '.';
 
 export const addNewResource = async (
   e: SyntheticEvent,
