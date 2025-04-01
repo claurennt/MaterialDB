@@ -204,6 +204,7 @@ export const NewLinkModal: React.FC<NewLinkModalProps> = ({
                               key={tag + i}
                               onClick={handleRemoveTag}
                               id={`remove-tag-${tag}`}
+                              index={i}
                             />
                           ))}
                       </ul>
