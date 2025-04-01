@@ -15,12 +15,7 @@ export const DeletionPopup = ({
 }: DeletionPopupProps) => {
   return (
     <Transition.Root show={open} as={Fragment}>
-      <div
-        aria-modal='true'
-        role='dialog'
-        aria-label='delete link'
-        aria-describedby='dialog_desc'
-      >
+      <div aria-modal='true' role='dialog' aria-labelledby='dialog_desc'>
         <Dialog
           as='div'
           className='fixed z-10 inset-0 overflow-y-auto'

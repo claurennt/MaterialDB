@@ -9,7 +9,6 @@ type TagProps =
   | {
       onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
       filteringTags: string[];
-      id: string;
       tag: string;
       totalTags: number;
       index: number;
@@ -22,43 +21,47 @@ export const isFilteringTagProps = (
 export const Tag: React.FunctionComponent<TagProps> = (props) => {
   if (isFilteringTagProps(props)) {
     // Handling the filtering tag variant
-    const { tag, onClick, filteringTags, totalTags, index, id } = props;
-    const filterTagBackground = filteringTags.includes(tag)
-      ? 'bg-secondary-200'
-      : 'bg-primary-neon';
+    const { tag, onClick, filteringTags, totalTags, index } = props;
+    const isActiveFilteringTag = filteringTags.includes(tag);
 
-    const filterTagStyles = `${
+    const borderColor = isActiveFilteringTag
+      ? 'border-secondary-200'
+      : 'border-primary-neon';
+
+    const borderStyle =
       totalTags === 1
         ? 'rounded'
         : index === 0
         ? 'rounded-l'
         : index === totalTags - 1
         ? 'rounded-r'
-        : ''
-    } px-2 mx-1 mt-1 text-md hover:bg-secondary-300 text-white ${filterTagBackground}`;
+        : '';
+
+    const filterTagStyles = `border ${borderStyle} ${borderColor} px-2 mx-1 mt-1 text-md text-white`;
 
     return (
-      <li>
+      <>
         <button
-          aria-labelledby={id}
           onClick={onClick}
           className={filterTagStyles}
+          aria-pressed={isActiveFilteringTag}
         >
           {tag}
+          {isActiveFilteringTag ? (
+            <span aria-hidden className='text-secondary-200'>
+              {' '}
+              ✓{' '}
+            </span>
+          ) : null}
         </button>
-        <span className='sr-only' id={id}>
-          {filteringTags.includes(tag)
-            ? `Click to remove filter tag ${tag}`
-            : `Click to filter all links with tag ${tag}`}
-        </span>
-      </li>
+      </>
     );
   } else {
     // Handling the form tag variant
     const { tag, onClick, id } = props;
 
     return (
-      <li>
+      <>
         <button
           aria-labelledby={id}
           onClick={() => onClick(tag)}
@@ -75,7 +78,7 @@ export const Tag: React.FunctionComponent<TagProps> = (props) => {
         <span className='sr-only' id={id}>
           Remove tag {tag} from list
         </span>
-      </li>
+      </>
     );
   }
 };

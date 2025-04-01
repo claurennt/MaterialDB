@@ -14,7 +14,7 @@ export const ModalInput = forwardRef<HTMLInputElement, ModalInputsProps>(
     const { name, handleKeyDown, handleChange, value, isInputValid } = props;
 
     const isRequired = name === 'url' || name === 'name';
-    const ariaLabelledBy =
+    const ariaDescribedBy =
       name === 'tags'
         ? 'tags-explanation'
         : isRequired && !isInputValid
@@ -24,7 +24,6 @@ export const ModalInput = forwardRef<HTMLInputElement, ModalInputsProps>(
 
     return (
       <>
-        {' '}
         <div className='mt-2 flex flex-wrap rounded-md'>
           <label
             className='w-1/4.5 inline-flex items-center px-3 rounded-l-md border border-primary-neon text-primary-neon bg-secondary-100 text-sm'
@@ -43,21 +42,20 @@ export const ModalInput = forwardRef<HTMLInputElement, ModalInputsProps>(
             name={name}
             id={name}
             className='text-gray-900 focus:border-primary-neon focus:border flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300 border-s-secondary-100'
-            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
             aria-invalid={!isInputValid}
           />
-
-          {!isInputValid && isRequired && (
-            <span
-              className='w-full text-rose-600 text-sm mt-1 '
-              id='form-validation-error'
-            >
-              {name === 'name'
-                ? 'A name for the topic must be provided'
-                : 'Please provide a valid url'}
-              !
-            </span>
-          )}
+          <label htmlFor='username'>Username</label>
+          <input
+            type='text'
+            name='username'
+            id='username'
+            required
+            autoComplete='username'
+          />
+          <span role='alert' aria-live='assertive'>
+            Usernames must be lowercase.
+          </span>
         </div>
         {name === 'tags' ? (
           <span
