@@ -45,17 +45,6 @@ export const ModalInput = forwardRef<HTMLInputElement, ModalInputsProps>(
             aria-describedby={ariaDescribedBy}
             aria-invalid={!isInputValid}
           />
-          <label htmlFor='username'>Username</label>
-          <input
-            type='text'
-            name='username'
-            id='username'
-            required
-            autoComplete='username'
-          />
-          <span role='alert' aria-live='assertive'>
-            Usernames must be lowercase.
-          </span>
         </div>
         {name === 'tags' ? (
           <span
