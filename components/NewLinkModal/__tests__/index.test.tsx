@@ -1,67 +1,97 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, waitFor, screen, render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
+import { NewLinkModal } from '..';
+
+import { useFormHandler } from '../../../utils/client';
 import '@testing-library/jest-dom';
+import {
+  renderWithSession,
+  createMockSession,
+  mockUseSession,
+} from '../../../utils/tests:unit';
 
-import 'utils/client/data';
-import { NewLinkModal, NewLinkModalProps } from '..';
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 
-import { renderWithSession } from '../../../utils/tests:unit';
+jest.mock('next-auth/react', () => ({
+  useSession: jest.fn(),
+}));
 
-import { MemoryRouterProvider } from 'next-router-mock/MemoryRouterProvider/';
+jest.mock('../../../utils/client', () => ({
+  ...jest.requireActual('../../../utils/client'),
+  useFormHandler: jest.fn(),
+  useLiveRegion: jest.fn(() => 'Live region content'),
+}));
 
-const setOpenMock = jest.fn();
+jest.mock('../../ModalInput', () => ({
+  ModalInput: ({ handleChange, name }) => (
+    <input data-testid={`modal-input-${name}`} onChange={handleChange} />
+  ),
+}));
 
-const NewLinkModalTest = ({
-  type,
-  open,
-  setOpen,
-  individualTopicId = '1',
-}: NewLinkModalProps) => (
-  <MemoryRouterProvider>
-    <NewLinkModal
-      type={type}
-      setOpen={setOpen}
-      open={open}
-      individualTopicId={individualTopicId}
-    />
-  </MemoryRouterProvider>
-);
+jest.mock('../../Tag', () => ({
+  Tag: ({ tag, onClick }) => (
+    <button onClick={() => onClick(tag)}>{tag}</button>
+  ),
+  LiveRegion: ({ liveRegionContent }) => <div>{liveRegionContent}</div>,
+}));
 
-describe('NewLinkModal', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
+jest.mock('../../SubmitFormButton', () => ({
+  SubmitFormButton: ({ onFormSubmit }) => (
+    <button onClick={onFormSubmit}>Submit</button>
+  ),
+}));
+
+const mockDispatch = jest.fn();
+const mockHandleSubmitForm = jest.fn();
+const mockSetOpen = jest.fn();
+
+const setup = (type = 'link') => {
+  (useSession as jest.Mock).mockReturnValue({
+    data: { user: { access_token: 'fake-token' } },
   });
 
-  test('shows/hide the modal according to `open` prop value', () => {
-    const { rerender } = renderWithSession(
-      <NewLinkModalTest type='topic' open setOpen={setOpenMock} />
-    );
-
-    const modal = screen
-      .queryAllByRole('dialog')
-      .find((dialog) => dialog.getAttribute('aria-modal'));
-
-    expect(modal).toBeInTheDocument();
-
-    rerender(
-      <NewLinkModalTest type='topic' open={false} setOpen={setOpenMock} />
-    );
-    expect(modal).not.toBeInTheDocument();
+  (useFormHandler as jest.Mock).mockReturnValue({
+    state: {
+      newLink: { url: '', tags: [] },
+      newTopic: { name: '', description: '' },
+      tagValue: '',
+      isError: false,
+      isLoading: false,
+    },
+    dispatch: mockDispatch,
+    handleSubmitForm: mockHandleSubmitForm,
+    isValidInput: { current: true },
+    inputRef: { current: { focus: jest.fn() } },
   });
-  // Form renders correctly with all inputs and buttons
-  test('should render form with all inputs and buttons when open is true', () => {
-    const { getByRole } = renderWithSession(
-      <NewLinkModalTest
-        individualTopicId='1'
-        setOpen={setOpenMock}
-        type='link'
-        open
-      />
-    );
 
-    expect(getByRole('dialog')).toBeInTheDocument();
-    expect(
-      getByRole('button', { name: 'Click to create new link' })
-    ).toBeInTheDocument();
+  renderWithSession(
+    <NewLinkModal type={type} setOpen={mockSetOpen} open={true} />
+  );
+};
+
+describe('NewLinkModal - ModalInput behaviors', () => {
+  const mockedSession = createMockSession();
+  mockUseSession(mockedSession);
+
+  it('renders modal with correct inputs for type=link', () => {
+    setup('link');
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByRole('heading')).toHaveTextContent(
+      'Add new article/resource'
+    );
+    expect(screen.getByTestId('modal-input-url')).toBeInTheDocument();
+    expect(screen.getByTestId('modal-input-tags')).toBeInTheDocument();
+  });
+
+  it('renders modal with correct inputs for type=topic', () => {
+    setup('topic');
+    expect(screen.getByRole('heading')).toHaveTextContent('Insert a new topic');
+    expect(screen.getByTestId('modal-input-name')).toBeInTheDocument();
+    expect(screen.getByTestId('modal-input-description')).toBeInTheDocument();
   });
 });

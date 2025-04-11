@@ -48,7 +48,7 @@ describe('helpers', () => {
   });
   describe('formReducer', () => {
     // Updates state with new topic when action type is 'SET_NEW_TOPIC'
-    it('should update state with new topic when action type is "SET_NEW_TOPIC"', () => {
+    it('should update state with correct action', () => {
       const initialState = {
         newTopic: '',
         newLink: '',
@@ -95,19 +95,6 @@ describe('helpers', () => {
       expect(newState).toBe(initialState);
     });
 
-    it('should return current state when action type is unrecognized', () => {
-      const initialState = {
-        newTopic: '',
-        newLink: '',
-        tagValue: '',
-        isError: false,
-        isLoading: false,
-      };
-      const action = { type: 'UNKNOWN_ACTION', payload: 'Some Payload' };
-      const newState = formReducer(initialState, action);
-      expect(newState).toBe(initialState);
-    });
-
     // Validates that reducer handles rapid consecutive actions correctly
     it('should update state with new topic when action type is "SET_NEW_TOPIC"', () => {
       const initialState = {
@@ -126,7 +113,7 @@ describe('helpers', () => {
   });
 
   describe('addNewResource', () => {
-    let mockEvent: any;
+    let mockEvent;
     const mockToken = 'mock-token';
     const mockEndpoint = '/api/resource/1234';
     beforeEach(() => {

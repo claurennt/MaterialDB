@@ -24,11 +24,17 @@ const preparePayload = (
 const validateRequiredFields = (state: NewLink | NewTopic) =>
   isTopic(state) ? Boolean(state.name) : Boolean(state.url);
 
-export const useFormHandler = (
-  accessToken: string,
-  session: Session,
-  individualTopicId?: string
-) => {
+type UseFormHandler = {
+  accessToken: string;
+  session: Session;
+  individualTopicId?: string;
+};
+
+export const useFormHandler = ({
+  accessToken,
+  session,
+  individualTopicId,
+}: UseFormHandler) => {
   const [state, dispatch] = useReducer(formReducer, initialState);
   const inputRef = useRef<HTMLInputElement>(null);
   const isValidInput = useRef<boolean | null>(true);

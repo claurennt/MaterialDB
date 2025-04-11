@@ -1,24 +1,17 @@
 import React, { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { SessionProvider } from 'next-auth/react';
-import { Session } from 'next-auth';
 
-const session: Session = {
-  expires: '3000-01-01T00:00:00.000Z',
-  user: {
-    id: '777',
-    name: 'Claudia',
-    email: 'claudia@gmail.com',
-    image: null,
-    topics: [],
-  },
-};
+import { createMockSession } from '../mocks';
+
+const session = createMockSession();
 
 const WithSession: React.FunctionComponent<{
   children: React.ReactNode;
-}> = ({ children }) => {
-  return <SessionProvider session={session}>{children}</SessionProvider>;
-};
+}> = ({ children }) => (
+  <SessionProvider session={session}>{children}</SessionProvider>
+);
+
 const renderWithSession = (
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'>

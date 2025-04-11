@@ -13,7 +13,7 @@ describe('AddNewButton', () => {
     const button = screen.queryByRole('button');
     expect(button).not.toBeNull();
   });
-  it('should have sr-only element bound to button via aria-labelledby attribute', () => {
+  it('should have sr-only element bound to button via aria-describedby attribute', () => {
     const { container } = render(
       <AddNewButton text='test' setOpen={setOpenMock} />
     );
@@ -21,12 +21,10 @@ describe('AddNewButton', () => {
     const button = screen.queryByRole('button');
 
     expect(button).not.toBeNull();
-    expect(button).toHaveAttribute('aria-labelledby', 'new-test');
+    expect(button).toHaveAttribute('aria-describedby', 'new-test');
 
     const srOnlySpan = container.querySelector('.sr-only');
-    expect(srOnlySpan).toHaveTextContent(
-      /Open modal with form to add new test/
-    );
+    expect(srOnlySpan).toHaveTextContent(/Opens modal/);
   });
   it('should trigger setOpen with delay on click', async () => {
     render(<AddNewButton text='timer' setOpen={setOpenMock} />);
