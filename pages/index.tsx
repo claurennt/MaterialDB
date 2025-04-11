@@ -14,10 +14,10 @@ import {
   NewLinkModal,
   MainTitle,
   Subtitle,
-  Topics,
   AuthLinks,
   Header,
   LiveRegion,
+  TopicCard,
 } from '@components';
 import { Topic, Admin } from '@models';
 import { authOptions } from './api/auth/[...nextauth]';
@@ -38,11 +38,11 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
     query: { userId },
   } = useRouter();
   const numberOfTopicLinks = currentTopics?.length;
-  const previousNumberOfLinks = useRef<number>(numberOfTopicLinks);
+  const previousNumberOfLinksRef = useRef<number>(numberOfTopicLinks);
 
   const liveRegionContent = useLiveRegion({
     numberOfTopicLinks,
-    previousNumberOfLinks,
+    previousNumberOfLinksRef,
     type: 'topic',
   });
 
@@ -57,7 +57,11 @@ const Home: React.FunctionComponent<HomeProps> = ({ currentTopics }) => {
             <Subtitle setOpen={setOpen} />
             {!session && !userId && <AuthLinks />}
             {currentTopics?.length > 0 ? (
-              <Topics topicsArray={currentTopics} />
+              <ul className='grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-6 gap-8'>
+                {currentTopics.map((topic: ITopic) => (
+                  <TopicCard key={topic._id} {...topic} />
+                ))}
+              </ul>
             ) : null}
 
             {open && session && (
