@@ -1,7 +1,6 @@
 import React from 'react';
-import { fireEvent, waitFor, screen, render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { useRouter } from 'next/router';
+import { screen } from '@testing-library/react';
+
 import { useSession } from 'next-auth/react';
 import { NewLinkModal } from '..';
 

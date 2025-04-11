@@ -1,4 +1,4 @@
-import React, { Fragment, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import { useSession } from 'next-auth/react';
 import { Dialog, Transition } from '@headlessui/react';
