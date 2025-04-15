@@ -3,7 +3,11 @@ import bcrypt from 'bcrypt';
 import { Admin } from '@models';
 import { NextAPIHandler, IAdmin } from '@types';
 import { DBClient, sendActivationEmail } from '@utils/server';
+import { Document, Types } from 'mongoose';
 
+interface IAdminDocument extends IAdmin, Document {
+  _id: Types.ObjectId;
+}
 export const handler: NextAPIHandler = async (req, res) => {
   const { method } = req;
 
@@ -36,10 +40,10 @@ export const handler: NextAPIHandler = async (req, res) => {
 
       await newAdmin.save();
 
-      const { _id } = newAdmin;
+      const _id = newAdmin._id as Types.ObjectId;
 
       //send confirmation email to user
-      await sendActivationEmail(name, email, _id);
+      await sendActivationEmail({ name, email, _id });
 
       return res.status(201).send('Admin created');
     }

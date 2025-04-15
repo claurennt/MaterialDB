@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import nodemailer from 'nodemailer';
 
 const { NODEMAILER_EMAIL, NODEMAILER_PASSWORD, PROJECT_URL } = process.env;
@@ -10,6 +11,8 @@ type Message = {
   subject: string;
   html: string;
 };
+
+type SendActivationEmail = { name: string; email: string; _id: Types.ObjectId };
 
 const BASEURL =
   environment === 'development' ? `http://localhost:${port}` : `${PROJECT_URL}`;
@@ -34,7 +37,7 @@ const sendEmail = async (message: Message) => {
   }
 };
 
-const sendActivationEmail = (name: string, email: string, _id: string) => {
+const sendActivationEmail = ({ name, email, _id }: SendActivationEmail) => {
   const activationLink = `${BASEURL}/api/auth/activate/${_id}`;
 
   const message = {
