@@ -39,8 +39,11 @@ export const NewLinkModal: React.FC<NewLinkModalProps> = ({
     user: { access_token },
   } = session;
 
-  const { state, dispatch, handleSubmitForm, isValidInput, inputRef } =
-    useFormHandler({ accessToken: access_token, session, individualTopicId });
+  const { state, dispatch, handleSubmitForm, inputRef } = useFormHandler({
+    accessToken: access_token,
+    session,
+    individualTopicId,
+  });
 
   const { isError, isLoading, newLink, newTopic, tagValue } = state;
 
@@ -112,7 +115,6 @@ export const NewLinkModal: React.FC<NewLinkModalProps> = ({
     closeModalAndNavigate();
   };
 
-  const isInputValid = isValidInput.current && !isError;
   const inputs = type === 'link' ? linkInputs : topicInputs;
   const dialogTitle =
     type === 'topic' ? 'Insert a new topic' : 'Add new article/resource';
@@ -190,7 +192,7 @@ export const NewLinkModal: React.FC<NewLinkModalProps> = ({
                               if (name === 'url' || name === 'name')
                                 inputRef.current = el;
                             }}
-                            isInputValid={isInputValid}
+                            isInputValid={!isError}
                             value={name === 'tags' ? tagValue : undefined}
                             name={name}
                             key={name}

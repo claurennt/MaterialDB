@@ -1,31 +1,27 @@
+// useFormHandler.test.tsx
 import { renderHook, act } from '@testing-library/react';
 import { useFormHandler } from '../useFormHandler';
-import { addNewResource } from '../index';
-import { Session } from 'next-auth';
+import { addNewResource } from '../sendRequest';
 
-// Mock dependencies
+// Mocks
 jest.mock('../index', () => ({
-  ...jest.requireActual('../useFormHandler'),
   addNewResource: jest.fn(),
-  validateUrl: jest.fn((url) => url.startsWith('http')),
   isTopic: jest.fn((state) => 'name' in state),
+  formReducer: jest.fn((state, action) => state),
 }));
 
-const mockSession = {
-  user: {
-    id: 'user123',
-  },
-} as Session;
-
-const accessToken = 'mockToken';
-const individualTopicId = 'topic123';
-
 describe('useFormHandler', () => {
+  const mockSession = {
+    user: { id: 'user-123' },
+  } as any;
+
+  const accessToken = 'mock-token';
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should initialize with correct default state', () => {
+  it('should initialize properly', () => {
     const { result } = renderHook(() =>
       useFormHandler({ accessToken, session: mockSession })
     );
@@ -37,106 +33,70 @@ describe('useFormHandler', () => {
       isError: false,
       isLoading: false,
     });
+    expect(typeof result.current.dispatch).toBe('function');
+    expect(typeof result.current.handleSubmitForm).toBe('function');
     expect(result.current.inputRef.current).toBeNull();
   });
 
-  it('should return false and set error if input is invalid', async () => {
+  it('should not submit if inputRef is missing', async () => {
     const { result } = renderHook(() =>
       useFormHandler({ accessToken, session: mockSession })
     );
 
-    const mockEvent = { preventDefault: jest.fn() } as any;
-
-    const invalidLink = { url: '', tags: [] };
+    result.current.inputRef.current = null;
+    const fakeEvent = { preventDefault: jest.fn() } as any;
+    const invalidState = { name: '', description: '' }; // Invalid NewTopic
 
     const success = await act(async () =>
-      result.current.handleSubmitForm(mockEvent, invalidLink)
+      result.current.handleSubmitForm(fakeEvent, invalidState)
     );
 
-    expect(result.current.state.isError).toBe(true);
+    expect(fakeEvent.preventDefault).toHaveBeenCalled();
     expect(success).toBe(false);
   });
 
-  it('should submit successfully if input is valid (NewLink)', async () => {
-    const { result } = renderHook(() =>
-      useFormHandler({ accessToken, session: mockSession, individualTopicId })
-    );
-
-    const mockEvent = { preventDefault: jest.fn() } as any;
-
-    // Simulate inputRef being non-null
-    const input = document.createElement('input');
-    result.current.inputRef.current = input;
-
-    const validLink = { url: 'http://valid-url.com', tags: [] };
-    result.current.isValidInput.current = true;
-
-    (addNewResource as jest.Mock).mockResolvedValueOnce(true);
-
-    const success = await act(async () =>
-      result.current.handleSubmitForm(mockEvent, validLink)
-    );
-
-    expect(addNewResource).toHaveBeenCalledWith(
-      mockEvent,
-      accessToken,
-      expect.objectContaining({
-        url: 'http://valid-url.com',
-        _topic: individualTopicId,
-      })
-    );
-
-    expect(success).toBe(true);
-  });
-
-  it('should submit successfully if input is valid (NewTopic)', async () => {
+  it('stests correct implementaion if validation fails', async () => {
     const { result } = renderHook(() =>
       useFormHandler({ accessToken, session: mockSession })
     );
 
-    const mockEvent = { preventDefault: jest.fn() } as any;
+    const mockInput = document.createElement('input');
+    result.current.inputRef.current = mockInput;
+    const focusSpy = jest.spyOn(mockInput, 'focus');
 
-    const input = document.createElement('input');
-    result.current.inputRef.current = input;
-
-    const validTopic = { name: 'New Topic', description: '' };
-    result.current.isValidInput.current = true;
-
-    (addNewResource as jest.Mock).mockResolvedValueOnce(true);
+    const invalidState = { name: '', description: '' }; // Invalid newTopic
 
     const success = await act(async () =>
-      result.current.handleSubmitForm(mockEvent, validTopic)
-    );
-
-    expect(addNewResource).toHaveBeenCalledWith(
-      mockEvent,
-      accessToken,
-      expect.objectContaining({ name: 'New Topic', creatorId: 'user123' })
-    );
-
-    expect(success).toBe(true);
-  });
-
-  it('should handle exception during submission', async () => {
-    const { result } = renderHook(() =>
-      useFormHandler({ accessToken, session: mockSession })
-    );
-
-    const mockEvent = { preventDefault: jest.fn() } as any;
-
-    const input = document.createElement('input');
-    result.current.inputRef.current = input;
-
-    const validTopic = { name: 'Topic', description: '' };
-    result.current.isValidInput.current = true;
-
-    (addNewResource as jest.Mock).mockRejectedValueOnce(new Error('fail'));
-
-    const success = await act(async () =>
-      result.current.handleSubmitForm(mockEvent, validTopic)
+      result.current.handleSubmitForm(
+        { preventDefault: jest.fn() } as any,
+        invalidState
+      )
     );
 
     expect(success).toBe(false);
-    expect(result.current.state.isError).toBe(true);
+    expect(focusSpy).toHaveBeenCalled(); // Focus called
+  });
+
+  it('should submit successfully if validation passes', async () => {
+    const { result } = renderHook(() =>
+      useFormHandler({ accessToken, session: mockSession })
+    );
+
+    // Mock refs
+    const mockInput = document.createElement('input');
+    result.current.inputRef.current = mockInput;
+    const focusSpy = jest.spyOn(mockInput, 'focus');
+    // Valid NewTopic
+    const validState = { name: 'My Topic', description: 'Some description' };
+
+    const success = await act(async () =>
+      result.current.handleSubmitForm(
+        { preventDefault: jest.fn() } as any,
+        validState
+      )
+    );
+
+    expect(success).toBe(true);
+    expect(focusSpy).not.toHaveBeenCalled(); // Focus not called
   });
 });

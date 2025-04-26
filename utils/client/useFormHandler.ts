@@ -1,6 +1,8 @@
+// useFormHandler.ts
 import { FormState, NewLink, NewTopic } from '@types';
 import { useReducer, useRef, useCallback } from 'react';
 import { addNewResource, formReducer, isTopic, validateUrl } from '.';
+
 import { Session } from 'next-auth';
 
 const initialState: FormState = {
@@ -11,18 +13,34 @@ const initialState: FormState = {
   isLoading: false,
 };
 
+const hasRequiredFields = (state: NewLink | NewTopic): boolean => {
+  if (isTopic(state)) {
+    return Boolean(state.name.trim());
+  }
+  return Boolean(state.url.trim());
+};
+
+const isValidResource = (state: NewLink | NewTopic): boolean => {
+  if (isTopic(state)) {
+    return true; // Topics don't need URL validation
+  }
+  return validateUrl(state.url);
+};
+
 const preparePayload = (
   state: NewLink | NewTopic,
   session?: Session,
   individualTopicId?: string
 ) => {
+  const userId = session?.user?.id;
+  if (!userId) {
+    throw new Error('Session user ID is missing');
+  }
+
   return isTopic(state)
-    ? { ...state, creatorId: session.user.id }
+    ? { ...state, creatorId: userId }
     : { ...state, _topic: individualTopicId };
 };
-
-const validateRequiredFields = (state: NewLink | NewTopic) =>
-  isTopic(state) ? Boolean(state.name) : Boolean(state.url);
 
 type UseFormHandler = {
   accessToken: string;
@@ -36,29 +54,20 @@ export const useFormHandler = ({
   individualTopicId,
 }: UseFormHandler) => {
   const [state, dispatch] = useReducer(formReducer, initialState);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const isValidInput = useRef<boolean | null>(true);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // Refactored validateInput with useCallback to memoize
-  const validateInput = useCallback(
-    (state: NewLink | NewTopic): boolean => {
-      if (!inputRef.current) return false;
+  const validateInput = (state: NewLink | NewTopic): boolean => {
+    if (!inputRef.current) return false;
 
-      const areRequiredFieldsValid = validateRequiredFields(state);
-      if (!areRequiredFieldsValid) return false;
-
-      const isUrlValid = isTopic(state) || validateUrl(state.url);
-
-      return Boolean(isValidInput.current) && isUrlValid;
-    },
-    [isValidInput]
-  );
+    return hasRequiredFields(state) && isValidResource(state);
+  };
 
   const handleSubmitForm = async (
     e: React.SyntheticEvent<HTMLButtonElement>,
     state: NewLink | NewTopic
   ): Promise<boolean> => {
     e.preventDefault();
+    if (!inputRef.current) return false;
 
     const payload = preparePayload(state, session, individualTopicId);
 
@@ -66,6 +75,7 @@ export const useFormHandler = ({
 
     if (!canSubmit) {
       dispatch({ type: 'SET_ERROR', payload: true });
+
       inputRef.current.focus();
       return false;
     }
@@ -80,5 +90,5 @@ export const useFormHandler = ({
     }
   };
 
-  return { isValidInput, inputRef, state, dispatch, handleSubmitForm };
+  return { inputRef, state, dispatch, handleSubmitForm };
 };
