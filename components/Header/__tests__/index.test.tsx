@@ -1,79 +1,57 @@
 import React from 'react';
 import { Header } from '..';
-import { useRouter } from 'next/router';
 import { screen } from '@testing-library/react';
-
 import '@testing-library/jest-dom';
 import {
-  renderWithoutSession,
   renderWithSession,
+  renderWithoutSession,
+  mockUseRouter,
+  mockUseSession,
+  mockUseSearchParams,
+  resetMocks,
+  TEST_USER_ID,
+  createMockSession,
 } from '../../../utils/tests:unit';
-import { useSession } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
 
-jest.mock('next/router', () => {
-  const originalModule = jest.requireActual('next-auth/react');
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 
-  return {
-    ...originalModule,
-    useRouter: jest.fn(),
-  };
-});
-jest.mock('next-auth/react', () => {
-  const originalModule = jest.requireActual('next-auth/react');
-
-  return {
-    ...originalModule,
-    useSession: jest.fn(),
-  };
-});
-
-jest.mock('next/navigation', () => {
-  const originalModule = jest.requireActual('next/navigation');
-
-  return {
-    ...originalModule,
-    useSearchParams: jest.fn(),
-  };
-});
+jest.mock('next/navigation', () => ({
+  useSearchParams: jest.fn(),
+}));
+jest.mock('next-auth/react', () => ({
+  useSession: jest.fn(),
+  SessionProvider: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+}));
 describe('Header', () => {
-  const mockUseRouter = useRouter as jest.Mock;
-  const mockUseSession = useSession as jest.Mock;
-  const mockUseSearchParams = useSearchParams as jest.Mock;
   beforeEach(() => {
-    jest.resetAllMocks();
+    resetMocks();
   });
-  it('should render LogoutButton when session exists and pathname does not include `auth`', () => {
-    mockUseRouter.mockImplementation(() => ({
-      pathname: '/nodeJS',
-      query: { userId: undefined },
-    }));
 
-    mockUseSession.mockImplementation(() => ({ data: { user: 'John Doe' } }));
+  it('should render LogoutButton when session exists and pathname does not include `auth`', () => {
+    mockUseRouter({ pathname: '/nodeJS', query: { userId: TEST_USER_ID } });
+
+    const mockedSession = createMockSession();
+    mockUseSession(mockedSession);
 
     renderWithSession(<Header />);
     const logoutButton = screen.queryByRole('button', { name: 'Logout' });
     expect(logoutButton).toBeInTheDocument();
   });
-  it('shows Home button if pathname is not "/" and userId param is in url, no session', () => {
-    mockUseSession.mockReturnValue(() => undefined);
 
-    mockUseRouter.mockReturnValue({
-      pathname: '/nodeJS',
-      query: { userId: '123' },
-    });
-    mockUseSearchParams.mockReturnValue({
-      get: (key: string) => {
-        if (key === 'userId') return '123';
-        return null;
-      },
-    });
+  it('shows Home button if pathname is not "/" and userId param is in url, no session', () => {
+    mockUseRouter({ pathname: '/nodeJS', query: { userId: TEST_USER_ID } });
+    mockUseSearchParams({ userId: TEST_USER_ID });
+    mockUseSession(null);
 
     renderWithoutSession(<Header />);
 
     const homeLink = screen.queryByRole('link', { name: 'Home' });
     expect(homeLink).toBeInTheDocument();
-    expect(homeLink).toHaveAttribute('href', '/?userId=123');
+    expect(homeLink).toHaveAttribute('href', `/?userId=${TEST_USER_ID}`);
 
     const authLinks = screen
       .queryAllByRole('link')
@@ -85,11 +63,9 @@ describe('Header', () => {
   });
 
   it('does not show Auth links/buttons when path includes "auth"', () => {
-    mockUseRouter.mockReturnValue({
-      pathname: '/auth',
-      query: {},
-    });
-    mockUseSession.mockReturnValue(() => undefined);
+    mockUseRouter({ pathname: '/auth', query: { userId: TEST_USER_ID } });
+    mockUseSession(null);
+
     renderWithoutSession(<Header />);
 
     const logoutButton = screen.queryByRole('button', { name: 'Logout' });

@@ -2,7 +2,7 @@
   "name": "MaterialDB",
   "private": true,
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=19.0.0",
     "npm": ">=8.1.0",
     "yarn": "please-use-npm"
   },
@@ -18,7 +18,7 @@
     "test:playwright": "playwright test"
   },
   "dependencies": {
-    "@auth/core": "^0.32.0",
+    "@auth/core": "0.34.2",
     "@auth/mongodb-adapter": "^2.0.7",
     "@headlessui/react": "^1.5.0",
     "@next/eslint-plugin-next": "^14.0.4",
@@ -52,13 +52,13 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.9.1",
-    "@playwright/test": "^1.42.0",
+    "@playwright/test": "^1.52.0",
     "@shelf/jest-mongodb": "^4.3.2",
     "@tanstack/react-query-devtools": "^5.8.9",
     "@testing-library/dom": "^9.3.4",
     "@testing-library/jest-dom": "^6.2.1",
     "@testing-library/react": "^14.1.2",
-    "@testing-library/user-event": "^14.5.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.0",
     "@types/react": "^18.2.39",
@@ -78,6 +78,6 @@
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.2"
+    "typescript": "^5.8.3"
   }
 }

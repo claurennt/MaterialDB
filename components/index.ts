@@ -10,7 +10,6 @@ export * from './Subtitle';
 export * from './Tag';
 export * from './TopicCard';
 export * from './TopicLink';
-export * from './Topics';
 export * from './Header';
 export * from './LiveRegion';
 export * from './DeletionPopup';

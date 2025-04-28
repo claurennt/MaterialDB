@@ -59,3 +59,32 @@ mark {
 ::-webkit-search-cancel-button {
   -webkit-appearance: none;
 }
+
+.gradient-border-button {
+  position: relative;
+  display: inline-block;
+  padding: 10px 20px; /* Adjust padding for button size */
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px; /* Rounded corners */
+  z-index: 1;
+}
+
+.gradient-border-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  padding: 2px; /* Border thickness */
+  background: linear-gradient(to left, rgb(181, 255, 255), rgb(80, 243, 243));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+}

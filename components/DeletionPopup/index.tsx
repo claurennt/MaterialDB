@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { Dialog, Transition } from '@headlessui/react';
 
@@ -14,21 +14,17 @@ export const DeletionPopup = ({
   deleteLink,
 }: DeletionPopupProps) => {
   return (
-    <Transition.Root show={open} as={Fragment}>
-      <div
-        aria-modal='true'
-        role='dialog'
-        aria-label='delete link'
-        aria-describedby='dialog_desc'
-      >
+    <Transition.Root show={open} as={'div'}>
+      <div aria-modal='true' role='dialog' aria-labelledby='dialog_desc'>
         <Dialog
           as='div'
           className='fixed z-10 inset-0 overflow-y-auto'
           onClose={setOpen}
+          open={open}
         >
           <div className='flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
             <Transition.Child
-              as={Fragment}
+              as={'div'}
               enter='ease-out duration-300'
               enterFrom='opacity-0'
               enterTo='opacity-100'
@@ -46,7 +42,7 @@ export const DeletionPopup = ({
               &#8203;
             </span>
             <Transition.Child
-              as={Fragment}
+              as={'div'}
               enter='ease-out duration-300'
               enterFrom='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
               enterTo='opacity-100 translate-y-0 sm:scale-100'

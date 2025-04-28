@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { testWithSession } from './fixtures';
-import { TESTUSER_ID } from './helpers';
+import { testWithSession } from '../utils/tests:e2e/fixtures';
+import { TESTUSER_ID } from '../utils/tests:e2e/helpers';
 
 const TOPICS_PATH = './topics/65e1deb0805c280a250f143f';
 test.describe('Individual topic page without Session', () => {

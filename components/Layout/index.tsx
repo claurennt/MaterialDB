@@ -1,11 +1,15 @@
 import Head from 'next/head';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, usePathname } from 'next/navigation';
 
 import React from 'react';
 
 export const Layout = ({ children }) => {
-  const name = useSearchParams().get('name');
-  const title = `${name ? name + ' | ' : ''}MaterialDB`;
+  const searchParams = useSearchParams();
+  const name = searchParams.get('name');
+  const path = usePathname().split('/').join('|');
+
+  const title = `${name || path || ''} MaterialDB`;
+
   return (
     <>
       <Head>

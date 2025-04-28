@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import React, { useState, useRef } from 'react';
 import { DBClient } from '@utils/server';
 import { useLiveRegion } from '@utils/client';
-import { ITopic } from '@types';
+import { ILink, ITopic } from '@types';
 import { Topic } from '@models';
 import '@models';
 import {
@@ -21,6 +21,17 @@ type TopicPageProps = {
   individualTopic: ITopic;
 };
 
+const doesLinkMatchTags = ({
+  filteringTags,
+  link,
+}: {
+  filteringTags: string[];
+  link: ILink;
+}) => {
+  if (!filteringTags.length) return true;
+  return link.tags.some((tag) => filteringTags.includes(tag));
+};
+
 const TopicPage: React.FunctionComponent<TopicPageProps> = ({
   individualTopic,
 }) => {
@@ -29,14 +40,19 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
   const [search, setSearch] = useState<undefined | string>();
   const [filteringTags, setFilteringTags] = useState<string[]>([]);
   const [showDeletionPopup, setShowDeletionPopup] = useState(false);
-  const announceLiveRegion = useRef<boolean>(false);
-  const previousNumberOfLinks = useRef<number>(numberOfTopicLinks);
+  const announceLiveRegionRef = useRef<boolean>(false);
+  const previousNumberOfLinksRef = useRef<number>(numberOfTopicLinks);
+
+  const numberOfFilteredLinks = individualTopic.links.filter((link) =>
+    doesLinkMatchTags({ filteringTags, link })
+  ).length;
 
   const liveRegionContent = useLiveRegion({
-    announceLiveRegion,
+    announceLiveRegionRef,
     filteringTags,
+    numberOfFilteredLinks,
     numberOfTopicLinks,
-    previousNumberOfLinks,
+    previousNumberOfLinksRef,
     open,
     type: 'link',
   });
@@ -59,8 +75,6 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
 
     // update query state
     setSearch(searchedValue);
-
-    target.search.value = '';
   };
 
   const filterResultsByActiveTag = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -69,66 +83,69 @@ const TopicPage: React.FunctionComponent<TopicPageProps> = ({
     const target = e.currentTarget;
 
     setFilteringTags((prev) => {
-      const tagText = target.innerText.toLowerCase();
+      const tagText = target.innerText.toLowerCase().replace(/\s*✓/g, '');
       const newTags = prev.filter((tag) => tag.toLowerCase() !== tagText);
       return prev.includes(tagText) ? newTags : [...newTags, tagText];
     });
 
-    announceLiveRegion.current = true;
+    announceLiveRegionRef.current = true;
   };
 
+  const getLinks = () =>
+    individualTopic.links
+      ?.filter((link) => {
+        const matchesTags = doesLinkMatchTags({ filteringTags, link });
+        const matchesSearch = search
+          ? link.title.toLowerCase().includes(search.toLowerCase())
+          : true;
+        return matchesTags && matchesSearch;
+      })
+      .map((link, i) => (
+        <TopicLink
+          filteringTags={filteringTags}
+          search={search}
+          key={link._id ?? i}
+          link={link}
+          onClick={filterResultsByActiveTag}
+          showDeletionPopup={showDeletionPopup}
+          setShowDeletionPopup={setShowDeletionPopup}
+        />
+      ));
   return (
     <>
       <Header />
+      <main>
+        <LiveRegion liveRegionContent={liveRegionContent} />
 
-      <LiveRegion liveRegionContent={liveRegionContent} />
-
-      {open && _id && (
-        <NewLinkModal
-          individualTopicId={individualTopic._id}
-          setOpen={setOpen}
-          open={open}
-          type='link'
-        />
-      )}
-      <div className='flex flex-col items-center text-center pt-10 gap-4 pb-10 mt-10'>
-        <h1 className='leading-tight text-5xl mt-0 mb-5 text-primary-100 text-center pt-3'>
-          {individualTopic?.name ?? name}
-        </h1>
-        <div className='flex gap-10 flex-wrap justify-center mx-5'>
-          <SearchBar
-            handleSubmit={handleSubmit}
-            search={search}
-            setSearch={setSearch}
+        {open && _id && (
+          <NewLinkModal
+            individualTopicId={individualTopic._id}
+            setOpen={setOpen}
+            open={open}
+            type='link'
           />
-
-          {session && (
-            <>
-              <span className='self-center'>OR </span>{' '}
-              <AddNewButton text='link' setOpen={setOpen} />
-            </>
-          )}
-        </div>
-      </div>
-      <ul className='flex flex-col mt-3 gap-5'>
-        {individualTopic.links
-          ?.filter((link) =>
-            filteringTags.length
-              ? link.tags.some((tag) => filteringTags.includes(tag))
-              : link
-          )
-          .map((link, i) => (
-            <TopicLink
-              filteringTags={filteringTags}
+        )}
+        <div className='flex flex-col items-center text-center pt-10 gap-4 pb-10 mt-10'>
+          <h1 className='leading-tight text-5xl mt-0 mb-5 text-primary-100 text-center pt-3'>
+            {individualTopic?.name ?? name}
+          </h1>
+          <div className='flex gap-7 justify-center items-center flex-col md:flex-row'>
+            <SearchBar
+              handleSubmit={handleSubmit}
               search={search}
-              key={link._id ?? i}
-              link={link}
-              onClick={filterResultsByActiveTag}
-              showDeletionPopup={showDeletionPopup}
-              setShowDeletionPopup={setShowDeletionPopup}
+              setSearch={setSearch}
             />
-          ))}
-      </ul>
+
+            {session && (
+              <>
+                <span className='self-center md:self-end block'>OR </span>{' '}
+                <AddNewButton text='link' setOpen={setOpen} />
+              </>
+            )}
+          </div>
+        </div>
+        <ul className='flex flex-col mt-3 gap-5 mx-2'>{getLinks()}</ul>
+      </main>
     </>
   );
 };

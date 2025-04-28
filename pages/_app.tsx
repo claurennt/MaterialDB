@@ -18,13 +18,13 @@ const App: React.FunctionComponent<IAppProps> = ({
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <Layout>
-      <SessionProvider session={session} basePath='/api/auth'>
+    <SessionProvider session={session} basePath='/api/auth'>
+      <Layout>
         <QueryClientProvider client={queryClient}>
           <Component {...pageProps} />
-        </QueryClientProvider>
-      </SessionProvider>
-    </Layout>
+        </QueryClientProvider>{' '}
+      </Layout>
+    </SessionProvider>
   );
 };
 

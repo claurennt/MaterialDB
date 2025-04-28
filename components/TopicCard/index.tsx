@@ -44,7 +44,7 @@ export const TopicCard: React.FunctionComponent<TopicCardProps> = ({
         }}
         key={_id}
       >
-        <Image src={src} height='50' width='50' aria-hidden='true' alt='' />
+        <Image src={src} height='50' width='50' alt='' />
         <h3>{name}</h3>
         <p>{description}</p>
       </Link>

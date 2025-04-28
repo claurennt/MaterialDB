@@ -39,48 +39,51 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
 
   const deleteLink = async () => {
     await deleteResource(userToken, `/api/links/${_id}`);
-
     router.replace(router.asPath);
   };
 
   return (
     <>
       <li>
-        <DeletionPopup
-          open={showDeletionPopup}
-          setOpen={setShowDeletionPopup}
-          deleteLink={deleteLink}
-        />
-        {session && (
-          <>
+        <div className='flex'>
+          <DeletionPopup
+            open={showDeletionPopup}
+            setOpen={setShowDeletionPopup}
+            deleteLink={deleteLink}
+          />
+          {session && (
+            <>
+              <button
+                className='text-4xl mx-3 self-center leading-3 focus:outline-none text-primary-neon focus:ring-2 focus:ring-secondary-100'
+                onClick={() => setShowDeletionPopup(true)}
+                aria-labelledby={`remove-link-${_id}`}
+              >
+                -
+              </button>
+              <span className='sr-only' id={`remove-link-${_id}`}>
+                Remove current link from list
+              </span>
+            </>
+          )}
+          <div className='flex'>
+            <a
+              href={url}
+              target='_blank'
+              className='inline-block text-lg md:text-2xl underline focus:outline-secondary-100 focus:outline-2 focus:outline-offset-4 text-pr bg-gradient-to-l from-[rgb(181,255,255)] to-[rgb(80,243,243)] bg-clip-text text-transparent'
+              dangerouslySetInnerHTML={
+                search ? highlightSearchTerm(search, title) : { __html: title }
+              }
+            />
             <button
-              className='text-4xl mx-3 self-start focus:outline-none text-primary-neon focus:ring-2 focus:ring-secondary-100'
-              onClick={() => setShowDeletionPopup(true)}
-              aria-labelledby={`remove-link-${_id}`}
+              onClick={() => copyToClipboard(url)}
+              className='text-secondary-200 text-lg mx-3 hover:scale-150 focus:outline-secondary-100 focus:outline-2 focus:outline-offset-4'
+              aria-label='copy link to clipboard'
             >
-              -
+              <Image width='24' height='24' src={copy} alt='' />
             </button>
-            <span className='sr-only' id={`remove-link-${_id}`}>
-              Remove current link from list
-            </span>
-          </>
-        )}
-        <a
-          href={url}
-          target='_blank'
-          className='text-lg md:text-2xl underline focus:outline-secondary-100 focus:outline-2 focus:outline-offset-4 text-pr bg-gradient-to-l from-[rgb(181,255,255)] to-[rgb(80,243,243)] bg-clip-text text-transparent'
-          dangerouslySetInnerHTML={
-            search ? highlightSearchTerm(search, title) : { __html: title }
-          }
-        />
-        <button
-          onClick={() => copyToClipboard(url)}
-          className='hidden sm:inline text-secondary-200 text-lg mx-3 hover:scale-150 focus:outline-secondary-100 focus:outline-2 focus:outline-offset-4'
-          aria-label='copy link to clipboard'
-        >
-          <Image width='25' height='25' src={copy} alt='' />
-        </button>
-        <ul className='ml-10 mt-1'>
+          </div>
+        </div>
+        <div className='ml-9 flex'>
           {tags?.map((tag, index) => (
             <Tag
               filteringTags={filteringTags}
@@ -89,10 +92,9 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
               tag={tag}
               totalTags={tags.length}
               index={index}
-              id={tag}
             />
           ))}
-        </ul>
+        </div>
       </li>
     </>
   );
