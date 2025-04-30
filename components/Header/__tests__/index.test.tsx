@@ -26,14 +26,14 @@ jest.mock('next-auth/react', () => ({
     <>{children}</>
   ),
 }));
+
 describe('Header', () => {
   beforeEach(() => {
     resetMocks();
+    mockUseRouter({ pathname: '/nodeJS', query: { userId: TEST_USER_ID } });
   });
 
   it('should render LogoutButton when session exists and pathname does not include `auth`', () => {
-    mockUseRouter({ pathname: '/nodeJS', query: { userId: TEST_USER_ID } });
-
     const mockedSession = createMockSession();
     mockUseSession(mockedSession);
 
@@ -43,7 +43,6 @@ describe('Header', () => {
   });
 
   it('shows Home button if pathname is not "/" and userId param is in url, no session', () => {
-    mockUseRouter({ pathname: '/nodeJS', query: { userId: TEST_USER_ID } });
     mockUseSearchParams({ userId: TEST_USER_ID });
     mockUseSession(null);
 
@@ -63,7 +62,7 @@ describe('Header', () => {
   });
 
   it('does not show Auth links/buttons when path includes "auth"', () => {
-    mockUseRouter({ pathname: '/auth', query: { userId: TEST_USER_ID } });
+    mockUseSearchParams(null);
     mockUseSession(null);
 
     renderWithoutSession(<Header />);
