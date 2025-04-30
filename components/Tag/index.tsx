@@ -40,7 +40,7 @@ export const Tag: React.FunctionComponent<TagProps> = (props) => {
     const filterTagStyles = `border ${borderStyle} ${borderColor} px-2 mx-1 mt-1 text-md text-white`;
 
     return (
-      <>
+      <li>
         <button
           onClick={onClick}
           className={filterTagStyles}
@@ -54,14 +54,14 @@ export const Tag: React.FunctionComponent<TagProps> = (props) => {
             </span>
           ) : null}
         </button>
-      </>
+      </li>
     );
   } else {
     // Handling the form tag variant
     const { tag, onClick, id } = props;
 
     return (
-      <>
+      <li>
         <button
           aria-labelledby={id}
           onClick={() => onClick(tag)}
@@ -78,7 +78,7 @@ export const Tag: React.FunctionComponent<TagProps> = (props) => {
         <span className='sr-only' id={id}>
           Remove tag {tag} from list
         </span>
-      </>
+      </li>
     );
   }
 };

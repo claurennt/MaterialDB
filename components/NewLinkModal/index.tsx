@@ -1,22 +1,28 @@
-import React, { useRef } from 'react';
-
+import React from 'react';
 import { useSession } from 'next-auth/react';
-import { Dialog, Transition } from '@headlessui/react';
+
 import { useRouter } from 'next/router';
-import ClipLoader from 'react-spinners/ClipLoader';
-import { ToastContainer } from 'react-toastify';
+
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ModalInput } from '../ModalInput';
 import {
-  topicInputs,
   linkInputs,
+  topicInputs,
   useFormHandler,
   useLiveRegion,
 } from '@utils/client';
-import { LiveRegion, Tag } from '@components';
+import { LiveRegion } from '@components';
 import { SubmitFormButton } from 'components/SubmitFormButton';
 import { NewLinkModalType } from '@types';
+
+import {
+  ModalBody,
+  ModalContainer,
+  ModalFooter,
+  ModalHeader,
+} from './components/ModalLayout';
+import { TagsList } from './components/TagList';
 
 export type NewLinkModalProps = {
   individualTopicId?: string;
@@ -25,217 +31,145 @@ export type NewLinkModalProps = {
   open: boolean;
 };
 
-export const NewLinkModal: React.FC<NewLinkModalProps> = ({
+export const NewLinkModal: React.FunctionComponent<NewLinkModalProps> = ({
   individualTopicId,
   setOpen,
   type,
   open,
 }) => {
-  const toastId = useRef(null);
-
   const router = useRouter();
   const { data: session } = useSession();
-  const {
-    user: { access_token },
-  } = session;
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const { state, dispatch, handleSubmitForm, inputRef } = useFormHandler({
+  const access_token = session?.user?.access_token;
+
+  const {
+    state: formState,
+    dispatch,
+    handleSubmitForm,
+  } = useFormHandler({
     accessToken: access_token,
     session,
     individualTopicId,
   });
 
-  const { isError, isLoading, newLink, newTopic, tagValue } = state;
+  const { isError, isLoading, newLink, newTopic, tagValue } = formState;
 
-  const liveRegionContent = useLiveRegion({ open, type, isError, isLoading });
+  const liveRegionContent = useLiveRegion({
+    open,
+    type,
+    isError,
+    isLoading,
+  });
 
-  const closeModalAndNavigate = () => {
+  const closeModalAndNavigate = React.useCallback(() => {
     setTimeout(() => {
       setOpen(false);
       router.replace(router.asPath);
     }, 3000);
-  };
+  }, [router, setOpen]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    name: string
-  ) => {
-    if (isError) dispatch({ type: 'SET_ERROR', payload: false });
-    const value = e.currentTarget.value;
+  const handleChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, name: string) => {
+      if (isError) dispatch({ type: 'SET_ERROR', payload: false });
 
-    if (type === 'link') {
-      if (name === 'tags') dispatch({ type: 'SET_TAG_VALUE', payload: value });
-      if (name === 'url')
+      const value = e.currentTarget.value;
+
+      if (type === 'link') {
+        if (name === 'tags') {
+          dispatch({ type: 'SET_TAG_VALUE', payload: value });
+        }
+        if (name === 'url') {
+          dispatch({
+            type: 'SET_NEW_LINK',
+            payload: { ...newLink, url: value },
+          });
+        }
+      } else {
+        dispatch({
+          type: 'SET_NEW_TOPIC',
+          payload: { ...newTopic, [name]: value },
+        });
+      }
+    },
+    [dispatch, isError, newLink, newTopic, type]
+  );
+
+  const handleKeyDown = React.useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (type === 'link' && e.key === 'Enter') {
         dispatch({
           type: 'SET_NEW_LINK',
-          payload: { ...newLink, url: value },
+          payload: {
+            ...newLink,
+            tags: [...newLink.tags, tagValue],
+          },
         });
-    } else {
-      dispatch({
-        type: 'SET_NEW_TOPIC',
-        payload: { ...newTopic, [name]: value },
-      });
-    }
-  };
+        dispatch({ type: 'SET_TAG_VALUE', payload: '' });
+      }
+    },
+    [dispatch, newLink, tagValue, type]
+  );
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (type === 'link' && e.key === 'Enter') {
+  const handleRemoveTag = React.useCallback(
+    (currentTag: string) => {
       dispatch({
         type: 'SET_NEW_LINK',
         payload: {
           ...newLink,
-          tags: [...newLink.tags, tagValue],
+          tags: newLink.tags.filter((tag) => tag !== currentTag),
         },
       });
-      dispatch({ type: 'SET_TAG_VALUE', payload: '' });
-    }
-    dispatch({ type: 'SET_TAG_VALUE', payload: '' });
-  };
-
-  const handleRemoveTag = (currentTag: string) => {
-    dispatch({
-      type: 'SET_NEW_LINK',
-      payload: {
-        ...newLink,
-        tags: newLink.tags.filter((tag) => tag !== currentTag),
-      },
-    });
-  };
+    },
+    [dispatch, newLink]
+  );
 
   const onFormSubmit = async (e: React.SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const state = type === 'link' ? newLink : newTopic;
+    const currentState = type === 'link' ? newLink : newTopic;
 
-    // Validate and submit the form
-    const isSubmissionSuccessful = await handleSubmitForm(e, state);
+    const isSubmissionSuccessful = await handleSubmitForm(e, currentState);
+    if (!isSubmissionSuccessful) return;
 
-    if (!isSubmissionSuccessful) {
-      return;
-    }
     closeModalAndNavigate();
   };
 
   const inputs = type === 'link' ? linkInputs : topicInputs;
-  const dialogTitle =
-    type === 'topic' ? 'Insert a new topic' : 'Add new article/resource';
 
   return (
-    <Transition.Root show={open} as={'div'}>
-      <div
-        aria-modal='true'
-        role='dialog'
-        aria-labelledby={`${type}-dialog-title`}
-      >
-        <Dialog
-          as='div'
-          className='fixed z-10 inset-0 overflow-y-auto'
-          onClose={setOpen}
-          open={open}
-        >
-          <div className='flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
-            <ToastContainer
-              role='alert'
-              ref={toastId}
-              position='top-center'
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
+    <ModalContainer open={open} setOpen={setOpen} type={type}>
+      <ModalHeader type={type} />
+      <ModalBody>
+        <div className='flex flex-col gap-4'>
+          {inputs.map(({ name }) => (
+            <ModalInput
+              ref={(el) => {
+                if (!el) return;
+                if (name === 'url' || name === 'name') {
+                  inputRef.current = el;
+                }
+              }}
+              isInputValid={!isError}
+              value={name === 'tags' ? tagValue : undefined}
+              name={name}
+              key={name}
+              handleChange={handleChange}
+              handleKeyDown={handleKeyDown}
             />
-            <Transition.Child
-              as={'div'}
-              enter='ease-out duration-300'
-              enterFrom='opacity-0'
-              enterTo='opacity-100'
-              leave='ease-in duration-200'
-              leaveFrom='opacity-100'
-              leaveTo='opacity-0'
-            >
-              <Dialog.Overlay className='fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity' />
-            </Transition.Child>
-            {/* This element is to trick the browser into centering the modal contents. */}
-            <span
-              className='hidden sm:inline-block sm:align-middle sm:h-screen'
-              aria-hidden='true'
-            >
-              &#8203;
-            </span>
-            <Transition.Child
-              as={'div'}
-              enter='ease-out duration-300'
-              enterFrom='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
-              enterTo='opacity-100 translate-y-0 sm:scale-100'
-              leave='ease-in duration-200'
-              leaveFrom='opacity-100 translate-y-0 sm:scale-100'
-              leaveTo='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
-            >
-              <div className='relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full'>
-                <div className='bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4'>
-                  <div className='flex'>
-                    <div className='flex flex-col text-center sm:text-left w-full mt-2 ml-4'>
-                      <div className='flex mb-4'>
-                        <div className='mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-secondary-200 sm:mx-0 sm:h-10 sm:w-10'></div>
-                        <Dialog.Title
-                          id={`${type}-dialog-title`}
-                          as='h1'
-                          className='text-lg leading-6 font-medium text-gray-900 ms-4 self-center'
-                        >
-                          {dialogTitle}
-                        </Dialog.Title>
-                      </div>
-                      <div className='flex flex-col gap-4'>
-                        {inputs.map(({ name }) => (
-                          <ModalInput
-                            ref={(el) => {
-                              if (!el) return;
+          ))}
+        </div>
 
-                              if (name === 'url' || name === 'name')
-                                inputRef.current = el;
-                            }}
-                            isInputValid={!isError}
-                            value={name === 'tags' ? tagValue : undefined}
-                            name={name}
-                            key={name}
-                            handleChange={handleChange}
-                            handleKeyDown={handleKeyDown}
-                          />
-                        ))}
-                      </div>
-                      <ul className='flex flex-wrap list-none'>
-                        {type === 'link' &&
-                          newLink.tags?.map((tag: string, i: number) => (
-                            <Tag
-                              tag={tag}
-                              key={tag + i}
-                              onClick={handleRemoveTag}
-                              id={`remove-tag-${tag}`}
-                              index={i}
-                            />
-                          ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className='bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse flex justify-between'>
-                  {session && (
-                    <>
-                      <SubmitFormButton
-                        onFormSubmit={onFormSubmit}
-                        type={type}
-                      />
-                    </>
-                  )}
+        {type === 'link' && (
+          <TagsList tags={newLink.tags} onRemoveTag={handleRemoveTag} />
+        )}
+      </ModalBody>
 
-                  <div className='sm:flex sm:flex-row-reverse flex justify-center'>
-                    <ClipLoader loading={isLoading} />
-                    <LiveRegion liveRegionContent={liveRegionContent} />
-                  </div>
-                </div>
-              </div>
-            </Transition.Child>
-          </div>
-        </Dialog>
-      </div>
-    </Transition.Root>
+      <ModalFooter isLoading={isLoading}>
+        {session && (
+          <SubmitFormButton onFormSubmit={onFormSubmit} type={type} />
+        )}
+        <LiveRegion liveRegionContent={liveRegionContent} />
+      </ModalFooter>
+    </ModalContainer>
   );
 };
