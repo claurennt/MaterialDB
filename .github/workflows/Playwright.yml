@@ -40,7 +40,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright Tests
-        run: npm run test:playwright --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        run: npm run test:playwright -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
 
       - name: Upload HTML Report
         if: ${{ !cancelled() }}
