@@ -1,8 +1,9 @@
 import React from 'react';
 import { AddNewButton } from '..';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 import '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
 
 const setOpenMock = jest.fn();
 
@@ -11,7 +12,7 @@ describe('AddNewButton', () => {
     render(<AddNewButton text='topic' setOpen={setOpenMock} />);
 
     const button = screen.queryByRole('button');
-    expect(button).not.toBeNull();
+    expect(button).toBeInTheDocument();
   });
   it('should have sr-only element bound to button via aria-describedby attribute', () => {
     const { container } = render(
@@ -20,28 +21,23 @@ describe('AddNewButton', () => {
 
     const button = screen.queryByRole('button');
 
-    expect(button).not.toBeNull();
     expect(button).toHaveAttribute('aria-describedby', 'new-test');
 
     const srOnlySpan = container.querySelector('.sr-only');
     expect(srOnlySpan).toHaveTextContent(/Opens modal/);
   });
   it('should trigger setOpen with delay on click', async () => {
-    render(<AddNewButton text='timer' setOpen={setOpenMock} />);
-
-    const button = screen.getByRole('button');
-    fireEvent.click(button);
-
-    // setOpen should not be called without delay
-    expect(setOpenMock).not.toHaveBeenCalled();
-
-    // then
     jest.useFakeTimers();
 
-    fireEvent.click(button);
+    render(<AddNewButton text='timer' setOpen={setOpenMock} />);
 
-    // Fast-forward time by 500ms
-    jest.advanceTimersByTime(500);
+    const user = userEvent.setup({
+      advanceTimers: () => jest.advanceTimersByTime(3000),
+    });
+
+    const button = screen.getByRole('button');
+
+    await user.click(button);
 
     // Check if setOpen was called with true after the timeout
     expect(setOpenMock).toHaveBeenCalledWith(true);

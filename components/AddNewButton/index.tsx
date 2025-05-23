@@ -9,7 +9,7 @@ export const AddNewButton: React.FunctionComponent<AddNewButtonProps> = ({
   text,
   setOpen,
 }) => {
-  const srOnlyText = 'Opens modal';
+  const buttonText = `Add new ${text}`;
   return (
     <>
       <button
@@ -19,10 +19,10 @@ export const AddNewButton: React.FunctionComponent<AddNewButtonProps> = ({
         }`}
         onClick={() => setTimeout(() => setOpen(true), 500)}
       >
-        Add new {text}
+        {buttonText}
       </button>
       <span className='sr-only' id={`new-${text}`}>
-        {srOnlyText}
+        Opens modal
       </span>
     </>
   );

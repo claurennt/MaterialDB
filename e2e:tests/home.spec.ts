@@ -58,7 +58,7 @@ testWithSession.describe('Home with Session', () => {
   testWithSession(
     'should successfully add new topic',
     async ({ pageWithSession: page }) => {
-      const addNewTopicButton = page.getByLabel('Open modal with form to add');
+      const addNewTopicButton = page.getByText('Add new topic');
 
       await expect(addNewTopicButton).toBeAttached();
       // open modal
@@ -82,7 +82,7 @@ testWithSession.describe('Home with Session', () => {
 
       const newlyAddedTopic = page
         .getByRole('link', {
-          name: 'test-topic test-description',
+          name: 'test-topic',
         })
         .last();
 

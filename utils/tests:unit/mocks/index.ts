@@ -15,27 +15,21 @@ export const mockUseRouter = (overrides: Partial<NextRouter> = {}) => {
   });
 };
 
-export const mockUseSession = (sessionData: Session | null = null) => {
+export const mockUseSession = (sessionData: Session | null) => {
   (useSession as jest.Mock).mockImplementation(() => ({
     data: sessionData,
     status: sessionData ? 'authenticated' : 'unauthenticated',
   }));
 };
 
-export const mockUseSearchParams = (params: Record<string, string> = {}) => {
+export const mockUseSearchParams = (params: Record<string, string> | null) => {
   (useSearchParams as jest.Mock).mockImplementation(() => ({
-    get: (key: string) => params[key] || null,
+    get: (key: string) => params?.[key] || null,
   }));
 };
 
 export const resetMocks = () => {
   jest.resetAllMocks();
-};
-
-export const mockDefaultSetup = () => {
-  mockUseRouter();
-  mockUseSession();
-  mockUseSearchParams();
 };
 
 export const TEST_USER_ID = '777';

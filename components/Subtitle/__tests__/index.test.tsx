@@ -9,37 +9,44 @@ import {
 } from '../../../utils/tests:unit/helpers';
 
 import { Subtitle } from '..';
+import { mockUseRouter, TEST_USER_ID } from '../../../utils/tests:unit';
 
 const setOpenMock = jest.fn();
-
-beforeEach(() => {
-  setOpenMock.mockReset();
-});
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 
 describe('Subtitle', () => {
+  beforeEach(() => {
+    setOpenMock.mockReset();
+  });
   it('should render correct text with session', () => {
+    mockUseRouter({ query: { userId: TEST_USER_ID } });
     //session is defined
     renderWithSession(<Subtitle setOpen={setOpenMock} />);
 
     const subtitle = screen.queryByText(/Start adding new/);
 
-    expect(subtitle).not.toBeNull();
+    expect(subtitle).toBeInTheDocument();
 
     const subtitleWithUserId = screen.queryByText(
       /If you wanna see a list of resources/
     );
 
-    expect(subtitleWithUserId).toBeNull();
+    expect(subtitleWithUserId).not.toBeInTheDocument();
   });
+
   it('should render correct text without session', () => {
+    mockUseRouter({ query: { userId: TEST_USER_ID } });
     // session is not defined
     renderWithoutSession(<Subtitle setOpen={setOpenMock} />);
 
     const subtitle = screen.queryByText(/MaterialDB is an app/);
-    expect(subtitle).not.toBeNull();
+    expect(subtitle).toBeInTheDocument();
   });
 
-  it('should render correct text with userId', () => {
+  it('should render correct text with userId and no session', () => {
+    mockUseRouter({ query: { userId: TEST_USER_ID } });
     // session is not defined
     renderWithoutSession(<Subtitle setOpen={setOpenMock} />);
 
@@ -47,6 +54,10 @@ describe('Subtitle', () => {
       /If you wanna see a list of resources/
     );
 
-    expect(subtitleWithUserId).not.toBeNull();
+    expect(subtitleWithUserId).toBeInTheDocument();
+
+    const subtitle = screen.queryByText(/Start adding new/);
+
+    expect(subtitle).not.toBeInTheDocument();
   });
 });
