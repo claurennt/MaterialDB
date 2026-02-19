@@ -11,22 +11,33 @@
 
 @layer base {
   :root {
-    --primary-color: #735eff;
+    --text-color: #eaeaea;
+    --primary-color: #998aff;
     --primary-color-200: #7f6bff;
     --primary-color-neon: #1f51ff;
-    --secondary-color: #b5ffe1;
+    --secondary-color: #4fc06d;
     --tertiary-color: #0a1046;
   }
 }
 
 html,
 body {
-  color: white;
-  background: #010038;
+  color: var(--text-color);
+  background: #121115;
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    Segoe UI,
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    Fira Sans,
+    Droid Sans,
+    Helvetica Neue,
+    sans-serif;
 }
 
 * {
@@ -77,13 +88,15 @@ mark {
 }
 
 .gradient-border-button::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   border-radius: 8px;
   padding: 2px; /* Border thickness */
   background: linear-gradient(to left, rgb(181, 255, 255), rgb(80, 243, 243));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   z-index: -1;

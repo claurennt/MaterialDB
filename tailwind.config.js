@@ -2,8 +2,8 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
+    './app/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     screens: {
@@ -17,12 +17,12 @@ module.exports = {
       },
       colors: {
         primary: {
-          100: '#735eff',
+          100: '#998AFF',
           200: '#7F6BFF',
           300: '#998AFF',
           neon: '#1F51FF',
         },
-        secondary: { 100: '#B5FFE1', 200: '#FD5244', 300: '#fd7544' },
+        secondary: { 100: '#4FC06D', 200: '#FD5244', 300: '#fd7544' },
         tertiary: { 100: '#0a1046' },
         'border-color': 'fd7544',
       },
