@@ -1,4 +1,4 @@
-import '../../../styles/global.css';
+// import '../../styles/global.css';
 
 import React from 'react';
 import Link from 'next/link';
@@ -11,19 +11,18 @@ export const Header = () => {
   const searchParams = useSearchParams();
   const { data: session } = useSession();
 
-  // Get userId from search params
   const userId = searchParams.get('userId');
 
   return (
     <header>
       {pathname !== '/' && (
         <Link
-          className={`self-center text-primary-300 p-1 text-lg hover:text-secondary-300 ease-linear duration-300 active:scale-75 font-bold px-5 absolute top-3 ${
+          className={`focus:outline focus:outline-2 focus:outline-offset-4 focus:outline-primary-100 self-center text-primary-300 p-1 text-lg hover:text-secondary-300 ease-linear duration-300 active:scale-75 font-bold px-5 absolute top-3 ${
             session ? 'right-24' : 'left-2'
           }`}
           href={{
-            pathname: '/route?[userId]',
-            query: { userId },
+            pathname: '/',
+            query: userId ? { userId } : '',
           }}
         >
           Home

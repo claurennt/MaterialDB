@@ -1,9 +1,7 @@
 import React from 'react';
 import { useSession } from 'next-auth/react';
 
-import { useRouter } from 'next/router';
-
-import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/navigation';
 
 import { ModalInput } from '../ModalInput';
 import {
@@ -39,9 +37,8 @@ export const NewLinkModal: React.FunctionComponent<NewLinkModalProps> = ({
 }) => {
   const router = useRouter();
   const { data: session } = useSession();
-  const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const access_token = session?.user?.access_token;
+  const access_token = session?.user?.access_token ?? null;
 
   const {
     state: formState,
@@ -65,7 +62,7 @@ export const NewLinkModal: React.FunctionComponent<NewLinkModalProps> = ({
   const closeModalAndNavigate = React.useCallback(() => {
     setTimeout(() => {
       setOpen(false);
-      router.replace(router.asPath);
+      router.refresh();
     }, 3000);
   }, [router, setOpen]);
 
@@ -75,20 +72,20 @@ export const NewLinkModal: React.FunctionComponent<NewLinkModalProps> = ({
 
       const value = e.currentTarget.value;
 
-      if (type === 'link') {
-        if (name === 'tags') {
-          dispatch({ type: 'SET_TAG_VALUE', payload: value });
-        }
-        if (name === 'url') {
-          dispatch({
-            type: 'SET_NEW_LINK',
-            payload: { ...newLink, url: value },
-          });
-        }
-      } else {
+      if (type === 'topic') {
         dispatch({
           type: 'SET_NEW_TOPIC',
           payload: { ...newTopic, [name]: value },
+        });
+      }
+
+      if (name === 'tags') {
+        dispatch({ type: 'SET_TAG_VALUE', payload: value });
+      }
+      if (name === 'url') {
+        dispatch({
+          type: 'SET_NEW_LINK',
+          payload: { ...newLink, url: value },
         });
       }
     },
@@ -143,12 +140,6 @@ export const NewLinkModal: React.FunctionComponent<NewLinkModalProps> = ({
         <div className='flex flex-col gap-4'>
           {inputs.map(({ name }) => (
             <ModalInput
-              ref={(el) => {
-                if (!el) return;
-                if (name === 'url' || name === 'name') {
-                  inputRef.current = el;
-                }
-              }}
               isInputValid={!isError}
               value={name === 'tags' ? tagValue : undefined}
               name={name}

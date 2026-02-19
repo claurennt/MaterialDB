@@ -16,13 +16,13 @@ export const AuthLinks = () => {
     >
       <Link
         href='/auth/register'
-        className={'text-secondary-100 underline underline-offset-2'}
+        className='text-secondary-100 underline underline-offset-2 focus:outline focus:outline-2 focus:outline-offset-4 focus:outline-primary-100'
       >
         Register
       </Link>
       <Link
         href='/auth/login'
-        className={'text-secondary-100 underline underline-offset-2'}
+        className='text-secondary-100 underline underline-offset-2 focus:outline focus:outline-2 focus:outline-offset-4 focus:outline-primary-100'
       >
         Login
       </Link>

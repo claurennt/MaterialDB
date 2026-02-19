@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 
@@ -35,12 +35,12 @@ export const TopicLink: React.FunctionComponent<TopicLinkProps> = ({
   const router = useRouter();
   let userToken: string;
   if (session?.user) {
-    userToken = session.user.access_token;
+    userToken = session.user.access_token ?? '';
   }
 
   const deleteLink = async () => {
     await deleteResource(userToken, `/api/links/${_id}`);
-    router.replace(router.asPath);
+    router.refresh();
   };
 
   return (

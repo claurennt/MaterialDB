@@ -16,3 +16,6 @@ export * from './LiveRegion';
 export * from './DeletionPopup';
 export * from './SubmitFormButton';
 export * from './Layout';
+export * from './AuthInput';
+export * from './ErrorMessage';
+export * from './AuthForm';
