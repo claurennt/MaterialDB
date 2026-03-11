@@ -12,7 +12,11 @@ type Message = {
   html: string;
 };
 
-type SendActivationEmail = { name: string; email: string; _id: Types.ObjectId };
+type SendActivationEmailParams = {
+  username: string;
+  email: string;
+  token: string;
+};
 
 const BASEURL =
   environment === 'development' ? `http://localhost:${port}` : `${PROJECT_URL}`;
@@ -37,15 +41,19 @@ const sendEmail = async (message: Message) => {
   }
 };
 
-const sendActivationEmail = ({ name, email, _id }: SendActivationEmail) => {
-  const activationLink = `${BASEURL}/api/auth/activate/${_id}`;
+const sendActivationEmail = ({
+  username,
+  email,
+  token,
+}: SendActivationEmailParams) => {
+  const activationLink = `${BASEURL}/activate?token=${token}`;
 
   const message = {
-    from: NODEMAILER_EMAIL,
+    from: NODEMAILER_EMAIL || '',
     to: email,
     subject: 'Material DB - Activate Account',
     html: `
-      <h3> Hello ${name} </h3>
+      <h1> Hello ${username}</h1>
       <p>Thank you for registering for Material DB. Much Appreciated! Just one last step is laying ahead of you...</p>
       <a href=${activationLink}>Activate profile</a>
       <p>Cheers</p>
@@ -56,16 +64,21 @@ const sendActivationEmail = ({ name, email, _id }: SendActivationEmail) => {
   return sendEmail(message);
 };
 
-const sendRegistrationConfirmationEmail = (name: string, email: string) => {
+const sendRegistrationConfirmationEmail = ({
+  username,
+  email,
+}: {
+  username: string;
+  email: string;
+}) => {
   const message = {
-    from: NODEMAILER_EMAIL,
-    // to: toUser.email // in production uncomment this
+    from: NODEMAILER_EMAIL || '',
     to: email,
     subject: 'Material DB - Registration successful',
     html: `
-      <h3> Hi ${name} </h3>
+      <h1> Hi ${username} </h1>
       <p>Your account has been successfully activated. You can now start using the app - have fun!</p>
-      <a href=${BASEURL}/auth/login target="_">Go to login</a>
+      <a href=${BASEURL}/auth/login target="_">Start using MaterialDB!</a>
       <p>Cheers</p>
       <p>Material DB Team</p>
     `,
