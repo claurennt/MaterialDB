@@ -1,166 +1,96 @@
-import React from 'react';
-import { useSession } from 'next-auth/react';
-
-import { useRouter } from 'next/navigation';
-
-import { ModalInput } from '../ModalInput';
+import { NewLinkModalType } from '@types';
+import { Modal, LiveRegion, ModalInput, DialogButton } from '@components';
 import {
   linkInputs,
   topicInputs,
   useFormHandler,
   useLiveRegion,
 } from '@lib/client';
-import { LiveRegion } from '@components';
-import { SubmitFormButton } from '@components';
-import { NewLinkModalType } from '@types';
-
-import {
-  ModalBody,
-  ModalContainer,
-  ModalFooter,
-  ModalHeader,
-} from './ModalLayout';
 import { TagsList } from './TagList';
+import { useEffect, useRef } from 'react';
 
-export type NewLinkModalProps = {
-  individualTopicId?: string;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  type: NewLinkModalType;
+type ModalContainerProps = {
   open: boolean;
+  handleOpenModal: (open: boolean) => void;
+  type: NewLinkModalType;
+  topicId?: string;
 };
 
-export const NewLinkModal: React.FunctionComponent<NewLinkModalProps> = ({
-  individualTopicId,
-  setOpen,
-  type,
+export const NewLinkModal = ({
   open,
-}) => {
-  const router = useRouter();
-  const { data: session } = useSession();
+  handleOpenModal,
+  topicId,
+  type,
+}: ModalContainerProps) => {
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
 
-  const access_token = session?.user?.access_token ?? null;
-
+  const { announce, announcement } = useLiveRegion({});
   const {
-    state: formState,
-    dispatch,
-    handleSubmitForm,
-  } = useFormHandler({
-    accessToken: access_token,
-    session,
-    individualTopicId,
-  });
-
-  const { isError, isLoading, newLink, newTopic, tagValue } = formState;
-
-  const liveRegionContent = useLiveRegion({
-    open,
-    type,
-    isError,
+    submit,
+    handleAddTag,
+    handleRemoveTag,
+    handleClearError,
+    error,
     isLoading,
+    tags,
+  } = useFormHandler({
+    type,
+    topicId,
+    announce,
   });
 
-  const closeModalAndNavigate = React.useCallback(() => {
-    setTimeout(() => {
-      setOpen(false);
-      router.refresh();
-    }, 3000);
-  }, [router, setOpen]);
-
-  const handleChange = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>, name: string) => {
-      if (isError) dispatch({ type: 'SET_ERROR', payload: false });
-
-      const value = e.currentTarget.value;
-
-      if (type === 'topic') {
-        dispatch({
-          type: 'SET_NEW_TOPIC',
-          payload: { ...newTopic, [name]: value },
-        });
-      }
-
-      if (name === 'tags') {
-        dispatch({ type: 'SET_TAG_VALUE', payload: value });
-      }
-      if (name === 'url') {
-        dispatch({
-          type: 'SET_NEW_LINK',
-          payload: { ...newLink, url: value },
-        });
-      }
-    },
-    [dispatch, isError, newLink, newTopic, type],
-  );
-
-  const handleKeyDown = React.useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (type === 'link' && e.key === 'Enter') {
-        dispatch({
-          type: 'SET_NEW_LINK',
-          payload: {
-            ...newLink,
-            tags: [...newLink.tags, tagValue],
-          },
-        });
-        dispatch({ type: 'SET_TAG_VALUE', payload: '' });
-      }
-    },
-    [dispatch, newLink, tagValue, type],
-  );
-
-  const handleRemoveTag = React.useCallback(
-    (currentTag: string) => {
-      dispatch({
-        type: 'SET_NEW_LINK',
-        payload: {
-          ...newLink,
-          tags: newLink.tags.filter((tag) => tag !== currentTag),
-        },
-      });
-    },
-    [dispatch, newLink],
-  );
-
-  const onFormSubmit = async (e: React.SyntheticEvent<HTMLButtonElement>) => {
+  const handleAddResource = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const currentState = type === 'link' ? newLink : newTopic;
 
-    const isSubmissionSuccessful = await handleSubmitForm(e, currentState);
-    if (!isSubmissionSuccessful) return;
+    const isSubmissionSuccessful = await submit(e);
 
-    closeModalAndNavigate();
+    if (isSubmissionSuccessful) {
+      handleOpenModal(false);
+    }
   };
 
   const inputs = type === 'link' ? linkInputs : topicInputs;
+  const title =
+    type === 'topic' ? 'Insert a new topic' : 'Add new article/resource';
 
   return (
-    <ModalContainer open={open} setOpen={setOpen} type={type}>
-      <ModalHeader type={type} />
-      <ModalBody>
+    <Modal open={open} handleOpenModal={handleOpenModal} title={title}>
+      <form onSubmit={handleAddResource} onInput={handleClearError}>
         <div className='flex flex-col gap-4'>
           {inputs.map(({ name }) => (
             <ModalInput
-              isInputValid={!isError}
-              value={name === 'tags' ? tagValue : undefined}
-              name={name}
               key={name}
-              handleChange={handleChange}
-              handleKeyDown={handleKeyDown}
+              name={name}
+              errorMessage={error}
+              handleKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  const tagValue = (e.target as HTMLInputElement).value;
+                  handleAddTag(tagValue);
+                }
+              }}
             />
           ))}
         </div>
 
-        {type === 'link' && (
-          <TagsList tags={newLink.tags} onRemoveTag={handleRemoveTag} />
+        {type === 'link' && tags.length > 0 && (
+          <TagsList
+            tags={tags}
+            onRemoveTag={handleRemoveTag}
+            submitButtonRef={submitButtonRef}
+          />
         )}
-      </ModalBody>
 
-      <ModalFooter isLoading={isLoading}>
-        {session && (
-          <SubmitFormButton onFormSubmit={onFormSubmit} type={type} />
-        )}
-        <LiveRegion liveRegionContent={liveRegionContent} />
-      </ModalFooter>
-    </ModalContainer>
+        <div className='border-slate-100 flex items-center justify-between sm:flex-row-reverse'>
+          <DialogButton
+            text='+'
+            ariaLabel={`Add ${type}`}
+            ref={submitButtonRef}
+          />
+
+          <LiveRegion liveRegionContent={announcement} />
+        </div>
+      </form>
+    </Modal>
   );
 };

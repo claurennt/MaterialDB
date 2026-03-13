@@ -1,31 +1,24 @@
-import { NewLinkModalType } from '@types';
+import React, { ForwardedRef, forwardRef, RefObject } from 'react';
 
-import React from 'react';
-
-type SubmitFormButtonProps = {
-  onFormSubmit: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  type: NewLinkModalType;
+type DialogButtonProps = {
+  ariaLabel: string;
+  text: string;
+  onClick?: (value: any) => void | Promise<void>;
 };
 
-export const SubmitFormButton: React.FC<SubmitFormButtonProps> = ({
-  onFormSubmit,
-  type,
-}) => {
-  const buttonLabel = `Click to create new ${type}`;
-
-  return (
-    <div className='flex flex-col items-center'>
+export const DialogButton = forwardRef<HTMLButtonElement, DialogButtonProps>(
+  (props, ref) => {
+    const { onClick, ariaLabel, text } = props;
+    return (
       <button
-        aria-labelledby='add-button'
-        type='button'
-        className='w-full inline-flex rounded-md border border-transparent shadow-sm px-4 py-2 bg-secondary-200 text-base font-medium text-white hover:bg-secondary-100 hover:text-secondary-300 focus-within:outline focus-within:outline-2 focus:outline-secondary-100 focus:outline-offset-4 sm:ml-3 sm:w-auto sm:text-sm'
-        onClick={(e) => onFormSubmit(e)}
+        ref={ref}
+        type='submit'
+        className='w-10 h-10 flex items-center rounded justify-center border-2 border-secondary-200 shadow-sm text-xl hover:bg-secondary-200 focus:outline-primary-neon transition-colors'
+        onClick={() => onClick?.(false)}
+        aria-label={ariaLabel}
       >
-        +
+        {text}
       </button>
-      <span id='add-button' className='sr-only'>
-        {buttonLabel}
-      </span>
-    </div>
-  );
-};
+    );
+  },
+);
