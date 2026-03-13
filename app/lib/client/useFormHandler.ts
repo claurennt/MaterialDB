@@ -1,96 +1,108 @@
-// useFormHandler.ts
-import { FormState, NewLink, NewTopic } from '@types';
-import { useReducer, useRef, useCallback } from 'react';
-import { addNewResource, formReducer, isTopic, validateUrl } from '.';
+import { useCallback, useState } from 'react';
 
-import { Session } from 'next-auth';
-
-const initialState: FormState = {
-  newTopic: { name: '', description: '' },
-  newLink: { url: '', tags: [] },
-  tagValue: '',
-  isError: false,
-  isLoading: false,
-};
-
-const hasRequiredFields = (state: NewLink | NewTopic): boolean => {
-  if (isTopic(state)) {
-    return Boolean(state.name.trim());
-  }
-  return Boolean(state.url.trim());
-};
-
-const isValidResource = (state: NewLink | NewTopic): boolean => {
-  if (isTopic(state)) {
-    return true; // Topics don't need URL validation
-  }
-  return validateUrl(state.url);
-};
-
-const preparePayload = (
-  state: NewLink | NewTopic,
-  session?: Session,
-  individualTopicId?: string,
-) => {
-  const userId = session?.user?.id;
-  if (!userId) {
-    throw new Error('Session user ID is missing');
-  }
-
-  return isTopic(state)
-    ? { ...state, creatorId: userId }
-    : { ...state, _topic: individualTopicId };
-};
-
-type UseFormHandler = {
-  accessToken: string;
-  session: Session;
-  individualTopicId?: string;
-};
+import { createTopic } from '@actions/topics';
+import { createLink } from '@actions/links';
+import { isValidUrl } from './isValidUrl';
 
 export const useFormHandler = ({
-  accessToken,
-  session,
-  individualTopicId,
-}: UseFormHandler) => {
-  const [state, dispatch] = useReducer(formReducer, initialState);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  type,
+  topicId,
+  announce,
+}: {
+  type: 'topic' | 'link';
+  topicId?: string;
+  announce: (msg: string) => void;
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [tags, setTags] = useState<string[]>([]);
 
-  const validateInput = (state: NewLink | NewTopic): boolean => {
-    if (!inputRef.current) return false;
+  const handleAddTag = (tagValue: string) => {
+    const cleanTag = tagValue.trim();
 
-    return hasRequiredFields(state) && isValidResource(state);
+    const isDuplicate = tags.some(
+      (t) => t.toLowerCase() === cleanTag.toLowerCase(),
+    );
+
+    if (isDuplicate) {
+      announce(`Tag ${cleanTag} already exists.`);
+      return;
+    }
+
+    setTags((prev) => [...prev, cleanTag]);
+    announce(`Added tag: ${cleanTag}`);
   };
 
-  const handleSubmitForm = async (
-    e: React.SyntheticEvent<HTMLButtonElement>,
-    state: NewLink | NewTopic,
-  ): Promise<boolean> => {
-    e.preventDefault();
-    console.log('we are in the error111');
-    if (!inputRef.current) return false;
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags((prev) => prev.filter((t) => t !== tagToRemove));
+    announce(`Removed tag: ${tagToRemove}`);
+  };
 
-    const payload = preparePayload(state, session, individualTopicId);
+  const handleClearError = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      const target = e.target as HTMLInputElement;
 
-    const canSubmit = validateInput(state);
+      // Check if the input currently being typed in is marked as invalid
+      if (target.getAttribute('aria-invalid') === 'true' || error) {
+        setError(null);
+      }
+    },
+    [error],
+  );
 
-    if (!canSubmit) {
-      dispatch({ type: 'SET_ERROR', payload: true });
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setError(null);
 
-      inputRef.current.focus();
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get('name') as string;
+    const url = formData.get('url') as string;
+    const description = formData.get('description') as string;
+
+    // Validation
+    const isTopic = type === 'topic';
+    const isRequiredValueEmpty = isTopic ? !name.trim() : !url.trim();
+
+    if (isRequiredValueEmpty) {
+      const msg = isTopic ? 'Name is required' : 'URL is required';
+      setError(msg);
       return false;
     }
+    if (!isTopic && !isValidUrl(url)) {
+      setError('Please enter a valid url');
+      return false;
+    }
+
+    // Execution
+    setIsLoading(true);
+    announce('Submitting your form...');
 
     try {
-      dispatch({ type: 'SET_LOADING', payload: true });
-      await addNewResource(e, accessToken, payload);
+      if (isTopic) {
+        await createTopic({
+          name,
+          description,
+        });
+      } else {
+        await createLink({ url, tags, _topic: topicId });
+      }
+
       return true;
-    } catch (error) {
-      dispatch({ type: 'SET_ERROR', payload: true });
-      console.log('we are in the error');
+    } catch (err) {
+      setError('Server Error');
+
       return false;
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  return { inputRef, state, dispatch, handleSubmitForm };
+  return {
+    submit,
+    error,
+    handleClearError,
+    isLoading,
+    tags,
+    handleAddTag,
+    handleRemoveTag,
+  };
 };

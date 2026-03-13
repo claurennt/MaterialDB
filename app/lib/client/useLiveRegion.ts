@@ -1,78 +1,52 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 
-type UseLiveRegionArgs = {
-  announceLiveRegionRef?: React.MutableRefObject<boolean>;
-  filteringTags?: string[] | null;
-  numberOfTopicLinks?: number;
-  numberOfFilteredLinks?: number;
-  previousNumberOfLinksRef?: React.MutableRefObject<number>;
-  type: string;
-  open?: boolean;
-  isError?: boolean;
-  isLoading?: boolean;
-};
 export const useLiveRegion = ({
-  announceLiveRegionRef = { current: true },
-  filteringTags = null,
-  numberOfTopicLinks,
-  numberOfFilteredLinks,
-  previousNumberOfLinksRef = { current: 0 },
-  open = false,
+  totalCount,
   type,
-  isError = false,
-  isLoading = false,
-}: UseLiveRegionArgs) => {
-  const [liveRegionContent, setLiveRegionContent] = useState<string>('');
+}: {
+  totalCount?: number;
+  type?: string;
+}) => {
+  const [announcement, setAnnouncement] = useState('');
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const prevCount = useRef<number | undefined>(totalCount);
+
+  const announce = useCallback((message: string) => {
+    // Clear first to force screen readers to re-read identical consecutive messages
+    setAnnouncement('');
+
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    // Small delay ensures the DOM change is registered
+    timeoutRef.current = setTimeout(() => {
+      setAnnouncement(message);
+    }, 50);
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    },
+    [],
+  );
 
   useEffect(() => {
-    let announceLiveRegion = announceLiveRegionRef.current;
-    if (!announceLiveRegion) return;
-    // announces live region when user filters links by clicking on tag button
-    if (announceLiveRegion && Array.isArray(filteringTags)) {
-      const linkLabel = numberOfFilteredLinks === 1 ? 'link' : 'links';
-      const tagLabel = filteringTags.length === 1 ? 'tag' : 'tags';
-
-      const liveRegion = filteringTags.length
-        ? `${numberOfFilteredLinks} ${linkLabel} with ${tagLabel} ${filteringTags.join(
-            ', '
-          )}`
-        : 'All tag filters have been removed';
-
-      setLiveRegionContent(liveRegion);
-      announceLiveRegion = false;
-    }
-  }, [filteringTags]);
-
-  useEffect(() => {
-    if (!open) return;
-    // announces live region when user unsuccessfully adds a new resource or is submitting the form
-
-    if (isError) {
-      setLiveRegionContent(
-        `Something went wrong: ${type} addition failed, please try again`
-      );
+    // Don't announce on first mount
+    if (prevCount.current === undefined) {
+      prevCount.current = totalCount;
       return;
     }
-    if (isLoading) setLiveRegionContent('Submitting form...');
-  }, [open, isError, isLoading, type]);
 
-  useEffect(() => {
-    if (open) return;
+    // Only announce if the count actually changed
+    if (totalCount !== undefined && totalCount !== prevCount.current) {
+      if (totalCount > prevCount.current) {
+        announce(`New ${type} added.`);
+      } else if (totalCount < prevCount.current) {
+        announce(`${type} removed.`);
+      }
+      prevCount.current = totalCount;
+    }
+  }, [totalCount, type, announce]);
 
-    const currentNumberOfLinks = numberOfTopicLinks;
-    let previousNumberOfLinks = previousNumberOfLinksRef.current;
-
-    // announces live region when user successfully adds a new link
-    if (currentNumberOfLinks > previousNumberOfLinks)
-      setLiveRegionContent(`New ${type} successfully added to the list.`);
-    // announces live region when user successfully deletes a link
-    if (currentNumberOfLinks < previousNumberOfLinks)
-      setLiveRegionContent('Successful link deletion');
-
-    //updates ref with new number of links to include newly added or deleted link
-    previousNumberOfLinks = currentNumberOfLinks;
-    announceLiveRegionRef.current = false;
-  }, [numberOfTopicLinks, open, previousNumberOfLinksRef, type]);
-
-  return liveRegionContent;
+  return { announcement, announce };
 };
