@@ -14,14 +14,15 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@models": ["models/index.ts"],
       "@types": ["types/index.ts"],
       "@components": ["components/index.ts"],
       "@lib/client": ["app/lib/client/index.ts"],
-      "@lib/server": ["lib/server/index.ts"],
-      "@styles/global": ["styles/global.css"]
+      "@styles/*": ["styles/*"],
+      "@actions/*": ["app/actions/*"]
     },
     "types": ["node", "jest", "@testing-library/jest-dom"],
     "plugins": [
