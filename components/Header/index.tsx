@@ -1,11 +1,9 @@
-// import '../../styles/global.css';
-
 import React from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { LogoutButton, AuthLinks } from '@components';
-
+import styles from '../../styles/index.module.css';
 export const Header = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -17,9 +15,7 @@ export const Header = () => {
     <header>
       {pathname !== '/' && (
         <Link
-          className={`focus:outline focus:outline-2 focus:outline-offset-4 focus:outline-primary-100 self-center text-primary-300 p-1 text-lg hover:text-secondary-300 ease-linear duration-300 active:scale-75 font-bold px-5 absolute top-3 ${
-            session ? 'right-24' : 'left-2'
-          }`}
+          className={`${styles.auth_nav_link} text-md absolute top-4 ${session ? 'right-20' : 'left-2'}`}
           href={{
             pathname: '/',
             query: userId ? { userId } : '',

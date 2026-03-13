@@ -277,10 +277,10 @@ export const iconsNames = [
   'vuetify',
 ];
 
-export const getIconName = (lowerCaseName) => {
+export const getIconName = (lowerCaseName: string) => {
   const startsWith = new RegExp(`^${lowerCaseName}`);
   const endsWithPattern = new RegExp(`${lowerCaseName}$`);
-  let iconName: string;
+  let iconName: string | undefined;
   iconName = iconsNames.find((name) => name === lowerCaseName);
 
   if (!iconName)
@@ -288,7 +288,7 @@ export const getIconName = (lowerCaseName) => {
       (name) =>
         startsWith.test(name) ||
         endsWithPattern.test(name) ||
-        name.includes(lowerCaseName)
+        name.includes(lowerCaseName),
     );
 
   return iconName;
