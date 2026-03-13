@@ -1,8 +1,7 @@
-import mongoose, { Document, Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import jwt from 'jsonwebtoken';
 
 import { IAdmin } from '@types';
-import { Topic } from '@models';
 const { NEXTAUTH_SECRET } = process.env;
 const Schema = mongoose.Schema;
 
@@ -13,6 +12,8 @@ const adminSchema = new Schema<IAdmin>({
   email: { type: String, unique: true, required: true },
   image: { type: String, default: null },
   activated: { type: Boolean, default: false },
+  activationToken: { type: String, select: false },
+  activationTokenExpires: { type: Date, select: false },
 });
 
 adminSchema.methods.generateToken = async function () {
