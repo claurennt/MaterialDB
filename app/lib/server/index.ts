@@ -1,4 +1,4 @@
 export * from './DBClient';
-export * from './clientPromise';
+export * from './client';
 export * from './mailer';
 export * from './scraper';
