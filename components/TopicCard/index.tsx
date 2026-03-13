@@ -4,19 +4,18 @@ import Image from 'next/image';
 
 import { getIconName } from '@lib/client';
 import { useSearchParams } from 'next/navigation';
-import { ObjectId } from 'mongoose';
+import { ITopic } from 'types/mongoose';
 
-type TopicCardProps = {
-  name: string;
-  _id: ObjectId;
-  description: string;
+type TopicCardProps = Pick<ITopic, 'name' | 'description' | '_id'> & {
+  anchorId: string;
 };
 
-export const TopicCard: React.FunctionComponent<TopicCardProps> = ({
+export const TopicCard = ({
   name,
   _id,
   description,
-}) => {
+  anchorId,
+}: TopicCardProps) => {
   const lowerCaseName = name?.toLowerCase();
   const searchParams = useSearchParams();
   const userId = searchParams.get('userId');
@@ -33,11 +32,14 @@ export const TopicCard: React.FunctionComponent<TopicCardProps> = ({
   const href = userId
     ? `/topics/${_id}?userId=${userId}&name=${encodeURIComponent(name)}`
     : `/topics/${_id}?name=${encodeURIComponent(name)}`;
+
+  const id = _id.toString();
   return (
     <li>
       <Link
         href={href}
-        key={_id}
+        key={id}
+        id={anchorId}
         className='
           flex flex-col gap-5 justify-center 
           px-5 text-center my-8 mx-auto 
@@ -45,11 +47,10 @@ export const TopicCard: React.FunctionComponent<TopicCardProps> = ({
           bg-[#1a1a1a] 
           border-2 border-[var(--primary-color-neon)]
           shadow-[5px_5px_30px_7px_rgba(0,0,0,0.25),-5px_-5px_30px_7px_rgba(0,0,0,0.22)]
-          transition-all duration-400 cursor-pointer
+          cursor-pointer
           hover:outline hover:outline-4 hover:outline-[var(--secondary-color)]
-          focus-visible:outline focus-visible:outline-4 focus-visible:outline-[var(--secondary-color)]
           active:bg-[var(--primary-color-neon)]
-          active:outline active:outline-2
+          active:outline 
         '
       >
         <Image

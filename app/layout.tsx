@@ -1,9 +1,16 @@
-// import './global.css';
-import Providers from './providers';
-import '../styles/global.css';
+import React from 'react';
+
 import { getServerSession } from 'next-auth';
+import { Jost } from 'next/font/google';
 import { authOptions } from './api/auth/[...nextauth]/authOptions';
-import { Layout } from '@components';
+import '../styles/global.css';
+import { SessionContext } from './SessionProvider';
+
+const jost = Jost({ subsets: ['latin'], variable: '--font-inter' });
+
+export const metadata = {
+  title: { default: 'Homepage - MaterialDB' },
+};
 
 export default async function RootLayout({
   children,
@@ -14,10 +21,10 @@ export default async function RootLayout({
 
   return (
     <html lang='en'>
-      <body>
-        <Providers session={session}>
-          <Layout>{children}</Layout>
-        </Providers>
+      <body className={`${jost.variable} font-sans`}>
+        <SessionContext session={session}>
+          <>{children}</>
+        </SessionContext>
       </body>
     </html>
   );

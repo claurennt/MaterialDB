@@ -1,43 +1,61 @@
-import React from 'react';
-import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-import { AddNewButton } from '../AddNewButton';
+import React from 'react';
 
 type SubtitleProps = {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  totalCount: number;
+  isOwner: boolean;
+  isAuthenticated: boolean;
 };
 
-export const Subtitle: React.FunctionComponent<SubtitleProps> = ({
-  setOpen,
-}) => {
+export const Subtitle = ({
+  totalCount,
+  isOwner,
+  isAuthenticated,
+}: SubtitleProps) => {
   const searchParams = useSearchParams();
   const userId = searchParams.get('userId');
-  // const { description } = styles;
 
-  const { data: session } = useSession();
-  return (
-    <>
-      {session ? (
-        <>
-          <h2 className='text-2xl'>
-            Start adding new <span className='text-primary-100'>topics </span>
-            to your collection!
-          </h2>
-          <AddNewButton text='topic' setOpen={setOpen} />
-        </>
-      ) : (
+  //  Public Landing Page (No Auth, No specific Profile being viewed)
+  if (!isAuthenticated && !userId) {
+    return (
+      <div className='space-y-2'>
         <h2 className='text-3xl'>
-          MaterialDB is an app where you can collect useful links and resources
-          that help you become a better
-          <span className='text-primary-100'> developer/instructor</span>.
+          MaterialDB helps you become a better{' '}
+          <span className='text-primary-100'>developer/instructor</span>
         </h2>
-      )}
-      {userId && !session && (
-        <p>
-          If you wanna see a list of resources pick a{' '}
-          <span className='text-primary-100'>topic</span> below.
-        </p>
-      )}
-    </>
-  );
+        <h3 className='text-2xl'>
+          Register or login to create your own topics and share them with your
+          students or the world!
+        </h3>
+      </div>
+    );
+  }
+
+  const hasTopics = totalCount > 0;
+
+  // If authenticated and looking at own profile
+  if (isAuthenticated && isOwner) {
+    if (!hasTopics) {
+      return (
+        <h2 className='text-2xl'>
+          You do not have any topics yet! Start adding{' '}
+          <span className='text-primary-100'>topics</span>
+        </h2>
+      );
+    }
+    return null;
+  }
+
+  // If viewing someone else's profile (or viewing own while logged out)
+  if (userId && !isOwner) {
+    return hasTopics ? (
+      <p>
+        Pick a <span className='text-primary-100'>topic</span> below!
+      </p>
+    ) : (
+      <p>The user does not have any topics yet.</p>
+    );
+  }
+
+  return null;
 };
