@@ -1,33 +1,44 @@
 'use client';
 import React, { useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@lib/client';
-import { AuthInput, ErrorMessage } from '@components';
+import { AuthInput, AuthFeedback } from '@components';
 import Link from 'next/link';
-
+import { Credentials } from '@types';
+import styles from '../../styles/index.module.css';
 interface AuthFormProps {
   mode: 'login' | 'register';
 }
 
 export const AuthForm = ({ mode }: AuthFormProps) => {
-  const errorBoxRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-  const { authAction, error, setError } = useAuth();
+  const authFeedbackRef = useRef<HTMLDivElement>(null);
+
+  const { authAction, isError, setAuthFeedback, message } = useAuth();
+
+  useEffect(() => {
+    if (!!!message) return;
+    authFeedbackRef.current?.focus();
+  }, [message]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = Object.fromEntries(new FormData(event.currentTarget));
+    const formData = new FormData(event.currentTarget);
+    const data = Object.fromEntries(formData) as unknown as Credentials;
 
-    const r = await authAction(mode, data);
+    const canSubmit =
+      !data.username || !data.password || (mode === 'register' && !data.email);
 
-    if (r?.success) router.push(mode === 'login' ? '/' : '/');
+    if (canSubmit) {
+      setAuthFeedback({
+        isError: true,
+        message: 'Email and Password are required',
+      });
+      return;
+    }
+
+    await authAction(mode, data);
   };
 
-  useEffect(() => {
-    if (error) errorBoxRef.current?.focus();
-  }, [error]);
-
-  const handleChange = () => setError(null);
+  const handleChange = () => setAuthFeedback({ isError: false, message: '' });
 
   const linkText =
     mode === 'login'
@@ -38,44 +49,47 @@ export const AuthForm = ({ mode }: AuthFormProps) => {
 
   return (
     <>
-      <ErrorMessage error={error} ref={errorBoxRef} />
+      {/* After successful creation of a new account only the feedback message should be shown */}
+      <AuthFeedback isError={isError} message={message} ref={authFeedbackRef} />
 
-      <form onSubmit={handleSubmit} className='space-y-6 flex flex-col gap-2'>
-        {mode === 'register' && (
+      {mode === 'register' && message && !isError ? null : (
+        <form onSubmit={handleSubmit} className='space-y-6 flex flex-col gap-2'>
+          {mode === 'register' && (
+            <AuthInput
+              type='email'
+              isError={isError}
+              handleChange={handleChange}
+            />
+          )}
+
           <AuthInput
-            type='email'
-            isError={!!error}
+            type='username'
+            isError={isError}
             handleChange={handleChange}
           />
-        )}
+          <AuthInput
+            type='password'
+            isError={isError}
+            handleChange={handleChange}
+          />
 
-        <AuthInput
-          type='username'
-          isError={!!error}
-          handleChange={handleChange}
-        />
-        <AuthInput
-          type='password'
-          isError={!!error}
-          handleChange={handleChange}
-        />
-
-        <button
-          type='submit'
-          className='w-full rounded-md bg-primary-200 py-2.5 text-black font-semibold disabled:opacity-50 focus-within:outline focus:outline-2 focus:outline-secondary-100 focus:outline-offset-4'
-        >
-          {buttonText}
-        </button>
-
-        <div className='text-center text-sm'>
-          <Link
-            href={`${mode === 'login' ? 'register' : 'login'}`}
-            className='font-semibold text-secondary-100 focus:outline focus:outline-2 focus:outline-offset-4 focus:outline-primary-100 underline underline-offset-2'
+          <button
+            type='submit'
+            className='w-full rounded-md bg-primary-200 py-2.5 text-black font-semibold disabled:opacity-50'
           >
-            {linkText}
-          </Link>
-        </div>
-      </form>
+            {buttonText}
+          </button>
+
+          <div className='text-center text-sm'>
+            <Link
+              href={`${mode === 'login' ? 'register' : 'login'}`}
+              className={styles.auth_nav_link}
+            >
+              {linkText}
+            </Link>
+          </div>
+        </form>
+      )}
     </>
   );
 };

@@ -25,7 +25,7 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
             <div className='text-sm'>
               <Link
                 href='#'
-                className='font-semibold text-secondary-100 underline underline-offset-2 focus:outline focus:outline-2 focus:outline-offset-4 focus:outline-primary-100 '
+                className='text-secondary-100 decoration-primary-200 underline underline-offset-2 hover:decoration-secondary-100 hover:text-pink-300 '
               >
                 Forgot password?
               </Link>
@@ -35,15 +35,16 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
 
         <div className='mt-2'>
           <input
+            autoComplete={type !== 'password' ? type : undefined}
             onChange={handleChange}
             ref={ref}
             id={type}
             name={type}
             type={type === 'username' ? 'text' : type}
+            // using aria-required to avoid default browser validation
             aria-required
             aria-invalid={isError}
-            className={`block w-full rounded-md border-0 py-1.5 focus:outline-none focus:ring-1 focus:ring-black focus:shadow-[0_8px_0_0_#4FC06D] pb-3 text-gray-900 shadow-sm ring-1 sm:text-sm sm:leading-6'
-            }`}
+            className='border-b-4 border-primary-200 flex-1 block w-full text-background rounded-none rounded-r-md sm:text-sm focus:border-b-4 focus:shadow-[0_4px_0_0_var(--tertiary-color)] focus:ring-0 focus:border-primary-200'
           />
         </div>
       </div>

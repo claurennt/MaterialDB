@@ -1,53 +1,48 @@
-// app/api/auth/[...nextauth]/authOptions.ts
 import type { NextAuthOptions } from 'next-auth';
 import bcrypt from 'bcrypt';
-import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { Admin } from '@models';
 
-import { DBClient } from '../../../../lib/server/DBClient';
-import { clientPromise } from '../../../../lib/server/clientPromise';
+import { DBClient } from 'app/lib/server/DBClient';
+
+const { NEXTAUTH_SECRET } = process.env;
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: 'jwt' },
-  secret: process.env.NEXTAUTH_SECRET,
-  adapter: MongoDBAdapter(clientPromise),
+  secret: NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development',
   pages: { signIn: '/auth/login' },
   providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        name: { label: 'name', type: 'text' },
+        username: { label: 'username', type: 'text' },
         email: { label: 'email', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password)
-          throw new Error('Missing credentials');
+        if (!credentials?.username || !credentials?.password)
+          throw new Error('Username and password are required.');
 
         await DBClient();
-        const admin = await Admin.findOne({ email: credentials.email }).select(
-          '+password',
-        );
+        const admin = await Admin.findOne({
+          username: credentials.username,
+        }).select('+password');
 
-        if (!admin) throw new Error('Wrong email');
+        if (!admin) throw new Error('Invalid credentials');
 
-        const isPasswordSame = await bcrypt.compare(
+        const isPasswordValid = await bcrypt.compare(
           credentials.password,
           admin.password,
         );
-        if (!isPasswordSame) throw new Error('Wrong password');
 
-        const access_token = await admin.generateToken();
+        if (!isPasswordValid) throw new Error('Invalid credentials');
 
-        // FIX: Ensure id is a string and use fallbacks for optional fields
         return {
-          id: admin._id.toString(), // TypeScript now sees this is executed after admin check
-          name: admin.name || 'Admin',
+          id: admin._id.toString(),
+          username: admin.username,
           email: admin.email,
           image: admin.image || null,
-          access_token: access_token!, // Use ! if you're sure it exists, or provide fallback
         };
       },
     }),
@@ -62,8 +57,9 @@ export const authOptions: NextAuthOptions = {
         ...session,
         user: {
           ...session.user,
-          id: token.id,
+          id: token.id || token.sub,
           email: token.email,
+          username: token.username,
           access_token: token.access_token,
         },
       };

@@ -4,27 +4,23 @@ import { DefaultSession } from 'next-auth';
 import { Admin } from './pages';
 import { ITopic } from './mongoose';
 
-type User = {
-  name: string;
-  email: string;
-  image: string;
-  access_token?: string;
-  id: string;
-  topics: [] | ITopic[];
-} & DefaultSession['user'];
-//module augmentation for Session
+import NextAuth, { DefaultSession } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
+
+import { DefaultSession } from 'next-auth';
 
 declare module 'next-auth' {
-  /**
-   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-   */
   interface Session {
-    user: User;
+    user: {
+      id: string;
+      username: string;
+      access_token?: string;
+    } & DefaultSession['user'];
+  }
+
+  interface User {
+    id: string;
+    username: string;
+    access_token?: string;
   }
 }
-
-export type NextAPIHandler = (
-  req: NextApiRequest,
-  res: NextApiResponse,
-  query?: { [key: string]: string }
-) => void | Promise<void> | any | Promise<Admin>;
