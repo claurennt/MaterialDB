@@ -7,7 +7,7 @@ export type Fixture = {
 };
 
 export const testWithSession = base.extend<Fixture>({
-  pageWithSession: async ({ browser }, use) => {
+  page: async ({ browser }, use) => {
     const { page: authorizedPage, context: authorizedContext } =
       await withSession(browser);
     await use(authorizedPage);

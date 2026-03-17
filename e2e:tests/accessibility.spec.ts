@@ -1,14 +1,11 @@
 import { test, expect } from '@playwright/test';
-import { Page } from 'playwright-core';
+
 import AxeBuilder from '@axe-core/playwright';
 
 test.describe('Accessibility', () => {
   test('should not have any automatically detectable accessibility issues', async ({
-    page: p,
+    page,
   }) => {
-    const page = p as Page;
-    await page.goto('.');
-
     await page.goto('.');
 
     const accessibilityScanResults = await new AxeBuilder({

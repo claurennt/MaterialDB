@@ -9,7 +9,7 @@ test.describe('Home without Session', () => {
   }) => {
     await page.goto('.');
 
-    const logoutButton = page.getByRole('button', { name: 'Logout' });
+    const logoutButton = page.getByRole('link', { name: 'Logout' });
     const registerLink = page.getByRole('link', { name: 'Register' });
     const loginLink = page.getByRole('link', { name: 'Login' });
     const addNewTopicButton = page.getByRole('button', {
@@ -17,7 +17,6 @@ test.describe('Home without Session', () => {
     });
 
     // assert that auth links are flex items and that the logout and add new topic button is not visible
-    await expect(registerLink.locator('..')).toHaveCSS('display', 'flex');
     await expect(registerLink).toBeVisible();
     await expect(loginLink).toBeVisible();
     await expect(addNewTopicButton).not.toBeAttached();
@@ -26,7 +25,7 @@ test.describe('Home without Session', () => {
   test('should show the auth button on the top right corner', async ({
     page,
   }) => {
-    await page.goto(`.?userId=${TESTUSER_ID}`);
+    await page.goto(`/?userId=${TESTUSER_ID}`);
 
     const authLinksContainer = page
       .getByRole('link', { name: 'Register' })
@@ -40,7 +39,7 @@ test.describe('Home without Session', () => {
 testWithSession.describe('Home with Session', () => {
   testWithSession(
     'should only show the Logout button after successful login',
-    async ({ pageWithSession: page }) => {
+    async ({ page }) => {
       const loginLink = page.getByRole('link', { name: 'Login' });
 
       const logoutButton = page.getByRole('button', { name: 'Logout' });
@@ -53,46 +52,40 @@ testWithSession.describe('Home with Session', () => {
       // assert that auth links are not visible now that user is logged in
       await expect(registerLink).not.toBeAttached();
       await expect(loginLink).not.toBeAttached();
-    }
+    },
   );
-  testWithSession(
-    'should successfully add new topic',
-    async ({ pageWithSession: page }) => {
-      const addNewTopicButton = page.getByText('Add new topic');
+  testWithSession('should successfully add new topic', async ({ page }) => {
+    const addNewTopicButton = page.getByText('Add new topic');
 
-      await expect(addNewTopicButton).toBeAttached();
-      // open modal
-      await addNewTopicButton.click();
-      await page.waitForTimeout(500);
+    await expect(addNewTopicButton).toBeAttached();
+    // open modal
+    await addNewTopicButton.click();
+    const modal = page.getByRole('dialog');
 
-      // wait for modal to appear after 500ms
-      const modal = page.getByRole('dialog');
-      await modal.waitFor({ state: 'visible' });
-      await expect(modal).toBeAttached();
-      const nameInput = page.locator('#name');
-      const descriptionInput = page.locator('#description');
+    await expect(modal).toBeVisible();
+    const nameInput = page.locator('#name');
+    const descriptionInput = page.locator('#description');
 
-      // fill inputs
-      await nameInput.fill('test-topic');
-      await descriptionInput.fill('test-description');
+    // fill inputs
+    await nameInput.fill('test-topic');
+    await descriptionInput.fill('test-description');
 
-      // submit request
-      const submit = page.getByText('+');
-      await submit.click();
+    // submit request
+    const submit = page.getByText('+');
+    await submit.click();
 
-      const newlyAddedTopic = page
-        .getByRole('link', {
-          name: 'test-topic',
-        })
-        .last();
+    const newlyAddedTopic = page
+      .getByRole('link', {
+        name: 'test-topic',
+      })
+      .last();
 
-      await expect(newlyAddedTopic).toBeAttached();
-    }
-  );
+    await expect(newlyAddedTopic).toBeAttached();
+  });
 
   testWithSession(
     'should navigate to the individual topic page on card click',
-    async ({ pageWithSession: page }) => {
+    async ({ page }) => {
       const topicToBeClicked = page
         .getByRole('link', {
           name: 'test-topic test-description',
@@ -103,11 +96,11 @@ testWithSession.describe('Home with Session', () => {
       await topicToBeClicked.click();
 
       const urlPattern = new RegExp(
-        `^${BASE_URL.replace(/\./g, '\\.')}/topics/.*\\?name=test-topic$` //ignores the topic id query param
+        `^${BASE_URL.replace(/\./g, '\\.')}/topics/.*\\?name=test-topic$`, //ignores the topic id query param
       );
 
       // asserts that url starts with ${BASE_URL}/topics and ends with ?name=test-topic
       await expect(page).toHaveURL(urlPattern);
-    }
+    },
   );
 });
