@@ -1,5 +1,4 @@
 import { defineConfig, devices } from '@playwright/test';
-import { BASE_URL } from './globals';
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -9,6 +8,11 @@ import { BASE_URL } from './globals';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+const BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://material-db.vercel.app'
+    : 'http://localhost:3000';
+
 export default defineConfig({
   testDir: './e2e:tests',
   /* Run tests in files in parallel */
@@ -59,6 +63,15 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     },
   ],
-
+  webServer: {
+    command: 'npm run start',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    stdout: 'ignore',
+    stderr: 'pipe',
+    env: {
+      NODE_ENV: 'test',
+    },
+  },
   use: { baseURL: BASE_URL },
 });
