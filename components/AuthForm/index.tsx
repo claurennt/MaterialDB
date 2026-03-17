@@ -15,7 +15,7 @@ export const AuthForm = ({ mode }: AuthFormProps) => {
   const { authAction, isError, setAuthFeedback, message } = useAuth();
 
   useEffect(() => {
-    if (!!!message) return;
+    if (!message) return;
     authFeedbackRef.current?.focus();
   }, [message]);
 
