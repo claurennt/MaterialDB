@@ -6,7 +6,6 @@ import { registerAdmin } from '@actions/admins';
 import { Credentials } from 'types/components';
 
 export const useAuth = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [authFeedback, setAuthFeedback] = useState<{
     isError: boolean;
     message: string;
@@ -18,7 +17,6 @@ export const useAuth = () => {
   const router = useRouter();
 
   const authAction = async (type: 'login' | 'register', data: Credentials) => {
-    setIsLoading(true);
     setAuthFeedback({ isError: false, message: '' });
 
     try {
@@ -57,10 +55,8 @@ export const useAuth = () => {
         isError: true,
         message,
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  return { authAction, isLoading, setAuthFeedback, ...authFeedback };
+  return { authAction, setAuthFeedback, ...authFeedback };
 };

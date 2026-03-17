@@ -128,7 +128,6 @@ describe('useFormHandler', () => {
       tags: ['Testing'],
       _topic: '123',
     });
-    expect(result.current.isLoading).toBe(false);
   });
 
   // ### --- Error Handling ---
@@ -147,6 +146,5 @@ describe('useFormHandler', () => {
     });
 
     expect(result.current.error).toBe('Server Error');
-    expect(result.current.isLoading).toBe(false);
   });
 });

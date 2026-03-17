@@ -27,7 +27,6 @@ export const NewLinkModal = ({
     handleRemoveTag,
     handleClearError,
     error,
-    isLoading,
     tags,
   } = useFormHandler({
     type,

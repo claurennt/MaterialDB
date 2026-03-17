@@ -13,7 +13,6 @@ export const useFormHandler = ({
   topicId?: string;
   announce: (msg: string) => void;
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
 
@@ -73,7 +72,6 @@ export const useFormHandler = ({
     }
 
     // Execution
-    setIsLoading(true);
     announce('Submitting your form...');
 
     try {
@@ -91,8 +89,6 @@ export const useFormHandler = ({
       setError('Server Error');
 
       return false;
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -100,7 +96,6 @@ export const useFormHandler = ({
     submit,
     error,
     handleClearError,
-    isLoading,
     tags,
     handleAddTag,
     handleRemoveTag,
