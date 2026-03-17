@@ -1,5 +1,5 @@
 import { RemovableTag } from '@components';
-import { RefObject, useLayoutEffect, useRef } from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 
 type TagListProps = {
   tags: string[];
@@ -14,9 +14,7 @@ export const TagsList = ({
   const tagsRef = useRef<HTMLButtonElement[]>([]);
   const lastDeletedIndex = useRef<number | null>(null);
 
-  // useLayoutEffect fires BEFORE the browser paints, so the focus
-  // jump is invisible to the user (no flickering).
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (lastDeletedIndex.current === null) return;
 
     const index = lastDeletedIndex.current;
@@ -32,7 +30,7 @@ export const TagsList = ({
     }
 
     lastDeletedIndex.current = null;
-  }, [tags]);
+  }, [tags, submitButtonRef]);
 
   const handleRemove = (index: number, tag: string) => {
     onRemoveTag(tag);

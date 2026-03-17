@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, RefObject } from 'react';
+import React, { forwardRef } from 'react';
 
 type DialogButtonProps = {
   ariaLabel: string;
@@ -22,3 +22,5 @@ export const DialogButton = forwardRef<HTMLButtonElement, DialogButtonProps>(
     );
   },
 );
+
+DialogButton.displayName = 'DialogButton';
