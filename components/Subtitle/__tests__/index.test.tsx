@@ -1,63 +1,62 @@
-import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import 'utils/test/mocks';
-
-import {
-  renderWithSession,
-  renderWithoutSession,
-} from '../../../utils/tests:unit/helpers';
-
 import { Subtitle } from '..';
-import { mockUseRouter, TEST_USER_ID } from '../../../utils/tests:unit';
+import { mockUseSearchParams, resetMocks } from '../../../utils/tests:unit';
 
-const setOpenMock = jest.fn();
-jest.mock('next/router', () => ({
-  useRouter: jest.fn(),
-}));
+jest.mock('next/navigation');
 
 describe('Subtitle', () => {
   beforeEach(() => {
-    setOpenMock.mockReset();
+    resetMocks();
+    // Default to no search params
+    mockUseSearchParams(null);
   });
-  it('should render correct text with session', () => {
-    mockUseRouter({ query: { userId: TEST_USER_ID } });
-    //session is defined
-    renderWithSession(<Subtitle setOpen={setOpenMock} />);
 
-    const subtitle = screen.queryByText(/Start adding new/);
+  it('renders public landing message when not authenticated and no userId in URL', () => {
+    render(<Subtitle isAuthenticated={false} isOwner={false} totalCount={0} />);
 
-    expect(subtitle).toBeInTheDocument();
+    expect(
+      screen.getByText(/MaterialDB helps you become a better/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Register or login to create/i),
+    ).toBeInTheDocument();
+  });
 
-    const subtitleWithUserId = screen.queryByText(
-      /If you wanna see a list of resources/
+  it('renders empty state message for owner when they have 0 topics', () => {
+    render(<Subtitle isAuthenticated={true} isOwner={true} totalCount={0} />);
+
+    expect(
+      screen.getByText(/You do not have any topics yet/i),
+    ).toBeInTheDocument();
+  });
+
+  it('renders nothing (null) for owner when they have topics', () => {
+    const { container } = render(
+      <Subtitle isAuthenticated={true} isOwner={true} totalCount={5} />,
     );
 
-    expect(subtitleWithUserId).not.toBeInTheDocument();
+    // When a component returns null, the container is empty
+    expect(container).toBeEmptyDOMElement();
   });
 
-  it('should render correct text without session', () => {
-    mockUseRouter({ query: { userId: TEST_USER_ID } });
-    // session is not defined
-    renderWithoutSession(<Subtitle setOpen={setOpenMock} />);
+  it('renders "Pick a topic" when viewing someone else profile with topics', () => {
+    // Simulate being on ?userId=some-other-id
+    mockUseSearchParams({ userId: 'other-user-123' });
 
-    const subtitle = screen.queryByText(/MaterialDB is an app/);
-    expect(subtitle).toBeInTheDocument();
+    render(<Subtitle isAuthenticated={true} isOwner={false} totalCount={10} />);
+
+    expect(screen.getByText(/Pick a/i)).toBeInTheDocument();
+    expect(screen.getByText(/topic/i)).toBeInTheDocument();
   });
 
-  it('should render correct text with userId and no session', () => {
-    mockUseRouter({ query: { userId: TEST_USER_ID } });
-    // session is not defined
-    renderWithoutSession(<Subtitle setOpen={setOpenMock} />);
+  it('renders specific message when viewing someone else profile with 0 topics', () => {
+    mockUseSearchParams({ userId: 'other-user-123' });
 
-    const subtitleWithUserId = screen.queryByText(
-      /If you wanna see a list of resources/
-    );
+    render(<Subtitle isAuthenticated={true} isOwner={false} totalCount={0} />);
 
-    expect(subtitleWithUserId).toBeInTheDocument();
-
-    const subtitle = screen.queryByText(/Start adding new/);
-
-    expect(subtitle).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/The user does not have any topics yet/i),
+    ).toBeInTheDocument();
   });
 });

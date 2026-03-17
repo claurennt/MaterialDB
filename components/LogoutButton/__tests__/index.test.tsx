@@ -1,41 +1,24 @@
-import React from 'react';
-import { LogoutButton } from '..';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { mockUseRouter } from '../../../utils/tests:unit';
+import { LogoutButton } from '..';
 import { signOut } from 'next-auth/react';
 
-jest.mock('next/router', () => ({
-  useRouter: jest.fn(),
-}));
-
-jest.mock('next-auth/react', () => ({
-  signOut: jest.fn(() => Promise.resolve({ url: '/' })),
-}));
+jest.mock('next-auth/react');
 
 describe('LogoutButton', () => {
-  it('calls signOut and redirects correctly on button click', async () => {
-    const pushMock = jest.fn();
-
-    const mockUrl = '/';
-
-    mockUseRouter({ pathname: '/nodeJS', push: pushMock });
-    (signOut as jest.Mock).mockResolvedValue({ url: mockUrl });
+  it('calls signOut with correct parameters when clicked', async () => {
+    const mockedSignOut = jest.mocked(signOut);
 
     render(<LogoutButton />);
-    const logoutButton = screen.getByText('Logout');
-    expect(logoutButton).toBeInTheDocument();
 
-    fireEvent.click(logoutButton);
+    const logoutLink = screen.getByText('Logout', { selector: 'a' });
+    expect(logoutLink).toBeInTheDocument();
 
-    await Promise.resolve();
+    fireEvent.click(logoutLink);
 
-    expect(signOut).toHaveBeenCalledWith({
-      redirect: false,
+    expect(mockedSignOut).toHaveBeenCalledWith({
+      redirect: true,
       callbackUrl: '/',
     });
-
-    // Ensure the user is redirected to the correct URL after signOut
-    expect(pushMock).toHaveBeenCalledWith('/');
   });
 });

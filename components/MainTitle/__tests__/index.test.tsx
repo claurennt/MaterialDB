@@ -1,19 +1,16 @@
-import React from 'react';
-
-import { screen } from '@testing-library/react';
+import { screen, render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import {
-  renderWithSession,
-  renderWithoutSession,
-} from '../../../utils/tests:unit/helpers';
-
 import { MainTitle } from '..';
+import { createMockSession, mockUseSession } from '../../../utils/tests:unit';
+
+jest.mock('next-auth/react');
 
 describe('MainTitle', () => {
   it('should render the user name when there is a session', () => {
-    // session is defined
-    renderWithSession(<MainTitle />);
+    const mockedSession = createMockSession();
+    mockUseSession(mockedSession);
+    render(<MainTitle />);
 
     const mainTitle = screen.queryByText('Claudia!', {
       selector: 'h1',
@@ -25,8 +22,9 @@ describe('MainTitle', () => {
 });
 
 it('should only say hello without a session', () => {
+  mockUseSession(null);
   // session is null
-  renderWithoutSession(<MainTitle />);
+  render(<MainTitle />);
 
   const mainTitle = screen.queryByText('Claudia!', {
     selector: 'h1',
