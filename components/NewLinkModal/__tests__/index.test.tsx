@@ -32,7 +32,7 @@ describe('NewLinkModal', () => {
 
   it('calls handleOpenModal(false) after successful topic submission', async () => {
     const mockedCreateTopic = jest.mocked(createTopic);
-    mockedCreateTopic.mockResolvedValueOnce({ success: true } as any);
+    mockedCreateTopic.mockResolvedValueOnce({ success: true });
 
     render(
       <NewLinkModal open handleOpenModal={mockHandleOpenModal} type='topic' />,

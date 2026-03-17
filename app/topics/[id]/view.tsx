@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef, useMemo, useEffect } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 
 import { useLiveRegion } from '@lib/client/hooks';
 import { ILink } from '@types';
@@ -20,17 +20,6 @@ type TopicPageProps = {
   isOwner: boolean;
   topicId?: string;
   isAuthenticated: boolean;
-};
-
-const doesLinkMatchTags = ({
-  activeFilters,
-  link,
-}: {
-  activeFilters: string[];
-  link: ILink;
-}) => {
-  if (!activeFilters.length) return true;
-  return link.tags.some((tag) => activeFilters.includes(tag));
 };
 
 const TopicPage = ({ links, topicName, isOwner, topicId }: TopicPageProps) => {

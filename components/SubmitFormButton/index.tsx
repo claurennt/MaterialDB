@@ -3,7 +3,7 @@ import React, { forwardRef } from 'react';
 type DialogButtonProps = {
   ariaLabel: string;
   text: string;
-  onClick?: (value: any) => void | Promise<void>;
+  onClick?: (open: boolean) => void;
 };
 
 export const DialogButton = forwardRef<HTMLButtonElement, DialogButtonProps>(
