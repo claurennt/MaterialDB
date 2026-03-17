@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { registerAdmin } from '@actions/admins';
-import { Credentials } from 'types/components';
+import { Credentials } from '../../../../types';
 
 export const useAuth = () => {
   const [authFeedback, setAuthFeedback] = useState<{
@@ -50,10 +50,10 @@ export const useAuth = () => {
           message: 'Account created successfully! Please check your email.',
         }));
       }
-    } catch ({ message }) {
+    } catch (err) {
       setAuthFeedback({
         isError: true,
-        message,
+        message: (err as any).message,
       });
     }
   };

@@ -4,7 +4,7 @@ import { Link, Topic } from '@models';
 
 import { revalidatePath } from 'next/cache';
 
-import { withAuthDb } from 'app/lib/server/withAuthDb';
+import { withAuthDb } from '@lib/server/withAuthDb';
 import mongoose from 'mongoose';
 
 export const createTopic = withAuthDb(async ({ userId, data }) => {

@@ -2,7 +2,7 @@
 import React, { useState, useRef, useMemo } from 'react';
 
 import { useLiveRegion } from '@lib/client/hooks';
-import { ILink } from '@types';
+import { ILink } from '../../../types';
 
 import '@models';
 import {

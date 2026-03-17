@@ -3,8 +3,8 @@
 import mongoose from 'mongoose';
 import { Link, Topic } from '@models';
 import { revalidatePath } from 'next/cache';
-import { withAuthDb } from 'app/lib/server/withAuthDb';
-import { scrapeLinkWebsite } from 'app/lib/server/scraper';
+import { withAuthDb } from '@lib/server/withAuthDb';
+import { scrapeLinkWebsite } from '@lib/server/scraper';
 
 export const createLink = withAuthDb(async ({ userId, data }) => {
   const { url, tags, _topic } = data;

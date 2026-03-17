@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth';
-import { DBClient } from 'app/lib/server/DBClient';
+import { DBClient } from '@lib/server/DBClient';
 import { Topic } from '@models';
 import Home from './home';
 import { authOptions } from './api/auth/[...nextauth]/authOptions';

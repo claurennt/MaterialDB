@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
-import { DBClient } from 'app/lib/server/DBClient';
+import { DBClient } from '@lib/server/DBClient';
 import { Link } from '@models';
 import View from './view';
-import { authOptions } from 'app/api/auth/[...nextauth]/authOptions';
+import { authOptions } from '../../api/auth/[...nextauth]/authOptions';
 import { getServerSession } from 'next-auth';
 
 const getLinks = async ({ userId, id }: { userId: string; id: string }) => {

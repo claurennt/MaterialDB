@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { NewLinkModalType } from '@types';
+import { NewLinkModalType } from '../../types';
 import { Modal, LiveRegion, ModalInput, DialogButton } from '@components';
 import { linkInputs, topicInputs } from '@lib/client';
 import { useFormHandler, useLiveRegion } from '@lib/client/hooks';

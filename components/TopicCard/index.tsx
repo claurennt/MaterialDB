@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import { getIconName } from '@lib/client';
 import { useSearchParams } from 'next/navigation';
-import { ITopic } from 'types/mongoose';
+import { ITopic } from '../../types';
 
 type TopicCardProps = Pick<ITopic, 'name' | 'description' | '_id'> & {
   anchorId: string;

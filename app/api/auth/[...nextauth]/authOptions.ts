@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { Admin } from '@models';
 
-import { DBClient } from 'app/lib/server/DBClient';
+import { DBClient } from '../../../lib/server/DBClient';
 
 const { NEXTAUTH_SECRET } = process.env;
 

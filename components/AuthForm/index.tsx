@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { useAuth } from '@lib/client/hooks';
 import { AuthInput, AuthFeedback } from '@components';
 import Link from 'next/link';
-import { Credentials } from '@types';
+import { Credentials } from '../../types';
 import styles from '../../styles/index.module.css';
 interface AuthFormProps {
   mode: 'login' | 'register';

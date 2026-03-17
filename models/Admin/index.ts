@@ -1,7 +1,7 @@
 import mongoose, { Model } from 'mongoose';
 import jwt from 'jsonwebtoken';
 
-import { IAdmin } from '@types';
+import { IAdmin } from '../../types';
 const { NEXTAUTH_SECRET } = process.env;
 const Schema = mongoose.Schema;
 

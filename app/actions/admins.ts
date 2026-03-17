@@ -4,10 +4,10 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { Admin } from '@models';
 
-import { sendActivationEmail } from 'app/lib/server/mailer';
-import { withDb } from 'app/lib/server/withDb';
-import { withAuthDb } from 'app/lib/server/withAuthDb';
-import { Credentials } from 'types/components';
+import { sendActivationEmail } from '@lib/server/mailer';
+import { withDb } from '@lib/server/withDb';
+import { withAuthDb } from '@lib/server/withAuthDb';
+import { Credentials } from '../../types/components';
 
 export const registerAdmin = withDb(
   async ({ username, email, password }: Credentials) => {

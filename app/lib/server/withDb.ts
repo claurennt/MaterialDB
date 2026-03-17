@@ -1,4 +1,4 @@
-import { DBClient } from 'app/lib/server/DBClient';
+import { DBClient } from '@lib/server/DBClient';
 
 export const withDb =
   <T extends any[], R>(callback: (...args: T) => Promise<R>) =>

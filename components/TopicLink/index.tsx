@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useParams, useRouter } from 'next/navigation';
 
-import { ILink } from 'types/mongoose';
+import { ILink } from '../../types/mongoose';
 import { DeletionModal, FilterTag, CopyToClipboardButton } from '..';
 
 import { HighlightedText } from '@components';

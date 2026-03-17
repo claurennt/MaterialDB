@@ -1,5 +1,5 @@
-import { DBClient } from 'app/lib/server/DBClient';
-import { authOptions } from 'app/api/auth/[...nextauth]/authOptions';
+import { DBClient } from '@lib/server/DBClient';
+import { authOptions } from '../../api/auth/[...nextauth]/authOptions';
 import { getServerSession } from 'next-auth';
 
 type ActionCallback<T> = (args: { userId: string; data: any }) => Promise<T>;
@@ -20,7 +20,7 @@ export const withAuthDb =
 
       return await callback({ userId: session.user.id, data });
     } catch (error) {
-      console.error('Server Action Error:', error.message);
-      throw new Error(error.message || 'SERVER_ERROR');
+      console.error('Server Action Error:', (error as any).message);
+      throw new Error((error as any).message || 'SERVER_ERROR');
     }
   };

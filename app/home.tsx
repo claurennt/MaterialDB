@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ITopic } from '@types';
+import { ITopic } from '../types';
 import { useLiveRegion } from '@lib/client/hooks';
 import {
   NewLinkModal,

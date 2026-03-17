@@ -1,6 +1,6 @@
 import mongoose, { Model } from 'mongoose';
 import { Topic } from '@models';
-import { ILink } from '@types';
+import { ILink } from '../../types';
 
 const Schema = mongoose.Schema;
 
