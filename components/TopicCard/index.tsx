@@ -60,9 +60,9 @@ export const TopicCard = ({
           alt=''
           className='rounded-full mx-auto'
         />
-        <h3 className='text-center font-bold text-[1.2rem] font-sans'>
+        <h2 className='text-center font-bold text-[1.2rem] font-sans'>
           {name}
-        </h3>
+        </h2>
         <p className='text-sm opacity-80'>{description}</p>
       </Link>
     </li>
