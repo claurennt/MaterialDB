@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { Header } from '..';
+import { Header } from '../index';
 
 import {
   mockUsePathname,
@@ -9,7 +9,7 @@ import {
   TEST_USER_ID,
   createMockSession,
   mockUseSession,
-} from '../../../utils/tests:unit';
+} from '../../../utils/tests-unit';
 
 jest.mock('next/navigation');
 jest.mock('next-auth/react');

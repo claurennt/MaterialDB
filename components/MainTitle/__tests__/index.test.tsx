@@ -1,8 +1,8 @@
 import { screen, render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import { MainTitle } from '..';
-import { createMockSession, mockUseSession } from '../../../utils/tests:unit';
+import { MainTitle } from '../index';
+import { createMockSession, mockUseSession } from '../../../utils/tests-unit';
 
 jest.mock('next-auth/react');
 

@@ -1,7 +1,7 @@
 import { screen, render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { Subtitle } from '..';
-import { mockUseSearchParams, resetMocks } from '../../../utils/tests:unit';
+import { Subtitle } from '../index';
+import { mockUseSearchParams, resetMocks } from '../../../utils/tests-unit';
 
 jest.mock('next/navigation');
 

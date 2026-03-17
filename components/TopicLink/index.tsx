@@ -3,8 +3,9 @@ import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
 import { ILink } from '../../types/mongoose';
-import { DeletionModal, FilterTag, CopyToClipboardButton } from '..';
-
+import { DeletionModal } from '../DeletionModal';
+import { FilterTag } from '../FilterTag';
+import { CopyToClipboardButton } from '../CopyToClipboardButton';
 import { HighlightedText } from '@components';
 import { deleteLink } from '@actions/links';
 

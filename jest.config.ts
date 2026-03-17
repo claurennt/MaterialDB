@@ -21,6 +21,11 @@ const config: Config = {
     '^@actions/(.*)$': '<rootDir>/app/actions/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  testPathIgnorePatterns: [
+    '<rootDir>/.next/',
+    '<rootDir>/node_modules/',
+    '<rootDir>/e2e-tests/',
+  ],
 };
 
 export default createJestConfig(config);
