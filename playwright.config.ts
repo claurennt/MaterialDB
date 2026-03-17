@@ -1,20 +1,11 @@
 import { defineConfig, devices } from '@playwright/test';
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config();
-
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
 const BASE_URL =
-  process.env.NODE_ENV === 'production'
-    ? 'https://material-db.vercel.app'
-    : 'http://localhost:3000';
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000'
+    : 'http://127.0.0.1:3000';
 
 export default defineConfig({
-  testDir: './e2e:tests',
+  testDir: './e2e/tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -64,13 +55,12 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run start',
-    url: 'http://localhost:3000',
+    command: process.env.CI ? 'node .next/standalone/server.js' : 'npm run dev', // CI runs against optimized build
+    url: BASE_URL,
     reuseExistingServer: !process.env.CI,
-    stdout: 'ignore',
-    stderr: 'pipe',
     env: {
-      NODE_ENV: 'test',
+      PORT: '3000',
+      HOSTNAME: '127.0.0.1',
     },
   },
   use: { baseURL: BASE_URL },
