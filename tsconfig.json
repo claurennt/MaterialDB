@@ -21,6 +21,7 @@
       "@types": ["types/index.ts"],
       "@components": ["components/index.ts"],
       "@lib/client": ["app/lib/client/index.ts"],
+      "@lib/client/hooks": ["app/lib/client/hooks/index.ts"],
       "@styles/*": ["styles/*"],
       "@actions/*": ["app/actions/*"]
     },

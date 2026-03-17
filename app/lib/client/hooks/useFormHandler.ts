@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { createTopic } from '@actions/topics';
 import { createLink } from '@actions/links';
-import { isValidUrl } from './isValidUrl';
+import { isValidUrl } from '../isValidUrl';
 
 export const useFormHandler = ({
   type,

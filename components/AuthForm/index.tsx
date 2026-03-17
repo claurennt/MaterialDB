@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useRef } from 'react';
-import { useAuth } from '@lib/client';
+import { useAuth } from '@lib/client/hooks';
 import { AuthInput, AuthFeedback } from '@components';
 import Link from 'next/link';
 import { Credentials } from '@types';

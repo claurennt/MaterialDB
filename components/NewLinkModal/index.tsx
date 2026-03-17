@@ -1,15 +1,11 @@
+import { useRef } from 'react';
 import { NewLinkModalType } from '@types';
 import { Modal, LiveRegion, ModalInput, DialogButton } from '@components';
-import {
-  linkInputs,
-  topicInputs,
-  useFormHandler,
-  useLiveRegion,
-} from '@lib/client';
+import { linkInputs, topicInputs } from '@lib/client';
+import { useFormHandler, useLiveRegion } from '@lib/client/hooks';
 import { TagsList } from './TagList';
-import { useEffect, useRef } from 'react';
 
-type ModalContainerProps = {
+export type ModalContainerProps = {
   open: boolean;
   handleOpenModal: (open: boolean) => void;
   type: NewLinkModalType;
@@ -55,7 +51,11 @@ export const NewLinkModal = ({
 
   return (
     <Modal open={open} handleOpenModal={handleOpenModal} title={title}>
-      <form onSubmit={handleAddResource} onInput={handleClearError}>
+      <form
+        data-testid='resource-form'
+        onSubmit={handleAddResource}
+        onInput={handleClearError}
+      >
         <div className='flex flex-col gap-4'>
           {inputs.map(({ name }) => (
             <ModalInput

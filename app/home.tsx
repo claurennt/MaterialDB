@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { ITopic } from '@types';
-import { useLiveRegion } from '@lib/client';
+import { useLiveRegion } from '@lib/client/hooks';
 import {
   NewLinkModal,
   MainTitle,
