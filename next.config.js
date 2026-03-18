@@ -1,6 +1,12 @@
 const nextConfig = {
-  output: 'standalone',
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['localhost:3000', '127.0.0.1:3000'],
+    },
+  },
+
   images: {
+    unoptimized: process.env.NODE_ENV === 'test',
     remotePatterns: [
       {
         protocol: 'https',
@@ -15,4 +21,4 @@ const nextConfig = {
     defaultLocale: 'en',
   },
 };
-module.exports = nextConfig;
+export { nextConfig };

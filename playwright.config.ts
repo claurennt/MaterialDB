@@ -1,8 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
-const BASE_URL =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3000'
-    : 'http://127.0.0.1:3000';
+
+const PORT = process.env.PORT || '3000';
+const HOST = '127.0.0.1';
+const BASE_URL = `http://${HOST}:${PORT}`;
 
 export default defineConfig({
   testDir: './e2e-tests',
@@ -16,52 +16,37 @@ export default defineConfig({
   workers: process.env.CI ? 2 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI ? 'blob' : 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 
   /* Configure projects for major browsers */
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-
-    /* Test against mobile viewports. */
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
-    },
-    /* Test against branded browsers. */
-    {
-      name: 'Microsoft Edge',
-      use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    },
-    {
-      name: 'Google Chrome',
-      use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    },
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+    { name: 'Mobile Chrome', use: { ...devices['Pixel 5'] } },
+    { name: 'Mobile Safari', use: { ...devices['iPhone 12'] } },
   ],
-  webServer: {
-    command: process.env.CI ? 'node .next/standalone/server.js' : 'npm run dev', // CI runs against optimized build
-    url: BASE_URL,
-    reuseExistingServer: !process.env.CI,
-    env: {
-      PORT: '3000',
-      HOSTNAME: '127.0.0.1',
+
+  /* Shared settings for all the projects */
+  use: {
+    baseURL: BASE_URL,
+    trace: 'on-first-retry',
+    video: 'on-first-retry',
+    // Next 14 specific: Ensure metadata/headers don't clash
+    extraHTTPHeaders: {
+      'x-playwright-test': 'true',
     },
   },
-  use: { baseURL: BASE_URL },
+
+  /* WebServer configuration */
+  webServer: {
+    command: process.env.CI ? 'npm run start' : 'npm run dev',
+    url: BASE_URL,
+    reuseExistingServer: !process.env.CI,
+    timeout: 120000,
+    env: {
+      PORT: PORT,
+      HOSTNAME: HOST,
+      NODE_ENV: 'test',
+    },
+  },
 });

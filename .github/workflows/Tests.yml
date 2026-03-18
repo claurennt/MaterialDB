@@ -14,11 +14,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
+          cache: 'npm'
       - run: npm ci
       - run: npm run test:unit
+        env:
+          MONGODB_URI: mongodb://localhost:27017/test_db
 
-  playwright-tests:
-    timeout-minutes: 60
+  playwright-e2e:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -29,44 +31,45 @@ jobs:
     services:
       mongodb:
         image: mongo:6.0
-        ports:
-          - 27017:27017
+        ports: ['27017:27017']
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
+          cache: 'npm'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: Build app
-        run: npm run build
-        env:
-          MONGODB_URI: mongodb://localhost:27017/test_db
-          NEXTAUTH_SECRET: '${{ secrets.NEXTAUTH_SECRET }}'
-          NEXTAUTH_URL: http://localhost:3000
+      # Next 14 needs specific Sharp binaries for the Linux Runner
+      - name: Setup Sharp
+        run: npm install --platform=linux --arch=x64 sharp
 
-      - name: Install Playwright Browsers
+      - name: Install Playwright
         run: npx playwright install --with-deps
 
-      - name: Build App
-        run: npm run build
+      # Cache the Next.js build to speed up shards
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
+      - name: Build and Test
+        run: |
+          npm run build
+          npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
         env:
           MONGODB_URI: mongodb://localhost:27017/test_db
           NEXTAUTH_SECRET: '${{ secrets.NEXTAUTH_SECRET }}'
-          NEXTAUTH_URL: http://localhost:3000
+          NEXTAUTH_URL: http://127.0.0.1:3000
 
-      - name: Run Playwright Tests
-        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
-        env:
-          MONGODB_URI: mongodb://localhost:27017/test_db
-          NEXTAUTH_SECRET: '${{ secrets.NEXTAUTH_SECRET }}'
-          NEXTAUTH_URL: http://localhost:3000
-
-      - name: Upload Blob Report
-        if: ${{ !cancelled() }}
+      - name: Upload Blobs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: blob-report-${{ matrix.shardIndex }}
@@ -74,8 +77,8 @@ jobs:
           retention-days: 1
 
   merge-reports:
-    if: ${{ !cancelled() }}
-    needs: [playwright-tests]
+    if: always()
+    needs: [playwright-e2e]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -89,11 +92,10 @@ jobs:
           path: all-blobs
           pattern: blob-report-*
           merge-multiple: true
-      - name: Merge into HTML
+      - name: Generate Final Report
         run: npx playwright merge-reports --reporter html ./all-blobs
-      - name: Upload Merged Report
+      - name: Upload HTML Report
         uses: actions/upload-artifact@v4
         with:
-          name: final-playwright-report
+          name: final-report
           path: playwright-report/
-          retention-days: 7
