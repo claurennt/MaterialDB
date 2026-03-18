@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Modal } from '@components';
+import { Modal } from '@components/Modal';
 
 type DeletionPopupProps = {
   open: boolean;

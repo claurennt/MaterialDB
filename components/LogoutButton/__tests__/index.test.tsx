@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { LogoutButton } from '../index';
+import { LogoutButton } from '@components/LogoutButton';
 import { signOut } from 'next-auth/react';
 
 jest.mock('next-auth/react');

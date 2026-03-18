@@ -1,18 +1,16 @@
 'use client';
 import React, { useState, useRef, useMemo } from 'react';
 
-import { useLiveRegion } from '@lib/client/hooks';
+import { useLiveRegion } from '@lib/client/hooks/useLiveRegion';
 import { ILink } from '../../../types';
 
 import '@models';
-import {
-  TopicLink,
-  NewLinkModal,
-  AddNewButton,
-  SearchBar,
-  Header,
-  LiveRegion,
-} from '@components';
+import { TopicLink } from '@components/TopicLink';
+import { NewLinkModal } from '@components/NewLinkModal';
+import { AddNewButton } from '@components/AddNewButton';
+import { SearchBar } from '@components/SearchBar';
+import { Header } from '@components/Header';
+import { LiveRegion } from '@components/LiveRegion';
 
 type TopicPageProps = {
   links: ILink[];

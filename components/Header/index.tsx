@@ -2,8 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { LogoutButton, AuthLinks } from '@components';
+import { LogoutButton } from '@components/LogoutButton';
+import { AuthLinks } from '@components/AuthLinks';
 import styles from '../../styles/index.module.css';
+
 export const Header = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();

@@ -15,9 +15,10 @@ const config: Config = {
   moduleNameMapper: {
     '^@models$': '<rootDir>/models/index.ts',
     '^@types$': '<rootDir>/types/index.ts',
-    '^@components$': '<rootDir>/components/index.ts',
+    '^@components/(.*)$': '<rootDir>/components/$1/index.tsx',
     '^@lib/client$': '<rootDir>/app/lib/client/index.ts',
-    '^@lib/client/hooks': '<rootDir>/app/lib/client/hooks/index.ts',
+    '^@lib/client/hooks/(.*)$': '<rootDir>/app/lib/client/hooks/$1',
+    '^@lib/server$': '<rootDir>/app/lib/server/index.ts',
     '^@actions/(.*)$': '<rootDir>/app/actions/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],

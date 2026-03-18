@@ -17,10 +17,10 @@
     "paths": {
       "@models": ["./models/index.ts"],
       "@types/*": ["./types/index.ts"],
-      "@components": ["./components/index.ts"],
+      "@components/*": ["./components/*/index.tsx"],
       "@lib/client": ["./app/lib/client/index.ts"],
       "@lib/server/*": ["./app/lib/server/*"],
-      "@lib/client/hooks": ["./app/lib/client/hooks/index.ts"],
+      "@lib/client/hooks/*": ["./app/lib/client/hooks/*"],
       "@styles/*": ["./styles/*"],
       "@actions/*": ["./app/actions/*"]
     },

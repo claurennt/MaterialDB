@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { MainTitle } from '@components';
+import { MainTitle } from '@components/MainTitle';
 import styles from '../../styles/index.module.css';
 interface PageProps {
   result: {

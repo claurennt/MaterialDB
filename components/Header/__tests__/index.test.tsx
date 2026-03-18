@@ -14,8 +14,11 @@ import {
 jest.mock('next/navigation');
 jest.mock('next-auth/react');
 
-jest.mock('@components', () => ({
+jest.mock('@components/LogoutButton', () => ({
   LogoutButton: () => <a href='test'>Logout</a>,
+}));
+
+jest.mock('@components/AuthLinks', () => ({
   AuthLinks: () => <a href='auth'>Auth Links</a>,
 }));
 

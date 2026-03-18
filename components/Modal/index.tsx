@@ -1,5 +1,5 @@
 'use client';
-import { DialogButton } from '@components';
+import { DialogButton } from '@components/DialogButton';
 import React, { useEffect, useRef } from 'react';
 
 type ModalProps = {

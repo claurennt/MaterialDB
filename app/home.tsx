@@ -2,18 +2,16 @@
 
 import React, { useState } from 'react';
 import { ITopic } from '../types';
-import { useLiveRegion } from '@lib/client/hooks';
-import {
-  NewLinkModal,
-  MainTitle,
-  Subtitle,
-  AuthLinks,
-  Header,
-  LiveRegion,
-  TopicCard,
-  AddNewButton,
-  SkipLink,
-} from '@components';
+import { useLiveRegion } from '@lib/client/hooks/useLiveRegion';
+import { AuthLinks } from '@components/AuthLinks';
+import { Header } from '@components/Header';
+import { LiveRegion } from '@components/LiveRegion';
+import { TopicCard } from '@components/TopicCard';
+import { AddNewButton } from '@components/AddNewButton';
+import { SkipLink } from '@components/SkipLink';
+import { MainTitle } from '@components/MainTitle';
+import { Subtitle } from '@components/Subtitle';
+import { NewLinkModal } from '@components/NewLinkModal';
 
 export default function Home({
   topics,

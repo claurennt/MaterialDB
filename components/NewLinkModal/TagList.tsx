@@ -1,4 +1,4 @@
-import { RemovableTag } from '@components';
+import { RemovableTag } from '@components/RemovableTag';
 import { RefObject, useEffect, useRef } from 'react';
 
 type TagListProps = {

@@ -1,8 +1,12 @@
 import { useRef } from 'react';
 import { NewLinkModalType } from '../../types';
-import { Modal, LiveRegion, ModalInput, DialogButton } from '@components';
+import { Modal } from '@components/Modal';
+import { LiveRegion } from '@components/LiveRegion';
+import { ModalInput } from '@components/ModalInput';
+import { DialogButton } from '@components/DialogButton';
 import { linkInputs, topicInputs } from '@lib/client';
-import { useFormHandler, useLiveRegion } from '@lib/client/hooks';
+import { useFormHandler } from '@lib/client/hooks/useFormHandler';
+import { useLiveRegion } from '@lib/client/hooks/useLiveRegion';
 import { TagsList } from './TagList';
 
 export type ModalContainerProps = {
