@@ -99,12 +99,13 @@ export default defineConfig({
     timeout: 120000,
 
     env: {
-      DATABASE_URL: TEST_DB_URL,
       PORT,
       HOSTNAME,
       NODE_ENV: 'test',
       NEXTAUTH_URL: BASE_URL,
       NEXTAUTH_SECRET: 'test-secret',
+      MONGODB_URI: TEST_DB_URL,
+      MONGOTESTDB_URI: TEST_DB_URL,
     },
   },
 });
