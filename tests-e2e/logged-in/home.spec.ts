@@ -50,7 +50,7 @@ test.describe('Home with Session', () => {
 
     const newlyAddedTopic = page
       .getByRole('link', {
-        name: 'test-topic',
+        name: 'test-topic test-description',
       })
       .last();
 
@@ -61,7 +61,9 @@ test.describe('Home with Session', () => {
     page,
   }) => {
     await page.goto(BASE_URL);
-    const topicCard = page.getByRole('link', { name: /test-topic/i }).first();
+    const topicCard = page
+      .getByRole('link', { name: /test-topic test-description/i })
+      .first();
 
     await expect(topicCard).toBeVisible();
     await topicCard.click();
