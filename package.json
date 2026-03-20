@@ -15,7 +15,7 @@
     "lint": "next lint",
     "test:unit": "jest",
     "test:unit-watch": "jest --watch",
-    "test:playwright": "playwright test"
+    "test:e2e": "NODE_ENV=test playwright test"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.1",
@@ -26,6 +26,7 @@
     "cheerio": "^1.0.0-rc.12",
     "cookie": "^0.5.0",
     "crypto": "^1.0.1",
+    "dotenv": "^17.3.1",
     "mongodb": "^6.21.0",
     "mongodb-memory-server": "^10.0.0",
     "mongoose": "^8.0.1",

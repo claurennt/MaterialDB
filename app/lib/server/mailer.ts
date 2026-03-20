@@ -1,7 +1,7 @@
-import { Types } from 'mongoose';
 import nodemailer from 'nodemailer';
+import { PROJECT_URL } from '../../../globals';
 
-const { NODEMAILER_EMAIL, NODEMAILER_PASSWORD, PROJECT_URL } = process.env;
+const { NODEMAILER_EMAIL, NODEMAILER_PASSWORD } = process.env;
 const port = process.env.PORT || 3000;
 const environment = process.env.NODE_ENV;
 
@@ -19,7 +19,7 @@ type SendActivationEmailParams = {
 };
 
 const BASEURL =
-  environment === 'development' ? `http://localhost:${port}` : `${PROJECT_URL}`;
+  environment === 'development' ? `http://localhost:${port}` : PROJECT_URL;
 
 //create transporter object with config
 const transporter = nodemailer.createTransport({

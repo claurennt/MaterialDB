@@ -1,7 +1,6 @@
-import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { Session } from 'next-auth';
-import { useSearchParams, usePathname } from 'next/navigation';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
 export const mockUsePathname = (pathname: string) => {
   const mockedPathname = jest.mocked(usePathname);

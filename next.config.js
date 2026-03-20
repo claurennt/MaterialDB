@@ -1,3 +1,4 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
     serverActions: {
@@ -16,9 +17,6 @@ const nextConfig = {
       },
     ],
   },
-  i18n: {
-    locales: ['en'],
-    defaultLocale: 'en',
-  },
 };
-export { nextConfig };
+
+module.exports = nextConfig;

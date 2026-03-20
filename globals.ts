@@ -1,4 +1,12 @@
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.resolve(__dirname, '/.env') });
+
+export const PORT = process.env.PORT || '3000';
+export const HOSTNAME = 'localhost';
+export const PROJECT_URL = 'https://material-db.vercel.app/';
 export const BASE_URL =
-  process.env.NODE_ENV == 'development'
-    ? 'http://localhost:3000'
-    : 'https://material-db.vercel.app';
+  process.env.NODE_ENV === 'production'
+    ? PROJECT_URL
+    : `http://${HOSTNAME}:${PORT}`;
