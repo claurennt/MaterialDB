@@ -1,9 +1,10 @@
 'use client';
 import React, { useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@lib/client/hooks/useAuth';
 import { AuthInput } from '@components/AuthInput';
 import { AuthFeedback } from '@components/AuthFeedback';
-import Link from 'next/link';
 import { Credentials } from '../../types';
 import styles from '../../styles/index.module.css';
 interface AuthFormProps {
@@ -12,26 +13,40 @@ interface AuthFormProps {
 
 export const AuthForm = ({ mode }: AuthFormProps) => {
   const authFeedbackRef = useRef<HTMLDivElement>(null);
-
+  const router = useRouter();
   const { authAction, isError, setAuthFeedback, message } = useAuth();
 
   useEffect(() => {
     if (!message) return;
     authFeedbackRef.current?.focus();
-  }, [message]);
+
+    //redirect after successful login
+    if (mode === 'login' && !isError) {
+      let timerId: NodeJS.Timeout;
+      timerId = setTimeout(() => {
+        // refertch server session
+        router.refresh();
+        router.push('/');
+      }, 2000);
+      return () => clearTimeout(timerId);
+    }
+  }, [message, router, mode, isError]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData) as unknown as Credentials;
+    const { username, email, password } = data;
 
     const canSubmit =
-      !data.username || !data.password || (mode === 'register' && !data.email);
+      mode === 'register'
+        ? email && username && password
+        : username && password;
 
-    if (canSubmit) {
+    if (!canSubmit) {
       setAuthFeedback({
         isError: true,
-        message: 'Email and Password are required',
+        message: `${mode === 'register' ? 'Email, ' : ''}Username and Password are required`,
       });
       return;
     }

@@ -1,5 +1,4 @@
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { registerAdmin } from '@actions/admins';
@@ -13,8 +12,6 @@ export const useAuth = () => {
     isError: false,
     message: '',
   });
-
-  const router = useRouter();
 
   const authAction = async (type: 'login' | 'register', data: Credentials) => {
     setAuthFeedback({ isError: false, message: '' });
@@ -34,12 +31,11 @@ export const useAuth = () => {
           ...prev,
           message: 'Login successful! Redirecting...',
         }));
-        router.refresh();
 
-        // Technical Redirect
         setTimeout(() => {
           router.push('/');
-        }, 2000);
+          router.refresh();
+        }, 3000);
       } else {
         const result = await registerAdmin(data);
         if (result?.error) throw new Error(result.error);
@@ -47,7 +43,7 @@ export const useAuth = () => {
         setAuthFeedback((prev) => ({
           ...prev,
           isError: false,
-          message: 'Account created successfully! Please check your email.',
+          message: 'Account created! Please check your email.',
         }));
       }
     } catch (err) {
