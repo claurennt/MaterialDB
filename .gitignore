@@ -44,4 +44,4 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-user.json
+/utils/tests-e2e/user.json
