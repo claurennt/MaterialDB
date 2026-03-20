@@ -1,4 +1,5 @@
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { registerAdmin } from '@actions/admins';
@@ -12,6 +13,7 @@ export const useAuth = () => {
     isError: false,
     message: '',
   });
+  const router = useRouter();
 
   const authAction = async (type: 'login' | 'register', data: Credentials) => {
     setAuthFeedback({ isError: false, message: '' });

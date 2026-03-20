@@ -1,7 +1,6 @@
 'use client';
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@lib/client/hooks/useAuth';
 import { AuthInput } from '@components/AuthInput';
 import { AuthFeedback } from '@components/AuthFeedback';
@@ -13,24 +12,12 @@ interface AuthFormProps {
 
 export const AuthForm = ({ mode }: AuthFormProps) => {
   const authFeedbackRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
   const { authAction, isError, setAuthFeedback, message } = useAuth();
 
   useEffect(() => {
     if (!message) return;
     authFeedbackRef.current?.focus();
-
-    //redirect after successful login
-    if (mode === 'login' && !isError) {
-      let timerId: NodeJS.Timeout;
-      timerId = setTimeout(() => {
-        // refertch server session
-        router.refresh();
-        router.push('/');
-      }, 2000);
-      return () => clearTimeout(timerId);
-    }
-  }, [message, router, mode, isError]);
+  }, [message]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

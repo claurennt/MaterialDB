@@ -18,6 +18,7 @@ export const ModalInput = (props: ModalInputsProps) => {
       : name === 'tags'
         ? 'tags-explanation'
         : undefined;
+  const ref = isRequired ? requiredInputRef : null;
 
   const onKeyDown = name === 'tags' ? handleKeyDown : undefined;
 
@@ -38,7 +39,7 @@ export const ModalInput = (props: ModalInputsProps) => {
           {isRequired && <span aria-hidden='true'>*</span>}
         </label>
         <input
-          ref={isRequired ? requiredInputRef : null}
+          ref={ref}
           aria-required={isRequired}
           onKeyDown={onKeyDown}
           type='text'
