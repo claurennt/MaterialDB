@@ -91,14 +91,17 @@ export default defineConfig({
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
-
+    stdout: 'pipe',
+    stderr: 'pipe',
     env: {
       PORT,
       HOSTNAME,
       NODE_ENV: 'test',
       NEXTAUTH_URL: BASE_URL,
       NEXTAUTH_SECRET: 'test-secret',
-      MONGOTESTDB_URI: `mongodb://localhost:27017/db_worker_${process.env.TEST_WORKER_INDEX || '0'}`,
+      MONGOTESTDB_URI:
+        process.env.MONGOTESTDB_URI ||
+        'mongodb://localhost:27017/materialdb_test',
     },
   },
 });

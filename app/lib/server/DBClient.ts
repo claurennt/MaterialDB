@@ -1,10 +1,5 @@
 import mongoose from 'mongoose';
 
-const uri =
-  process.env.NODE_ENV === 'test'
-    ? process.env.MONGOTESTDB_URI
-    : process.env.MONGODB_URI;
-
 interface MongooseCache {
   connection: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
@@ -26,6 +21,11 @@ const opts: mongoose.ConnectOptions = {
 };
 
 export async function DBClient(): Promise<typeof mongoose> {
+  const uri =
+    process.env.NODE_ENV === 'test'
+      ? process.env.MONGOTESTDB_URI
+      : process.env.MONGODB_URI;
+
   if (!uri) {
     throw new Error('Please add your Mongo URI to .env file');
   }

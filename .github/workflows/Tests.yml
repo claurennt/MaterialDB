@@ -17,10 +17,31 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run test:unit
+
+  # 2. BUILD ONCE (Shared by all Shards)
+  build-for-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+      - run: npm ci
+      - name: Build Next.js
+        run: npm run build
         env:
-          MONGODB_URI: mongodb://localhost:27017/test_db
+          NEXTAUTH_URL: http://localhost:3000
+          NEXTAUTH_SECRET: '${{ secrets.NEXTAUTH_SECRET }}'
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: next-build
+          path: .next
+          retention-days: 1
 
   playwright-e2e:
+    needs: [build-for-e2e]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -43,26 +64,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Next 14 needs specific Sharp binaries for the Linux Runner
-      - name: Setup Sharp
-        run: npm install --platform=linux --arch=x64 sharp
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: next-build
+          path: .next
 
-      - name: Install Playwright
+      - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      # Cache the Next.js build to speed up shards
-      - name: Cache Next.js build
-        uses: actions/cache@v4
-        with:
-          path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
-
-      - name: Build and Test
-        run: |
-          npm run build
-          npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+      - name: Run Playwright Tests
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
         env:
           MONGOTESTDB_URI: mongodb://localhost:27017/test_db
           NEXTAUTH_SECRET: '${{ secrets.NEXTAUTH_SECRET }}'
