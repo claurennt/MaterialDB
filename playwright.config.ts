@@ -6,8 +6,7 @@ import path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-const AUTH_FILE = path.join(__dirname, 'utils/tests-e2e/user.json');
-const AUTH_DEPENDENCY = ['setup'];
+export const AUTH_FILE = path.join(__dirname, '/e2e/utils/user.json');
 
 type Device = {
   name: string;
@@ -30,25 +29,27 @@ const getProjects = (desktop: Device[], mobile: Device[]) => {
   return [...desktop, ...mobile].reduce<Project[]>((acc, curr) => {
     const { name, device } = curr;
 
-    // Session
+    // loggedIn folder setup
+    acc.push({
+      name: `${name}-loggedIn`,
+      use: { ...device, storageState: AUTH_FILE },
+      dependencies: ['auth-setup'],
+      testMatch: /loggedIn\/.*\.spec\.ts/,
+    });
+    // auth folder setup
     acc.push({
       name: `${name}-auth`,
-      use: { ...device, storageState: AUTH_FILE },
-      dependencies: AUTH_DEPENDENCY,
-      testIgnore: [
-        /tests-e2e\/auth\/.*/,
-        /tests-e2e\/public\/.*/,
-        /.*\.setup\.ts/,
-        /global-setup\.ts/,
-      ],
+      use: device,
+      dependencies: ['global-setup'],
+      testMatch: /auth\/.*\.spec\.ts/,
     });
 
     // No session
     if (name === 'chromium') {
       acc.push({
-        name: `${name}-guest`,
+        name: `${name}-public`,
         use: { ...device, storageState: { cookies: [], origins: [] } },
-        testMatch: [/tests-e2e\/auth\/.*/, /tests-e2e\/public\/.*/],
+        testMatch: /public\/.*\.spec\.ts/,
       });
     }
 
@@ -57,8 +58,7 @@ const getProjects = (desktop: Device[], mobile: Device[]) => {
 };
 
 export default defineConfig({
-  globalSetup: require.resolve('./tests-e2e/global-setup.ts'),
-  testDir: './tests-e2e',
+  testDir: './e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -71,7 +71,15 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    { name: 'setup', testMatch: /auth\.setup\.ts/ },
+    {
+      name: 'global-setup',
+      testMatch: /global-setup\.ts/,
+    },
+
+    {
+      name: 'auth-setup',
+      testMatch: /auth\.setup\.ts/,
+    },
     ...getProjects(desktopDevices, mobileDevices),
   ],
   /* Shared settings for all the projects */
@@ -87,7 +95,7 @@ export default defineConfig({
 
   /* WebServer configuration */
   webServer: {
-    command: process.env.CI ? 'npm run start' : 'npm run dev',
+    command: 'npm run start',
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 120000,

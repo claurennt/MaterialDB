@@ -13,7 +13,7 @@ export const AuthFeedback = forwardRef<HTMLDivElement, ErrorMessageProps>(
       className={`w-full mb-4 transition-opacity duration-300  ${
         message ? 'visible opacity-100' : 'invisible opacity-0'
       }`}
-      aria-hidden={!!message}
+      aria-hidden={!message}
     >
       <div className='relative overflow-hidden rounded-lg border border-red-500/50 bg-red-500/10 p-2 backdrop-blur-sm'>
         <div

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { TESTUSER_ID } from '../../utils/tests-e2e/helpers';
+import { TESTUSER_ID } from '../../utils/e2e/helpers';
 import { BASE_URL } from '../../globals';
 
 const TOPICS_PATH = '/topics/6583143df9b1f53a8d01b793';
