@@ -18,27 +18,43 @@ jobs:
       - run: npm ci
       - run: npm run test:unit
 
-  # 2. BUILD ONCE (Shared by all Shards)
   build-for-e2e:
     runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: 1
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
           cache: 'npm'
+
       - run: npm ci
+
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
       - name: Build Next.js
         run: npm run build
         env:
           NEXTAUTH_URL: http://localhost:3000
           NEXTAUTH_SECRET: '${{ secrets.NEXTAUTH_SECRET }}'
+
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
+
         with:
           name: next-build
-          path: .next
+          path: |
+            .next
+            !.next/cache
           retention-days: 1
+          include-hidden-files: true
 
   playwright-e2e:
     needs: [build-for-e2e]
@@ -76,11 +92,14 @@ jobs:
       - name: Run Playwright Tests
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
         env:
-          MONGOTESTDB_URI: mongodb://localhost:27017/test_db
+          MONGOTESTDB_URI: mongodb://localhost:27017/materialdb_test
+          MONGODB_URI: mongodb://localhost:27017/materialdb_tes
           NEXTAUTH_SECRET: '${{ secrets.NEXTAUTH_SECRET }}'
           NEXTAUTH_URL: http://localhost:3000
           PORT: 3000
           NODE_ENV: test
+          NODEMAILER_EMAIL: '${{ secrets.NODEMAILER_EMAIL }}'
+          NODEMAILER_PASSWORD: '${{ secrets.NODEMAILER_PASSWORD }}'
 
       - name: Upload Blobs
         if: always()

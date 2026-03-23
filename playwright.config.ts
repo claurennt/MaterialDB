@@ -67,7 +67,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 4 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: process.env.CI ? 'blob' : 'html',
+  reporter: process.env.CI ? 'blob' : [['html', { open: 'never' }]],
 
   /* Configure projects for major browsers */
   projects: [
@@ -107,6 +107,12 @@ export default defineConfig({
       NODE_ENV: 'test',
       NEXTAUTH_URL: BASE_URL,
       NEXTAUTH_SECRET: 'test-secret',
+      NODEMAILER_EMAIL:
+        process.env.NODEMAILER_EMAIL || 'materialDB-mock@dummy.com',
+      NODEMAILER_PASSWORD: process.env.NODEMAILER_PASSWORD || 'password',
+      MONGODB_URI:
+        process.env.MONGOTESTDB_URI ||
+        'mongodb://localhost:27017/materialdb_test',
       MONGOTESTDB_URI:
         process.env.MONGOTESTDB_URI ||
         'mongodb://localhost:27017/materialdb_test',

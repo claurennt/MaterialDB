@@ -21,6 +21,7 @@ const opts: mongoose.ConnectOptions = {
 };
 
 export async function DBClient(): Promise<typeof mongoose> {
+  console.log('Current NODE_ENV:', process.env.NODE_ENV);
   const uri =
     process.env.NODE_ENV === 'test'
       ? process.env.MONGOTESTDB_URI
