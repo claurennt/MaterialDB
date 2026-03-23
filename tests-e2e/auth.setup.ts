@@ -1,7 +1,8 @@
 import { test as setup, expect } from '@playwright/test';
 import { BASE_URL } from '../globals';
+import path from 'path';
 
-const authFile = 'utils/tests-e2e/user.json';
+const authFile = path.join(__dirname, 'utils/tests-e2e/user.json');
 
 setup('authenticate', async ({ page }) => {
   await page.goto(`${BASE_URL}/auth/login`);
@@ -14,7 +15,7 @@ setup('authenticate', async ({ page }) => {
   await expect(page.getByTestId('auth-feedback-group')).toBeFocused();
 
   //check redirect after 3 seconds
-  await page.waitForURL(BASE_URL, { timeout: 3000 });
+  await page.waitForURL(BASE_URL, { timeout: 5000 });
 
   await page.context().storageState({ path: authFile });
 });

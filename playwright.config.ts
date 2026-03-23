@@ -6,12 +6,7 @@ import path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-const TEST_DB_URL =
-  process.env.MONGOTESTDB_URI ||
-  'mongodb://localhost:27017/materialDB-project-test';
-
-// 1. Centralize your constants
-const AUTH_FILE = 'utils/tests-e2e/user.json';
+const AUTH_FILE = path.join(__dirname, 'utils/tests-e2e/user.json');
 const AUTH_DEPENDENCY = ['setup'];
 
 type Device = {
@@ -70,8 +65,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 2 : undefined,
+  workers: process.env.CI ? 4 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI ? 'blob' : 'html',
 
@@ -104,8 +98,7 @@ export default defineConfig({
       NODE_ENV: 'test',
       NEXTAUTH_URL: BASE_URL,
       NEXTAUTH_SECRET: 'test-secret',
-      MONGODB_URI: TEST_DB_URL,
-      MONGOTESTDB_URI: TEST_DB_URL,
+      MONGOTESTDB_URI: `mongodb://localhost:27017/db_worker_${process.env.TEST_WORKER_INDEX || '0'}`,
     },
   },
 });
