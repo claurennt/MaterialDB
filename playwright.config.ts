@@ -107,15 +107,11 @@ export default defineConfig({
       NODE_ENV: 'test',
       NEXTAUTH_URL: BASE_URL,
       NEXTAUTH_SECRET: 'test-secret',
-      NODEMAILER_EMAIL:
-        process.env.NODEMAILER_EMAIL || 'materialDB-mock@dummy.com',
-      NODEMAILER_PASSWORD: process.env.NODEMAILER_PASSWORD || 'password',
-      MONGODB_URI:
-        process.env.MONGOTESTDB_URI ||
-        'mongodb://localhost:27017/materialdb_test',
       MONGOTESTDB_URI:
         process.env.MONGOTESTDB_URI ||
         'mongodb://localhost:27017/materialdb_test',
+      MONGODB_URI:
+        process.env.MONGODB_URI || 'mongodb://localhost:27017/materialdb_test',
     },
   },
 });

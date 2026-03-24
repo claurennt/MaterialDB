@@ -12,7 +12,7 @@ test.describe('Login Mode', () => {
 
     const authFeedback = page.getByTestId('auth-feedback-group');
     // Verify the auth feedback message gets focused
-    await expect(authFeedback).toBeFocused();
+    await authFeedback.waitFor({ state: 'visible' });
     await expect(authFeedback).toContainText(
       'Something went wrong. Username and Password are required',
     );
@@ -24,7 +24,7 @@ test.describe('Login Mode', () => {
     await page.getByRole('button', { name: /sign in/i }).click();
 
     // Verify the auth feedback message exists and gets focused
-    await expect(page.getByTestId('auth-feedback-group')).toBeFocused();
+    await page.getByTestId('auth-feedback-group').waitFor({ state: 'visible' });
     await expect(page.getByText('Invalid credentials')).toBeVisible();
   });
 

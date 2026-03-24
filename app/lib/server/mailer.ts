@@ -19,18 +19,23 @@ type SendActivationEmailParams = {
 };
 
 const BASEURL =
-  environment === 'development' ? `http://localhost:${port}` : PROJECT_URL;
+  environment === 'development' || process.env.CI
+    ? `http://localhost:${port}`
+    : PROJECT_URL;
 
-//create transporter object with config
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  port: 465,
-  secure: true,
-  auth: {
-    user: NODEMAILER_EMAIL,
-    pass: NODEMAILER_PASSWORD,
-  },
-});
+const transporter = process.env.CI
+  ? nodemailer.createTransport({
+      jsonTransport: true,
+    })
+  : nodemailer.createTransport({
+      service: 'gmail',
+      port: 465,
+      secure: true,
+      auth: {
+        user: NODEMAILER_EMAIL,
+        pass: NODEMAILER_PASSWORD,
+      },
+    });
 
 const sendEmail = async (message: Message) => {
   try {
@@ -47,6 +52,11 @@ const sendActivationEmail = ({
   token,
 }: SendActivationEmailParams) => {
   const activationLink = `${BASEURL}/activate?token=${token}`;
+
+  if (process.env.CI || process.env.NODE_ENV === 'test') {
+    console.log(`[TEST MODE] Email would be sent to: ${email}`);
+    return Promise.resolve();
+  }
 
   const message = {
     from: NODEMAILER_EMAIL || '',

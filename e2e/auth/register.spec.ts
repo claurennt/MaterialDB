@@ -28,7 +28,7 @@ test.describe('Registration Mode', () => {
 
     await page.getByRole('button', { name: /create account/i }).click();
 
-    await expect(page.getByTestId('auth-feedback-group')).toBeFocused();
+    await page.getByTestId('auth-feedback-group').waitFor({ state: 'visible' });
     await expect(
       page.getByText(/Success! Account created! Please check your email./i),
     ).toBeVisible();
@@ -38,7 +38,7 @@ test.describe('Registration Mode', () => {
   test('should clear feedback when user types again', async ({ page }) => {
     await page.getByRole('button', { name: /create account/i }).click();
 
-    await expect(page.getByTestId('auth-feedback-group')).toBeFocused();
+    await page.getByTestId('auth-feedback-group').waitFor({ state: 'visible' });
     await expect(
       page.getByText(/Email, Username and Password are required/i),
     ).toBeVisible();

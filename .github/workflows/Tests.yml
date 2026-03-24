@@ -93,13 +93,10 @@ jobs:
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
         env:
           MONGOTESTDB_URI: mongodb://localhost:27017/materialdb_test
-          MONGODB_URI: mongodb://localhost:27017/materialdb_tes
+          MONGODB_URI: mongodb://localhost:27017/materialdb_test
           NEXTAUTH_SECRET: '${{ secrets.NEXTAUTH_SECRET }}'
           NEXTAUTH_URL: http://localhost:3000
           PORT: 3000
-          NODE_ENV: test
-          NODEMAILER_EMAIL: '${{ secrets.NODEMAILER_EMAIL }}'
-          NODEMAILER_PASSWORD: '${{ secrets.NODEMAILER_PASSWORD }}'
 
       - name: Upload Blobs
         if: always()
