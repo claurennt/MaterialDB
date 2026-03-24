@@ -23,7 +23,7 @@ const opts: mongoose.ConnectOptions = {
 export async function DBClient(): Promise<typeof mongoose> {
   console.log(process.env.NODE_ENV, process.env.APP_TEST);
   const uri =
-    process.env.CI || process.env.NODE_ENV === 'test'
+    process.env.CI === 'true' || process.env.NODE_ENV === 'test'
       ? process.env.MONGOTESTDB_URI
       : process.env.MONGODB_URI;
 

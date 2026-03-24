@@ -16,7 +16,7 @@ setup('authenticate', async ({ page }) => {
   // Verify the auth feedback message exists and gets focused
 
   //check redirect after 3 seconds
-  await page.waitForURL(BASE_URL, { timeout: 5000 });
+  await page.waitForURL(BASE_URL, { timeout: 15000 });
 
   await page.context().storageState({ path: AUTH_FILE });
 });

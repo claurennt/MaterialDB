@@ -7,8 +7,7 @@ const nextConfig = {
   },
 
   images: {
-    unoptimized:
-      process.env.NODE_ENV !== 'production' || Boolean(process.env.CI),
+    unoptimized: process.env.NODE_ENV !== 'production' || !!process.env.CI,
     remotePatterns: [
       {
         protocol: 'https',
