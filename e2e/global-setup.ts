@@ -1,9 +1,9 @@
+import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
-import { DBClient } from '@lib/server/DBClient';
 import { Admin } from '../models';
 
 async function globalSetup() {
-  await DBClient();
+  await mongoose.connect(process.env.MONGOTESTDB_URI!);
 
   const hashedPassword = await bcrypt.hash('password123', 1);
 
@@ -18,6 +18,8 @@ async function globalSetup() {
   );
 
   console.log('✅ Test database seeded.');
+  await mongoose.disconnect();
+  console.log('✅ Global Setup Complete');
 }
 
 export default globalSetup;
