@@ -1,4 +1,4 @@
-import { test as setup, expect } from '@playwright/test';
+import { test as setup } from '@playwright/test';
 import { BASE_URL } from '../globals';
 import path from 'path';
 import { DBClient } from '@lib/server/DBClient';
@@ -14,7 +14,10 @@ setup('authenticate', async ({ page }) => {
   await page.getByRole('button', { name: /sign in/i }).click();
   await page.getByTestId('auth-feedback-group').waitFor({ state: 'visible' });
   // Verify the auth feedback message exists and gets focused
-
+  const feedbackText = await page
+    .getByTestId('auth-feedback-group')
+    .textContent();
+  console.log('Auth feedback:', feedbackText);
   //check redirect after 3 seconds
   await page.waitForURL(BASE_URL, { timeout: 15000 });
 
