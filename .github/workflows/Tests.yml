@@ -18,91 +18,82 @@ jobs:
       - run: npm ci
       - run: npm run test:unit
 
-  build-for-e2e:
+  wait-for-deployment:
+    needs: [jest-tests]
     runs-on: ubuntu-latest
-    env:
-      NEXT_TELEMETRY_DISABLED: 1
+    outputs:
+      preview_url: ${{ steps.waitForVercel.outputs.url }}
+    steps:
+      - name: Wait for Vercel
+        uses: patrickedqvist/wait-for-vercel-preview@v1.3.2
+        id: waitForVercel
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          max_timeout: 600
+  e2e-auth-setup:
+    needs: [wait-for-deployment]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
           cache: 'npm'
-
       - run: npm ci
+      - run: npx playwright install --with-deps chromium
 
-      - name: Cache Next.js build
-        uses: actions/cache@v4
-        with:
-          path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
-
-      - name: Build Next.js
-        run: npm run build
+      - name: Generate Auth Session
+        run: npx playwright test auth.setup.ts
         env:
-          NEXTAUTH_URL: http://localhost:3000
-          NEXTAUTH_SECRET: '${{ secrets.NEXTAUTH_SECRET }}'
+          BASE_URL: ${{ needs.wait-for-deployment.outputs.preview_url }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          MONGOTESTDB_URI: ${{ secrets.MONGOTESTDB_URI }}
 
-      - name: Upload Build Artifact
+      - name: Upload Session Artifact
         uses: actions/upload-artifact@v4
-
         with:
-          name: next-build
-          path: |
-            .next
-            !.next/cache
+          name: playwright-session
+          path: e2e/utils/user.json
           retention-days: 1
-          include-hidden-files: true
 
   playwright-e2e:
-    needs: [build-for-e2e]
+    needs: [wait-for-deployment, e2e-auth-setup]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         shardIndex: [1, 2, 3, 4]
         shardTotal: [4]
-
-    services:
-      mongodb:
-        image: mongo:6.0
-        ports: ['27017:27017']
-
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
           cache: 'npm'
+      - run: npm ci
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Download Build Artifact
+      - name: Download Session Artifact
         uses: actions/download-artifact@v4
         with:
-          name: next-build
-          path: .next
+          name: playwright-session
+          path: e2e/utils/
 
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium
 
-      - name: Run Playwright Tests
+      - name: Run Sharded Tests
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
         env:
-          MONGOTESTDB_URI: mongodb://localhost:27017/materialdb_test
-          MONGODB_URI: mongodb://localhost:27017/materialdb_test
-          NEXTAUTH_SECRET: '${{ secrets.NEXTAUTH_SECRET }}'
-          NEXTAUTH_URL: http://localhost:3000
-          PORT: 3000
+          BASE_URL: ${{ needs.wait-for-deployment.outputs.preview_url }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          MONGOTESTDB_URI: ${{ secrets.MONGOTESTDB_URI }}
+          NODE_ENV: test
 
-      - name: Upload Blobs
+      - name: Upload Blob Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: blob-report-${{ matrix.shardIndex }}
+          name: all-blob-reports-${{ matrix.shardIndex }}
           path: blob-report
           retention-days: 1
 
@@ -120,12 +111,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: all-blobs
-          pattern: blob-report-*
+          pattern: all-blob-reports-*
           merge-multiple: true
       - name: Generate Final Report
         run: npx playwright merge-reports --reporter html ./all-blobs
       - name: Upload HTML Report
         uses: actions/upload-artifact@v4
         with:
-          name: final-report
+          name: final-playwright-report
           path: playwright-report/

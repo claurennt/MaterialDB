@@ -1,19 +1,16 @@
 import { defineConfig, devices, Project } from '@playwright/test';
 
 import dotenv from 'dotenv';
-import { BASE_URL, HOSTNAME, PORT } from './globals';
+import { BASE_URL, AUTH_FILE } from './globals';
 import path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
-
-export const AUTH_FILE = path.join(__dirname, '/e2e/utils/user.json');
 
 type Device = {
   name: string;
   device: Project['use'];
 };
 
-// 2. Define your devices in a clean list
 const desktopDevices = [
   { name: 'chromium', device: devices['Desktop Chrome'] },
   { name: 'firefox', device: devices['Desktop Firefox'] },
@@ -36,6 +33,7 @@ const getProjects = (desktop: Device[], mobile: Device[]) => {
       dependencies: ['auth-setup'],
       testMatch: /loggedIn\/.*\.spec\.ts/,
     });
+
     // auth folder setup
     acc.push({
       name: `${name}-auth`,
@@ -82,9 +80,8 @@ export default defineConfig({
     },
     ...getProjects(desktopDevices, mobileDevices),
   ],
-  /* Shared settings for all the projects */
   use: {
-    baseURL: BASE_URL,
+    baseURL: process.env.BASE_URL || BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
     video: 'on-first-retry',
     // Next 14 specific: Ensure metadata/headers don't clash
@@ -92,26 +89,19 @@ export default defineConfig({
       'x-playwright-test': 'true',
     },
   },
-
-  /* WebServer configuration */
-  webServer: {
-    command: 'npm run start',
-    url: BASE_URL,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
-    stdout: 'pipe',
-    stderr: 'pipe',
-    env: {
-      PORT,
-      HOSTNAME,
-      NODE_ENV: 'test',
-      NEXTAUTH_URL: BASE_URL,
-      NEXTAUTH_SECRET: 'test-secret',
-      MONGOTESTDB_URI:
-        process.env.MONGOTESTDB_URI ||
-        'mongodb://localhost:27017/materialdb_test',
-      MONGODB_URI:
-        process.env.MONGODB_URI || 'mongodb://localhost:27017/materialdb_test',
-    },
-  },
+  webServer: process.env.CI
+    ? undefined
+    : {
+        command: 'npm run build && npm run start',
+        url: 'http://localhost:3000',
+        reuseExistingServer: true,
+        env: {
+          NODE_ENV: 'test',
+          NEXTAUTH_URL: BASE_URL,
+          NEXTAUTH_SECRET: 'test-secret',
+          MONGOTESTDB_URI:
+            process.env.MONGOTESTDB_URI ||
+            'mongodb://localhost:27017/materialdb_test',
+        },
+      },
 });
