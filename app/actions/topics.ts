@@ -30,15 +30,14 @@ export const updateTopic = withAuthDb(async ({ userId, data }) => {
 });
 
 export const deleteTopic = withAuthDb(async ({ userId, data }) => {
-  const { id, topicId } = data;
-
+  const { topicId } = data;
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
     // Security check: must own the topic to delete it
     const topic = await Topic.findOneAndDelete(
-      { _id: id, _creator: userId },
+      { _id: topicId, _creator: userId },
       { session },
     );
     if (!topic) throw new Error('Topic not found or unauthorized');

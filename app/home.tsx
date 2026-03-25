@@ -38,7 +38,14 @@ export default function Home({
           const key = topic._id.toString();
           const anchorId = `topic-card-${i}`;
 
-          return <TopicCard key={key} {...topic} anchorId={anchorId} />;
+          return (
+            <TopicCard
+              key={key}
+              {...topic}
+              anchorId={anchorId}
+              isOwner={isOwner}
+            />
+          );
         })}
       </ul>
     ) : null;
