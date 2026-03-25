@@ -33,6 +33,8 @@ jobs:
   e2e-auth-setup:
     needs: [wait-for-deployment]
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.0-jammy
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -40,7 +42,6 @@ jobs:
           node-version-file: '.node-version'
           cache: 'npm'
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
 
       - name: Generate Auth Session
         run: npx playwright test auth.setup.ts
@@ -64,6 +65,8 @@ jobs:
       matrix:
         shardIndex: [1, 2, 3, 4]
         shardTotal: [4]
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.0-jammy
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -78,16 +81,13 @@ jobs:
           name: playwright-session
           path: e2e/utils/
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium
-
       - name: Run Sharded Tests
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
         env:
           BASE_URL: ${{ needs.wait-for-deployment.outputs.preview_url }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           MONGOTESTDB_URI: ${{ secrets.MONGOTESTDB_URI }}
-          NODE_ENV: test
+          CI: true
 
       - name: Upload Blob Report
         if: always()
@@ -106,7 +106,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
-      - run: npm ci
+      - run: npm install @playwright/test
       - name: Download all blobs
         uses: actions/download-artifact@v4
         with:
