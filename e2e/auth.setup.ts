@@ -1,6 +1,5 @@
 import { test as setup, expect } from '@playwright/test';
 import { BASE_URL, AUTH_FILE } from '../globals';
-import { DBClient } from '@lib/server/DBClient';
 
 setup('authenticate', async ({ page }) => {
   await page.goto(`${BASE_URL}/auth/login`);

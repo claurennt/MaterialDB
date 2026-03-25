@@ -81,7 +81,7 @@ export default defineConfig({
     ...getProjects(desktopDevices, mobileDevices),
   ],
   use: {
-    baseURL: process.env.BASE_URL || BASE_URL || 'http://localhost:3000',
+    baseURL: BASE_URL,
     trace: 'on-first-retry',
     video: 'on-first-retry',
     // Next 14 specific: Ensure metadata/headers don't clash
