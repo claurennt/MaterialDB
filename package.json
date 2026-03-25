@@ -8,14 +8,14 @@
   },
   "scripts": {
     "dev": "next dev",
-    "debug": "cross-env NODE_OPTIONS='--inspect' next dev ",
+    "debug": "cross-env NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "stop": "taskkill /im node.exe /F",
     "lint": "next lint",
     "test:unit": "jest",
     "test:unit-watch": "jest --watch",
-    "test:e2e": "NODE_ENV=test playwright test"
+    "test:e2e": "cross-env NODE_ENV=test npx playwright test"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.1",

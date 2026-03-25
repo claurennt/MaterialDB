@@ -1,7 +1,9 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.resolve(__dirname, '/.env') });
+if (process.env.CI !== 'true') {
+  dotenv.config({ path: path.resolve(__dirname, '.env'), quiet: true });
+}
 
 const PORT = process.env.PORT || '3000';
 const HOSTNAME = 'localhost';

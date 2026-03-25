@@ -4,7 +4,9 @@ import dotenv from 'dotenv';
 import { BASE_URL, AUTH_FILE } from './globals';
 import path from 'path';
 
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+if (process.env.CI !== 'true') {
+  dotenv.config({ path: path.resolve(__dirname, '.env'), quiet: true });
+}
 
 type Device = {
   name: string;
@@ -63,9 +65,9 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 4 : undefined,
+  workers: process.env.CI ? 4 : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: process.env.CI ? 'blob' : [['html', { open: 'never' }]],
+  reporter: process.env.CI ? 'blob' : 'html',
 
   /* Configure projects for major browsers */
   projects: [
@@ -84,24 +86,12 @@ export default defineConfig({
     baseURL: BASE_URL,
     trace: 'on-first-retry',
     video: 'on-first-retry',
-    // Next 14 specific: Ensure metadata/headers don't clash
-    extraHTTPHeaders: {
-      'x-playwright-test': 'true',
-    },
   },
   webServer: process.env.CI
     ? undefined
     : {
-        command: 'npm run build && npm run start',
-        url: 'http://localhost:3000',
+        command: 'npm run dev',
+        url: BASE_URL,
         reuseExistingServer: true,
-        env: {
-          NODE_ENV: 'test',
-          NEXTAUTH_URL: BASE_URL,
-          NEXTAUTH_SECRET: 'test-secret',
-          MONGOTESTDB_URI:
-            process.env.MONGOTESTDB_URI ||
-            'mongodb://localhost:27017/materialdb_test',
-        },
       },
 });
