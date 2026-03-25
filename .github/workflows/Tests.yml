@@ -46,6 +46,7 @@ jobs:
       - name: Generate Auth Session
         run: npx playwright test auth.setup.ts
         env:
+          HOME: /root
           BASE_URL: ${{ needs.wait-for-deployment.outputs.preview_url }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           MONGOTESTDB_URI: ${{ secrets.MONGOTESTDB_URI }}
@@ -84,6 +85,7 @@ jobs:
       - name: Run Sharded Tests
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
         env:
+          HOME: /root
           BASE_URL: ${{ needs.wait-for-deployment.outputs.preview_url }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           MONGOTESTDB_URI: ${{ secrets.MONGOTESTDB_URI }}
