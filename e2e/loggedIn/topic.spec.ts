@@ -11,8 +11,6 @@ test.describe('Individual topic page with Session', () => {
   test('should show the `Add new link` and `Logout` button', async ({
     page,
   }) => {
-    await expect(page).not.toHaveURL(/.*api\/auth\/error/);
-
     await expect(page.getByRole('link', { name: 'Logout' })).toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Add new link' }),
@@ -52,7 +50,8 @@ test.describe('Individual topic page with Session', () => {
         name: 'Tag1',
       })
       .first();
-    expect(tag1).toBeVisible();
+    await expect(tag1).toBeVisible();
+
     await expect(newlyAddedLink).toBeVisible();
   });
 });

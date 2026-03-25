@@ -39,14 +39,14 @@ test.describe('Home with Session', () => {
     expect(nameInput).toHaveAttribute('aria-invalid', 'true');
     expect(nameInput).toHaveAccessibleDescription('Name is required');
 
-    expect(errorFeedback).toBeAttached();
+    await expect(errorFeedback).toBeAttached();
     await nameInput.fill('test-topic');
 
     await submit.click();
 
     expect(nameInput).toHaveAttribute('aria-invalid', 'false');
     expect(nameInput).toHaveAccessibleDescription('');
-    expect(errorFeedback).not.toBeAttached();
+    await expect(errorFeedback).not.toBeAttached();
 
     const newlyAddedTopic = page
       .getByRole('link', {
