@@ -34,14 +34,13 @@
     "next-auth": "^4.24.13",
     "next-router-mock": "^0.9.13",
     "nodemailer": "^7.0.13",
-    "playwright-core": "^1.45.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sharp": "^0.33.1"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.9.1",
-    "@playwright/test": "^1.52.0",
+    "@playwright/test": "^1.58.0",
     "@shelf/jest-mongodb": "^4.3.2",
     "@testing-library/dom": "^9.3.4",
     "@testing-library/jest-dom": "^6.2.1",
