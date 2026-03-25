@@ -5,10 +5,10 @@ export const MainTitle = () => {
   const { data: session } = useSession();
 
   return (
-    <h1 className='font-sans text-5xl'>
+    <h1 className={`font-sans text-5xl ${session?.user ? '' : 'pt-10'}`}>
       Welcome {session?.user ? 'back to your' : 'to'}
       <span className='text-primary-100 m-0 p-0'> MaterialDB</span>
-      {session?.user ? `, ${session?.user.name}` : ''}!
+      {session?.user ? `, ${session?.user.username}` : ''}!
     </h1>
   );
 };

@@ -1,37 +1,44 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2017", // Next.js 14 handles ES5 transpilation; setting this higher improves dev build speed
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "baseUrl": ".",
     "paths": {
-      "@models": ["models/index.ts"],
-      "@types": ["types/index.ts"],
-      "@components": ["components/index.ts"],
-      "@utils/client": ["utils/client/index.ts"],
-      "@utils/server": ["utils/server/index.ts"]
+      "@models": ["./models/index.ts"],
+      "@types/*": ["./types/index.ts"],
+      "@components/*": ["./components/*/index.tsx"],
+      "@lib/client": ["./app/lib/client/index.ts"],
+      "@lib/server/*": ["./app/lib/server/*"],
+      "@lib/client/hooks/*": ["./app/lib/client/hooks/*"],
+      "@styles/*": ["./styles/*"],
+      "@actions/*": ["./app/actions/*"]
     },
-
-    "types": ["node", "jest", "@testing-library/jest-dom"]
+    // Ensure Jest types don't pollute your main app code too much
+    "types": ["node", "jest", "@testing-library/jest-dom"],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
   },
-
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "__tests__",
-    "jest.config.ts"
+    ".next/types/**/*.ts",
+    "playwright.config.js"
   ],
-  "exclude": ["node_modules", "**/*.test.tsx"]
+  "exclude": ["node_modules", "playwright-report", "test-results"]
 }

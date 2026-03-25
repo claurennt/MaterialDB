@@ -1,6 +1,13 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['localhost:3000', '127.0.0.1:3000'],
+    },
+  },
+
   images: {
+    unoptimized: process.env.NODE_ENV !== 'production' || !!process.env.CI,
     remotePatterns: [
       {
         protocol: 'https',
@@ -10,9 +17,6 @@ const nextConfig = {
       },
     ],
   },
-  i18n: {
-    locales: ['en'],
-    defaultLocale: 'en',
-  },
 };
+
 module.exports = nextConfig;

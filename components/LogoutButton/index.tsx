@@ -1,22 +1,19 @@
 import React from 'react';
 import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import styles from '../../styles/index.module.css';
+import Link from 'next/link';
 
-export const LogoutButton = () => {
-  const router = useRouter();
+export const LogoutButton = () => (
+  <Link
+    className={`absolute top-4 right-2 text-md ${styles.auth_nav_link}`}
+    href='/'
+    onClick={(e) => {
+      e.preventDefault();
 
-  return (
-    <button
-      className='self-center bg-primary-neon p-1 text-sm hover:bg-secondary-100 ease-linear duration-300 active:scale-75 text-white font-bold px-4 rounded-tl rounded-br absolute right-2 top-4  hover:text-primary-neon focus:outline-secondary-100 focus:outline-2 hover-focus:outline-primary-neon'
-      onClick={async (e) => {
-        e.preventDefault();
-
-        // redirect without page reload
-        const { url } = await signOut({ redirect: false, callbackUrl: '/' });
-        router.push(url);
-      }}
-    >
-      Logout
-    </button>
-  );
-};
+      // redirect without page reload
+      signOut({ redirect: true, callbackUrl: '/' });
+    }}
+  >
+    Logout
+  </Link>
+);

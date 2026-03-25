@@ -11,41 +11,52 @@
 
 @layer base {
   :root {
-    --primary-color: #735eff;
+    --text-color: #eaeaea;
+    --primary-color: #998aff;
     --primary-color-200: #7f6bff;
     --primary-color-neon: #1f51ff;
-    --secondary-color: #b5ffe1;
-    --tertiary-color: #0a1046;
+    --secondary-color: #4fc06d;
+    --tertiary-color: #f27059;
+    --background: #121115;
+    --backgroundLight: #e9e9e9;
+  }
+  /* focus style for interactive elements */
+  *:focus-visible,
+  button:focus,
+  [role='group']:focus {
+    outline: 2px solid var(--tertiary-color);
+    outline-offset: 2px;
   }
 }
 
 html,
 body {
-  color: white;
-  background: #010038;
+  color: var(--text-color);
+  background: var(--background);
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
-
-* {
   box-sizing: border-box;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    Segoe UI,
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    Fira Sans,
+    Droid Sans,
+    Helvetica Neue,
+    sans-serif;
 }
 
 mark {
   padding: 2px 0;
-  background-color: var(--primary-color-neon);
-  color: white;
+  background-color: var(--secondary-color);
+  color: var(--background);
 }
 
 .sr-only {
-  background: red;
   position: absolute;
   width: 1px;
   height: 1px;
@@ -60,31 +71,11 @@ mark {
   -webkit-appearance: none;
 }
 
-.gradient-border-button {
-  position: relative;
-  display: inline-block;
-  padding: 10px 20px; /* Adjust padding for button size */
-  font-size: 16px;
-  font-weight: 600;
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  border-radius: 8px; /* Rounded corners */
-  z-index: 1;
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
-
-.gradient-border-button::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 8px;
-  padding: 2px; /* Border thickness */
-  background: linear-gradient(to left, rgb(181, 255, 255), rgb(80, 243, 243));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  z-index: -1;
+dialog {
+  background: var(--backgroundLight);
 }

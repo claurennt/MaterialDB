@@ -6,22 +6,27 @@ const createJestConfig = nextJest({
   dir: './',
 });
 
-// Add any custom config to be passed to Jest
 const config: Config = {
-  preset: '@shelf/jest-mongodb',
-  collectCoverage: true,
-  coverageDirectory: 'coverage',
+  coverageProvider: 'v8',
   testEnvironment: 'jsdom',
-  moduleNameMapper: {
-    '^utils/client/(.*)$': '<rootDir>/utils/client/$1',
-    '^utils/server/(.*)$': '<rootDir>/utils/server/$1',
-    '^utils/test/(.*)$': '<rootDir>/utils/tests:unit/$1',
-    '^models/(.*)$': '<rootDir>/models/$1',
-    '^components/(.*)$': '<rootDir>/components/$1',
+  testEnvironmentOptions: {
+    customExportConditions: ['node', 'node-addons'],
   },
-  testPathIgnorePatterns: ['/node_modules/', '/e2e:tests'],
+  moduleNameMapper: {
+    '^@models$': '<rootDir>/models/index.ts',
+    '^@types$': '<rootDir>/types/index.ts',
+    '^@components/(.*)$': '<rootDir>/components/$1/index.tsx',
+    '^@lib/client$': '<rootDir>/app/lib/client/index.ts',
+    '^@lib/client/hooks/(.*)$': '<rootDir>/app/lib/client/hooks/$1',
+    '^@lib/server$': '<rootDir>/app/lib/server/index.ts',
+    '^@actions/(.*)$': '<rootDir>/app/actions/$1',
+  },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  testPathIgnorePatterns: [
+    '<rootDir>/.next/',
+    '<rootDir>/node_modules/',
+    '<rootDir>/e2e/',
+  ],
 };
 
-// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
 export default createJestConfig(config);

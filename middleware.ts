@@ -1,28 +1,24 @@
-import { NextResponse, NextRequest } from 'next/server';
-import * as jose from 'jose';
-import { SECRET } from './globals';
+import { getToken } from 'next-auth/jwt';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-// middlewares use the edge runtime so we can't use jsonwebtoken module because it is using crypto, so we need jose
 export async function middleware(req: NextRequest) {
-  try {
-    const token = req.headers.get('Authorization');
-    const { payload } = await jose.jwtVerify(token, SECRET);
+  // getToken uses the same secret from your authOptions automatically
+  const token = await getToken({ req });
+  const isAuthPage = req.nextUrl.pathname.startsWith('/auth');
 
-    if (!token || !payload)
-      return NextResponse.json(
-        { error: 'Bad request: invalid token' },
-        { status: 401 }
-      );
-
+  if (isAuthPage) {
+    if (token) {
+      // User is logged in, send them home
+      return NextResponse.redirect(new URL('/', req.url));
+    }
+    // No token? Let them stay on the login/register page
     return NextResponse.next();
-  } catch (err) {
-    return NextResponse.json(
-      { error: 'Something went wrong - token missing' },
-      { status: 500 }
-    );
   }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/api/topics/:path*', '/api/links/:path*', '/api/admin/:path*'],
+  matcher: ['/auth/login', '/auth/register'],
 };

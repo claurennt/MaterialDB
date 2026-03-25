@@ -1,28 +1,26 @@
 import React from 'react';
-import { AuthLinks, LogoutButton } from '@components';
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { LogoutButton } from '@components/LogoutButton';
+import { AuthLinks } from '@components/AuthLinks';
+import styles from '../../styles/index.module.css';
 
-// This component could be put into a Layout component, but doing that does not reset the tab order on route change
 export const Header = () => {
-  const router = useRouter();
-  const {
-    pathname,
-    query: { userId },
-  } = router;
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
+
+  const userId = searchParams.get('userId');
 
   return (
     <header>
       {pathname !== '/' && (
         <Link
-          className={`self-center text-primary-300 p-1 text-lg hover:text-secondary-300 ease-linear duration-300 active:scale-75 font-bold px-5 absolute top-3 ${
-            session ? 'right-24' : 'left-2'
-          }`}
+          className={`${styles.auth_nav_link} text-md absolute top-4 ${session ? 'right-20' : 'left-2'}`}
           href={{
             pathname: '/',
-            query: `${userId ? `userId=${userId}` : ''}`,
+            query: userId ? { userId } : '',
           }}
         >
           Home

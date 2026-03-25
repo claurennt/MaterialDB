@@ -1,77 +1,81 @@
-import React from 'react';
-import { Header } from '..';
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { Header } from '../index';
+
 import {
-  renderWithSession,
-  renderWithoutSession,
-  mockUseRouter,
-  mockUseSession,
+  mockUsePathname,
   mockUseSearchParams,
   resetMocks,
   TEST_USER_ID,
   createMockSession,
-} from '../../../utils/tests:unit';
+  mockUseSession,
+} from '../../../utils/tests-unit';
 
-jest.mock('next/router', () => ({
-  useRouter: jest.fn(),
+jest.mock('next/navigation');
+jest.mock('next-auth/react');
+
+jest.mock('@components/LogoutButton', () => ({
+  LogoutButton: () => <a href='test'>Logout</a>,
 }));
 
-jest.mock('next/navigation', () => ({
-  useSearchParams: jest.fn(),
-}));
-jest.mock('next-auth/react', () => ({
-  useSession: jest.fn(),
-  SessionProvider: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
-  ),
+jest.mock('@components/AuthLinks', () => ({
+  AuthLinks: () => <a href='auth'>Auth Links</a>,
 }));
 
 describe('Header', () => {
   beforeEach(() => {
     resetMocks();
-    mockUseRouter({ pathname: '/nodeJS', query: { userId: TEST_USER_ID } });
+    mockUseSession(null);
+    mockUsePathname('/');
+    mockUseSearchParams({});
   });
 
-  it('should render LogoutButton when session exists and pathname does not include `auth`', () => {
+  it('renders LogoutButton when session exists and not on an auth page', () => {
     const mockedSession = createMockSession();
+
     mockUseSession(mockedSession);
 
-    renderWithSession(<Header />);
-    const logoutButton = screen.queryByRole('button', { name: 'Logout' });
-    expect(logoutButton).toBeInTheDocument();
+    render(<Header />);
+
+    expect(screen.getByRole('link', { name: /logout/i })).toBeInTheDocument();
   });
 
-  it('shows Home button if pathname is not "/" and userId param is in url, no session', () => {
-    mockUseSearchParams({ userId: TEST_USER_ID });
-    mockUseSession(null);
+  it('shows Home link with userId query when on a subpage without session', () => {
+    mockUsePathname('/some-topic');
+    // Simulate ?userId=123
+    const params = { userId: TEST_USER_ID };
+    mockUseSearchParams(params);
 
-    renderWithoutSession(<Header />);
+    render(<Header />);
 
-    const homeLink = screen.queryByRole('link', { name: 'Home' });
+    const homeLink = screen.getByRole('link', { name: /home/i });
     expect(homeLink).toBeInTheDocument();
+
+    // Check the href (Next/Link handles object-to-string conversion)
     expect(homeLink).toHaveAttribute('href', `/?userId=${TEST_USER_ID}`);
 
-    const authLinks = screen
-      .queryAllByRole('link')
-      .filter((link) => ['Register', 'Login'].includes(link.innerText));
-    expect(authLinks).toHaveLength(0);
-
-    const logoutButton = screen.queryByRole('button', { name: 'Logout' });
-    expect(logoutButton).toBeNull();
+    const logoutLink = screen.queryByRole('link', { name: /logout/i });
+    expect(logoutLink).not.toBeInTheDocument();
   });
 
-  it('does not show Auth links/buttons when path includes "auth"', () => {
-    mockUseSearchParams(null);
-    mockUseSession(null);
+  it('does not show Home link when on the root path "/"', () => {
+    render(<Header />);
 
-    renderWithoutSession(<Header />);
+    expect(
+      screen.queryByRole('link', { name: /home/i }),
+    ).not.toBeInTheDocument();
+  });
 
-    const logoutButton = screen.queryByRole('button', { name: 'Logout' });
-    const authLinks = screen
-      .queryAllByRole('link')
-      .filter((link) => ['Register', 'Login'].includes(link.innerText));
-    expect(logoutButton).toBeNull();
-    expect(authLinks).toHaveLength(0);
+  it('hides auth-related UI when on an auth page', () => {
+    mockUsePathname('/auth/login');
+
+    render(<Header />);
+
+    expect(
+      screen.queryByRole('link', { name: /logout/i }),
+    ).not.toBeInTheDocument();
+
+    const authLinks = screen.queryByRole('link', { name: /auth links/i });
+    expect(authLinks).not.toBeInTheDocument();
   });
 });

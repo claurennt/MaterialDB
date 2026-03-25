@@ -1,0 +1,14 @@
+/* all links but topc cards and scraped links */
+.auth_nav_link {
+  pointer: cursor;
+  border-radius: 0.375rem;
+  color: var(--secondary-color);
+  text-decoration: underline;
+  text-decoration-color: var(--primary-color-200);
+  text-underline-offset: 2px;
+
+  &:hover {
+    text-decoration-color: var(--secondary-color);
+    color: #f9a8d4;
+  }
+}

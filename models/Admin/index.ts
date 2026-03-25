@@ -1,54 +1,35 @@
 import mongoose, { Model } from 'mongoose';
-import * as jose from 'jose';
-import { SECRET } from '../../globals';
-import { IAdmin } from '@types';
-import { Topic } from '@models';
+import jwt from 'jsonwebtoken';
 
+import { IAdmin } from '../../types';
+const { NEXTAUTH_SECRET } = process.env;
 const Schema = mongoose.Schema;
 
 // the schema is the blueprint of our  model
 const adminSchema = new Schema<IAdmin>({
-  name: { type: String, required: true, unique: true },
+  username: { type: String, required: true, unique: true },
   password: { type: String, required: true, select: false },
   email: { type: String, unique: true, required: true },
   image: { type: String, default: null },
   activated: { type: Boolean, default: false },
-  topics: [{ type: Schema.Types.ObjectId, ref: 'Topic', default: [] }],
+  activationToken: { type: String, select: false },
+  activationTokenExpires: { type: Date, select: false },
 });
 
-adminSchema.pre(
-  'deleteOne',
-  { document: false, query: true },
-  async function (next) {
-    const _id = this.getFilter()['_id'];
-
-    try {
-      await Topic.findOneAndDelete({ _creator: _id });
-
-      next();
-    } catch (e) {
-      console.log(e);
-      throw new Error(
-        `Somenthing went wrong. Topic reference with id ${_id} was not deleted from admin.`
-      );
-    }
-  }
-);
 adminSchema.methods.generateToken = async function () {
-  const payload = {
+  if (!NEXTAUTH_SECRET)
+    throw new Error('NEXTAUTH_SECRET is not defined in environment variables.');
+
+  const payload: Pick<IAdmin, 'username' | '_id' | 'email'> = {
     _id: this._id,
-    name: this.name,
+    username: this.username,
     email: this.email,
   };
 
   // Create a new JWT and sign it
-  const jwt = await new jose.SignJWT(payload)
-    .setProtectedHeader({ alg: 'HS256' })
-    .setIssuedAt()
-    // .setExpirationTime('2h')
-    .sign(SECRET);
+  const token = jwt.sign(payload, NEXTAUTH_SECRET);
 
-  return jwt;
+  return token;
 };
 
 export const Admin: Model<IAdmin> =
