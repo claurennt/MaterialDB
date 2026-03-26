@@ -27,13 +27,10 @@ export const TopicLink = ({
   const [openDeletionModal, setOpenDeletionModal] =
     React.useState<boolean>(false);
 
-  const router = useRouter();
   const { id: topicId } = useParams();
 
-  const handleDeleteLink = async () => {
-    await deleteLink({ id: _id, topicId });
-    router.refresh();
-  };
+  const handleDeleteLink = async () => await deleteLink({ id: _id, topicId });
+
   const handleOpenModal = (open: boolean) => setOpenDeletionModal(open);
 
   return (
@@ -41,7 +38,8 @@ export const TopicLink = ({
       <DeletionModal
         open={openDeletionModal}
         handleOpenModal={handleOpenModal}
-        handleDeleteLink={handleDeleteLink}
+        handleDelete={handleDeleteLink}
+        title={`Are you sure you want to delete this link: ${title} ?`}
       />
       <div className='flex'>
         <a

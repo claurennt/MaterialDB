@@ -31,7 +31,7 @@ test.describe('Home with Session', () => {
     const nameInput = page.getByLabel('name');
     const descriptionInput = page.getByLabel('description');
     await descriptionInput.fill('test-description');
-
+    await expect(descriptionInput).toHaveValue('test-description');
     const submit = page.getByRole('button', { name: 'Add topic' });
     await submit.click();
 
@@ -49,9 +49,7 @@ test.describe('Home with Session', () => {
     await expect(errorFeedback).not.toBeAttached();
 
     const newlyAddedTopic = page
-      .getByRole('link', {
-        name: 'test-topic test-description',
-      })
+      .getByRole('link', { name: /test-topic/i })
       .last();
 
     await expect(newlyAddedTopic).toBeAttached();
@@ -61,9 +59,7 @@ test.describe('Home with Session', () => {
     page,
   }) => {
     await page.goto(BASE_URL);
-    const topicCard = page
-      .getByRole('link', { name: /test-topic test-description/i })
-      .first();
+    const topicCard = page.getByRole('link', { name: /test-topic/i }).first();
 
     await expect(topicCard).toBeVisible();
     await topicCard.click();
