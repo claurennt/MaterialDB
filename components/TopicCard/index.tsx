@@ -65,7 +65,6 @@ export const TopicCard = ({
           shadow-[5px_5px_30px_7px_rgba(0,0,0,0.25),-5px_-5px_30px_7px_rgba(0,0,0,0.22)]
           cursor-pointer
           hover:outline hover:outline-4 hover:outline-[var(--secondary-color)]
-         
           focus-within:outline focus-within:outline-secondary-300 focus-within:outline-2 focus-within:outline-offset-2
         '
     >
