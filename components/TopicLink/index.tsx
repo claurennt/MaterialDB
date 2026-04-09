@@ -35,12 +35,6 @@ export const TopicLink = ({
 
   return (
     <li className='flex gap-2 flex-col mx-3'>
-      <DeletionModal
-        open={openDeletionModal}
-        handleOpenModal={handleOpenModal}
-        handleDelete={handleDeleteLink}
-        title={`Are you sure you want to delete this link: ${title} ?`}
-      />
       <div className='flex'>
         <a
           id={`scraped-link-${_id}`}

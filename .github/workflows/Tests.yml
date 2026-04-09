@@ -19,7 +19,6 @@ jobs:
       - run: npm run test:unit
 
   wait-for-deployment:
-    needs: [jest-tests]
     runs-on: ubuntu-latest
     outputs:
       preview_url: ${{ steps.waitForVercel.outputs.url }}

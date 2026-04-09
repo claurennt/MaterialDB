@@ -3,24 +3,26 @@ import { NewLinkModalType } from '../../types';
 import { Modal } from '@components/Modal';
 import { LiveRegion } from '@components/LiveRegion';
 import { ModalInput } from '@components/ModalInput';
-import { DialogButton } from '@components/DialogButton';
 import { linkInputs, topicInputs } from '@lib/client';
 import { useFormHandler } from '@lib/client/hooks/useFormHandler';
 import { useLiveRegion } from '@lib/client/hooks/useLiveRegion';
 import { TagsList } from './TagList';
+import { DialogButton } from '@components/DialogButton';
 
 export type ModalContainerProps = {
-  open: boolean;
-  handleOpenModal: (open: boolean) => void;
+  // open: boolean;
+  // handleOpenModal: (open: boolean) => void;
   type: NewLinkModalType;
   topicId?: string;
+  uniqueDialogId: string;
 };
 
 export const NewLinkModal = ({
-  open,
-  handleOpenModal,
+  // open,
+  // handleOpenModal
   topicId,
   type,
+  uniqueDialogId,
 }: ModalContainerProps) => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -40,12 +42,11 @@ export const NewLinkModal = ({
 
   const handleAddResource = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    console.log('allora');
     const isSubmissionSuccessful = await submit(e);
 
-    if (isSubmissionSuccessful) {
-      handleOpenModal(false);
-    }
+    // NOTE: closing is handled by
+    if (!isSubmissionSuccessful) return;
   };
 
   const inputs = type === 'link' ? linkInputs : topicInputs;
@@ -53,7 +54,12 @@ export const NewLinkModal = ({
     type === 'topic' ? 'Insert a new topic' : 'Add new article/resource';
 
   return (
-    <Modal open={open} handleOpenModal={handleOpenModal} title={title}>
+    <Modal
+      // open={open}
+      // handleOpenModal={handleOpenModal}
+      title={title}
+      uniqueDialogId={uniqueDialogId}
+    >
       <form
         data-testid='resource-form'
         onSubmit={handleAddResource}

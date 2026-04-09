@@ -7,11 +7,14 @@ import { AuthLinks } from '@components/AuthLinks';
 import { Header } from '@components/Header';
 import { LiveRegion } from '@components/LiveRegion';
 import { TopicCard } from '@components/TopicCard';
-import { AddNewButton } from '@components/AddNewButton';
 import { SkipLink } from '@components/SkipLink';
 import { MainTitle } from '@components/MainTitle';
 import { Subtitle } from '@components/Subtitle';
 import { NewLinkModal } from '@components/NewLinkModal';
+import { InvokerButton } from '@components/InvokerButton';
+import styles from '../styles/index.module.css';
+import { DeletionModal } from '@components/DeletionModal';
+import { deleteTopic } from '@actions/topics';
 
 export default function Home({
   topics,
@@ -56,6 +59,13 @@ export default function Home({
       : '';
 
   const handleOpenModal = (open: boolean) => setOpenModal(open);
+  const uniqueTopicDialogId = 'add-topic-modal';
+  console.log('home', uniqueTopicDialogId);
+
+  const handleDeleteTopic = async (e) => {
+    console.log(e.target);
+    await deleteTopic({ topicId: _id });
+  };
   return (
     <>
       <Header />
@@ -70,7 +80,14 @@ export default function Home({
         />
         <div className='relative flex justify-center'>
           {isAuthenticated ? (
-            <AddNewButton text='topic' handleOpenModal={handleOpenModal} />
+            <InvokerButton
+              command='show-modal'
+              // handleOpenModal={handleOpenModal}
+              commandfor={uniqueTopicDialogId}
+              className={styles.invoker_button_open}
+            >
+              Add new topic
+            </InvokerButton>
           ) : !userId ? (
             <AuthLinks />
           ) : null}
@@ -83,14 +100,19 @@ export default function Home({
         </div>
 
         {showTopics()}
-
-        {isOwner && (
-          <NewLinkModal
-            type='topic'
-            open={openModal}
-            handleOpenModal={handleOpenModal}
-          />
-        )}
+        {/* TODO i removed isowner, it has to be made hidden if not owner but always in dom, plus multiple dialogs are in dom now ,
+        PLUS the invoker close one sems only to work if contained inside dialog, i moved the + around*/}
+        <NewLinkModal
+          type='topic'
+          // open={openModal}
+          // handleOpenModal={handleOpenModal}
+          uniqueDialogId={uniqueTopicDialogId}
+        />
+        <DeletionModal
+          uniqueDialogId='topic-delete-dialog'
+          handleDelete={handleDeleteTopic}
+          title={`Are you sure you want to delete this topic?`}
+        />
       </main>
       <footer className='text-center w-full p-5'>
         made with love by claurennt
