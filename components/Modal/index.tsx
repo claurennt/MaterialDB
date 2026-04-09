@@ -1,55 +1,46 @@
 'use client';
-import { DialogButton } from '@components/DialogButton';
+import { InvokerButton } from '@components/InvokerButton';
 import React, { useEffect, useRef } from 'react';
+import styles from '../../styles/index.module.css';
 
 type ModalProps = {
-  open: boolean;
-  handleOpenModal: (open: boolean) => void;
+  //open: boolean;
+  // needed in case Invoker Commands is not supported
+  // handleOpenModal: (open: boolean) => void;
   title: string;
   children: React.ReactNode;
+  uniqueDialogId: string;
 };
 
 export const Modal = ({
-  open,
-  handleOpenModal,
+  // handleOpenModal,
   title,
   children,
+  uniqueDialogId,
 }: ModalProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-
-    if (open) {
-      if (!dialog.open) dialog.showModal();
-    } else {
-      dialog.close();
-    }
-  }, [open]);
-
+  // console.log('insid modal', uniqueDialogId);
   return (
     <dialog
-      ref={dialogRef}
+      id={uniqueDialogId}
       className='w-[92vw]           /* Mobile: almost full width with a small gutter */
                 sm:w-[80vw]         /* Tablet: slightly narrower */
                 md:w-full           /* Desktop: full until it hits max-width */
                 max-w-lg'
-      onCancel={(e) => {
-        e.preventDefault();
-        handleOpenModal(false);
-      }}
     >
       <div className='flex flex-col'>
         {/* Header */}
         <div className='px-6 py-4 border-b border-slate-200 flex justify-between items-center'>
           <h1 className='text-xl font-semibold'>{title}</h1>
 
-          <DialogButton
-            onClick={handleOpenModal}
+          <InvokerButton
+            commandfor={uniqueDialogId}
+            command='close'
             ariaLabel='Close dialog'
-            text='x'
-          />
+            className={styles.invoker_button_close}
+          >
+            x
+          </InvokerButton>
         </div>
 
         {/* Body */}

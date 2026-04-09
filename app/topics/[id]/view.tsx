@@ -7,10 +7,11 @@ import { ILink } from '../../../types';
 import '@models';
 import { TopicLink } from '@components/TopicLink';
 import { NewLinkModal } from '@components/NewLinkModal';
-import { AddNewButton } from '@components/AddNewButton';
 import { SearchBar } from '@components/SearchBar';
 import { Header } from '@components/Header';
 import { LiveRegion } from '@components/LiveRegion';
+import { InvokerButton } from '@components/InvokerButton';
+import styles from '../../../styles/index.module.css';
 
 type TopicPageProps = {
   links: ILink[];
@@ -21,7 +22,6 @@ type TopicPageProps = {
 };
 
 const TopicPage = ({ links, topicName, isOwner, topicId }: TopicPageProps) => {
-  const [openModal, setOpenModal] = useState<boolean>(false);
   const [search, setSearch] = useState<string>('');
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const announceLiveRegionRef = useRef<boolean>(false);
@@ -63,7 +63,7 @@ const TopicPage = ({ links, topicName, isOwner, topicId }: TopicPageProps) => {
     setSearch(formData.get('search') as string);
   };
 
-  const handleOpenModal = (open: boolean) => setOpenModal(open);
+  const uniqueLinkDialogId = 'add-new-link';
 
   return (
     <>
@@ -73,9 +73,8 @@ const TopicPage = ({ links, topicName, isOwner, topicId }: TopicPageProps) => {
         {isOwner && (
           <NewLinkModal
             topicId={topicId}
-            handleOpenModal={handleOpenModal}
-            open={openModal}
             type='link'
+            uniqueDialogId={uniqueLinkDialogId}
           />
         )}
 
@@ -93,7 +92,13 @@ const TopicPage = ({ links, topicName, isOwner, topicId }: TopicPageProps) => {
             {isOwner && (
               <>
                 <span className='self-center md:self-end block'>OR </span>{' '}
-                <AddNewButton text='link' handleOpenModal={handleOpenModal} />
+                <InvokerButton
+                  command='show-modal'
+                  commandfor={uniqueLinkDialogId}
+                  className={styles.invoker_button_open}
+                >
+                  Add new link
+                </InvokerButton>
               </>
             )}
           </div>
